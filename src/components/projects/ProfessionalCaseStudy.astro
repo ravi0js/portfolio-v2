@@ -1,0 +1,142 @@
+---
+/**
+ * Professional (employer) case study: anonymised, conceptual diagrams only,
+ * outcomes read from metrics.json, technical areas as an accordion.
+ * Styled differently from personal projects: "dossier" header, no repo links.
+ */
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Icon from '@/components/ui/Icon.astro';
+import CodeBlock from '@/components/ui/CodeBlock.astro';
+import ArchitectureStack from './ArchitectureStack.astro';
+import FlowDiagram from '@/components/viz/FlowDiagram';
+import FifoAllocation from '@/components/viz/FifoAllocation';
+import MetricText from '@/components/experience/MetricText.astro';
+import { metrics, experience, type ProfessionalCaseStudy } from '@/lib/content';
+import { formatYearMonth } from '@/lib/format';
+
+interface Props {
+  study: ProfessionalCaseStudy;
+}
+const { study: s } = Astro.props;
+const job = experience.find((e) => e.id === s.experienceId)!;
+const outcomes = s.outcomes.map((id) => metrics.find((m) => m.id === id)!);
+const period = `${formatYearMonth(job.start)} – ${job.end ? formatYearMonth(job.end) : 'Present'}`;
+---
+
+<Card as="article" padding="none" class="case-study overflow-hidden" data-project={s.slug}>
+  <!-- Dossier strip -->
+  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-raised px-5 py-3 sm:px-8">
+    <Badge variant="outline">
+      <Icon name="briefcase" size={12} />
+      {s.label}
+    </Badge>
+    <span class="text-caption text-muted">
+      {job.role} · {job.company}
+    </span>
+    <span class="font-mono text-caption text-subtle">{period}</span>
+    <span class="ml-auto inline-flex items-center gap-1.5 font-mono text-micro tracking-label text-subtle uppercase">
+      <Icon name="shield" size={12} /> Anonymised
+    </span>
+  </div>
+
+  <div class="grid grid-cols-1 gap-8 p-5 *:min-w-0 sm:p-8 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
+    <div>
+      <h3 class="font-display text-h2 text-balance">{s.title}</h3>
+      <p class="mt-3 text-lead text-pretty text-muted">{s.overview}</p>
+
+      <h4 class="eyebrow mt-8 mb-3">Measurable outcomes</h4>
+      <dl class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {outcomes.map((m) => (
+          <div class="rounded-md border border-line border-l-accent bg-bg/60 py-3 pr-3 pl-4 [border-left-width:2px]">
+            <dt class="sr-only">{m.label}</dt>
+            <dd>
+              <p class="font-mono text-h2 leading-none font-semibold">
+                {m.value}
+                <span class="text-accent">{m.suffix}</span>
+              </p>
+              <p class="mt-2 text-caption text-muted">{m.label}</p>
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <p class="mt-6 flex gap-2 rounded-md border border-dashed border-line px-3 py-2.5 text-caption text-subtle">
+        <Icon name="shield" size={14} class="mt-0.5 shrink-0" />
+        <span>{s.confidentiality}</span>
+      </p>
+    </div>
+
+    <div>
+      <ArchitectureStack layers={s.architecture.layers} caption={s.architecture.caption} note="Conceptual" />
+    </div>
+  </div>
+
+  <!-- Technical areas -->
+  <div class="border-t border-line">
+    <div class="flex flex-wrap items-baseline justify-between gap-3 px-5 pt-6 pb-3 sm:px-8">
+      <h4 class="eyebrow">Technical areas</h4>
+      <span class="font-mono text-caption text-subtle">{s.areas.length} areas</span>
+    </div>
+    <div class="divide-y divide-line border-t border-line">
+      {s.areas.map((a, i) => (
+        <details class="area group" open={i === 0} data-area={a.id}>
+          <summary class="flex cursor-pointer list-none items-center gap-4 px-5 py-4 select-none hover:bg-raised/50 sm:px-8 [&::-webkit-details-marker]:hidden">
+            <span class="grid size-8 shrink-0 place-items-center rounded-md border border-line bg-raised font-mono text-small font-semibold text-accent group-open:border-accent/50">
+              {a.letter}
+            </span>
+            <span class="flex-1 text-small font-semibold sm:text-body">{a.title}</span>
+            <Icon name={a.icon} size={16} class="hidden text-subtle sm:block" />
+            <Icon
+              name="chevronDown"
+              size={16}
+              class="shrink-0 text-subtle transition-transform duration-base group-open:rotate-180"
+            />
+          </summary>
+          <div class="grid grid-cols-1 gap-6 px-5 pb-6 *:min-w-0 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:pl-20">
+            <ul class="space-y-2">
+              {a.items.map((item) => (
+                <li class="flex gap-2.5 text-small leading-relaxed">
+                  <span class="mt-[0.6rem] size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                  <span>
+                    <MetricText text={item} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {(a.diagrams?.length || a.snippet) && (
+              <div class="space-y-4 rounded-md border border-line bg-bg/60 p-4">
+                {a.diagrams?.map((d) =>
+                  d.type === 'flow' ? (
+                    <div class="diagram-block">
+                      <FlowDiagram client:visible steps={d.steps} caption={d.caption} />
+                    </div>
+                  ) : (
+                    <div class="diagram-block">
+                      <FifoAllocation
+                        client:visible
+                        caption={d.caption}
+                        receipt={d.receipt}
+                        currency={d.currency}
+                        milestones={d.milestones}
+                      />
+                    </div>
+                  ),
+                )}
+                {a.snippet && <CodeBlock code={a.snippet.code} lang={a.snippet.language} title={a.snippet.title} />}
+              </div>
+            )}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+
+  <ul class="flex flex-wrap gap-1.5 border-t border-line px-5 py-4 sm:px-8" aria-label="Technologies">
+    {s.stack.map((t) => (
+      <Badge as="li" class="!text-micro">
+        {t}
+      </Badge>
+    ))}
+  </ul>
+</Card>

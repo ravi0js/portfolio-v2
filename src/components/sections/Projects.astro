@@ -1,0 +1,33 @@
+---
+/**
+ * Projects & Engineering Case Studies: personal project(s) first, then
+ * anonymised professional case studies, then challenges → solutions.
+ */
+import Section from '@/components/layout/Section.astro';
+import PersonalProject from '@/components/projects/PersonalProject.astro';
+import ProfessionalCaseStudy from '@/components/projects/ProfessionalCaseStudy.astro';
+import ChallengeList from '@/components/projects/ChallengeList.astro';
+import { site, personalProjects, caseStudies } from '@/lib/content';
+
+const meta = site.sections.projects;
+---
+
+<Section id="projects" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
+  <div class="space-y-10 sm:space-y-14">
+    {personalProjects
+      .filter((p) => p.featured)
+      .map((p) => (
+        <div data-reveal>
+          <PersonalProject project={p} />
+        </div>
+      ))}
+    {caseStudies
+      .filter((s) => s.featured)
+      .map((s) => (
+        <div data-reveal>
+          <ProfessionalCaseStudy study={s} />
+        </div>
+      ))}
+    <ChallengeList />
+  </div>
+</Section>

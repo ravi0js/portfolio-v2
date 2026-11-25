@@ -4,8 +4,7 @@ import Hero from '@/components/sections/Hero.astro';
 import Impact from '@/components/sections/Impact.astro';
 import About from '@/components/sections/About.astro';
 import Experience from '@/components/sections/Experience.astro';
-import Systems from '@/components/sections/Systems.astro';
-import FeaturedProject from '@/components/sections/FeaturedProject.astro';
+import Projects from '@/components/sections/Projects.astro';
 import Skills from '@/components/sections/Skills.astro';
 import Education from '@/components/sections/Education.astro';
 import Contact from '@/components/sections/Contact.astro';
@@ -19,8 +18,7 @@ const s = site.sections;
   {s.about.enabled && <About />}
   {s.skills.enabled && <Skills />}
   {s.experience.enabled && <Experience />}
-  {s.systems.enabled && <Systems />}
-  {s.project.enabled && <FeaturedProject />}
+  {s.projects.enabled && <Projects />}
   {s.education.enabled && <Education />}
   {s.contact.enabled && <Contact />}
 </BaseLayout>

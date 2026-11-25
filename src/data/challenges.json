@@ -1,0 +1,38 @@
+[
+  {
+    "challenge": "Database performance",
+    "approach": "MySQL query optimisation, Redis caching and N+1 elimination",
+    "detail": "Replaced per-row queries with ROW_NUMBER() window functions and cached hot reads; CRM endpoints got 30% faster.",
+    "projects": ["crm-erp"]
+  },
+  {
+    "challenge": "Concurrent payment allocation",
+    "approach": "Database transactions with SELECT … FOR UPDATE",
+    "detail": "Lock the outstanding milestone rows inside a transaction so two requests can't allocate the same receipt.",
+    "projects": ["crm-erp"]
+  },
+  {
+    "challenge": "External lead integration",
+    "approach": "Webhooks and third-party API integrations",
+    "detail": "Meta Lead Ads webhooks and Google APIs feed a real-time lead pipeline; lead processing got 40% faster.",
+    "projects": ["crm-erp"]
+  },
+  {
+    "challenge": "API access control",
+    "approach": "Laravel Sanctum tokens and RBAC middleware",
+    "detail": "Route groups per role (Admin, Employer, Candidate), plus ownership checks on jobs and applications.",
+    "projects": ["jobboard-api"]
+  },
+  {
+    "challenge": "Automated deployment",
+    "approach": "Docker and GitHub Actions",
+    "detail": "Every push to main runs the test suite against MySQL and Redis, then deploys to EC2 over SSH.",
+    "projects": ["jobboard-api"]
+  },
+  {
+    "challenge": "Document automation",
+    "approach": "Microsoft Graph API",
+    "detail": "Generate Word documents from workflow data and store versioned PDFs in OneDrive.",
+    "projects": ["crm-erp"]
+  }
+]

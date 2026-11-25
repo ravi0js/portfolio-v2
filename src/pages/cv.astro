@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/ui/Icon.astro';
-import { profile, experience, projects, skills, education, site } from '@/lib/content';
+import { profile, experience, personalProjects, skills, education, site } from '@/lib/content';
 import { formatRange } from '@/lib/format';
 
-const featured = projects.filter((p) => p.featured);
+const featured = personalProjects.filter((p) => p.featured);
 const host = new URL(site.seo.url).host;
 ---
 

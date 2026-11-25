@@ -9,8 +9,8 @@ import siteJson from '@/data/site.json';
 import profileJson from '@/data/profile.json';
 import metricsJson from '@/data/metrics.json';
 import experienceJson from '@/data/experience.json';
-import systemsJson from '@/data/systems.json';
 import projectsJson from '@/data/projects.json';
+import challengesJson from '@/data/challenges.json';
 import skillsJson from '@/data/skills.json';
 import educationJson from '@/data/education.json';
 import aboutJson from '@/data/about.json';
@@ -68,8 +68,7 @@ export const siteSchema = z.object({
     impact: sectionMeta,
     about: sectionMeta,
     experience: sectionMeta,
-    systems: sectionMeta,
-    project: sectionMeta,
+    projects: sectionMeta,
     skills: sectionMeta,
     education: sectionMeta,
     contact: sectionMeta,
@@ -165,33 +164,30 @@ const diagram = z.discriminatedUnion('type', [
 
 const snippet = z.object({ language: z.string(), title: z.string(), code: z.string() });
 
-export const systemSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  summary: z.string(),
-  outcome: z.string(),
-  stack: z.array(z.string()),
-  points: z.array(z.string()),
-  diagram,
-  snippet: snippet.optional(),
+const architecture = z.object({
+  caption: z.string(),
+  layers: z.array(z.object({ label: z.string(), items: z.array(z.string()) })).min(2),
 });
 
-export const projectSchema = z.object({
+/** A personal project: full detail, links, its own /projects/<slug> page. */
+const personalProject = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
+  kind: z.literal('personal'),
   featured: z.boolean(),
+  label: z.string(),
   title: z.string(),
   tagline: z.string(),
+  overview: z.string(),
   stack: z.array(z.string()),
   links: z.object({ repo: url.optional(), docs: url.optional(), docsNote: z.string().optional() }),
   stats: z.array(z.object({ value: z.string(), label: z.string() })),
+  /** CV-worded bullets (used by /cv) */
   highlights: z.array(z.string()),
-  architecture: z.object({
-    caption: z.string(),
-    layers: z.array(z.object({ label: z.string(), items: z.array(z.string()) })),
-  }),
+  featureGroups: z.array(z.object({ title: z.string(), icon: iconName, items: z.array(z.string()).min(1) })),
+  architecture,
   pipeline: z.object({
     caption: z.string(),
-    stages: z.array(z.object({ label: z.string(), detail: z.string() })),
+    stages: z.array(z.object({ label: z.string(), detail: z.string() })).min(2),
   }),
   roles: z.array(z.object({ name: z.string(), can: z.array(z.string()) })),
   endpoints: z.array(
@@ -204,6 +200,45 @@ export const projectSchema = z.object({
   ),
   examples: z.array(z.object({ title: z.string(), code: z.string() })),
   caseStudy: z.array(z.object({ heading: z.string(), body: z.array(z.string()) })),
+});
+
+/** Work done for an employer: anonymised, no links, tied to an experience entry. */
+const professionalCaseStudy = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  kind: z.literal('professional'),
+  featured: z.boolean(),
+  label: z.string(),
+  title: z.string(),
+  experienceId: z.string(),
+  overview: z.string(),
+  confidentiality: z.string(),
+  /** metric ids from metrics.json */
+  outcomes: z.array(z.string()),
+  stack: z.array(z.string()),
+  architecture,
+  areas: z
+    .array(
+      z.object({
+        id: z.string().regex(/^[a-z0-9-]+$/),
+        letter: z.string().max(2),
+        title: z.string(),
+        icon: iconName,
+        items: z.array(z.string()).min(1),
+        diagrams: z.array(diagram).optional(),
+        snippet: snippet.optional(),
+      }),
+    )
+    .min(1),
+});
+
+export const projectSchema = z.discriminatedUnion('kind', [personalProject, professionalCaseStudy]);
+
+export const challengeSchema = z.object({
+  challenge: z.string(),
+  approach: z.string(),
+  detail: z.string(),
+  /** project slugs this example comes from */
+  projects: z.array(z.string()).min(1),
 });
 
 export const skillGroupSchema = z.object({
@@ -259,8 +294,8 @@ export const site = parse('site', siteSchema, siteJson);
 export const profile = parse('profile', profileSchema, profileJson);
 export const metrics = parse('metrics', z.array(metricSchema), metricsJson);
 export const experience = parse('experience', z.array(experienceSchema), experienceJson);
-export const systems = parse('systems', z.array(systemSchema), systemsJson);
 export const projects = parse('projects', z.array(projectSchema), projectsJson);
+export const challenges = parse('challenges', z.array(challengeSchema), challengesJson);
 export const skills = parse('skills', z.array(skillGroupSchema), skillsJson);
 export const education = parse('education', z.array(educationSchema), educationJson);
 export const about = parse('about', aboutSchema, aboutJson);
@@ -274,17 +309,47 @@ for (const h of about.highlights) {
   }
 }
 
-export const featuredProject = projects.find((p) => p.featured) ?? projects[0];
+// Cross-file checks for projects and challenges.
+const projectProblems: string[] = [];
+for (const p of projects) {
+  if (p.kind !== 'professional') continue;
+  if (!experience.some((e) => e.id === p.experienceId))
+    projectProblems.push(`${p.slug}: unknown experienceId "${p.experienceId}"`);
+  for (const m of p.outcomes)
+    if (!metrics.some((x) => x.id === m)) projectProblems.push(`${p.slug}: unknown outcome metric "${m}"`);
+}
+for (const c of challenges)
+  for (const slug of c.projects)
+    if (!projects.some((p) => p.slug === slug))
+      projectProblems.push(`challenges "${c.challenge}": unknown project "${slug}"`);
+if (projectProblems.length)
+  throw new Error(
+    `\nInvalid content in projects.json / challenges.json\n${projectProblems.map((x) => `  • ${x}`).join('\n')}\n`,
+  );
+
+export type PersonalProject = Extract<(typeof projects)[number], { kind: 'personal' }>;
+export type ProfessionalCaseStudy = Extract<(typeof projects)[number], { kind: 'professional' }>;
+export const personalProjects = projects.filter((p): p is PersonalProject => p.kind === 'personal');
+export const caseStudies = projects.filter((p): p is ProfessionalCaseStudy => p.kind === 'professional');
 
 export type Site = typeof site;
 export type Profile = typeof profile;
 export type Experience = (typeof experience)[number];
-export type System = (typeof systems)[number];
 export type Project = (typeof projects)[number];
-export type Diagram = System['diagram'];
+export type Diagram = z.infer<typeof diagram>;
 export type SkillGroup = (typeof skills)[number];
 export type About = typeof about;
 
 /** Everything in one object, for pages that need several content types. */
-export const portfolio = { site, profile, about, metrics, experience, systems, projects, skills, education } as const;
+export const portfolio = {
+  site,
+  profile,
+  about,
+  metrics,
+  experience,
+  projects,
+  challenges,
+  skills,
+  education,
+} as const;
 export type Portfolio = typeof portfolio;

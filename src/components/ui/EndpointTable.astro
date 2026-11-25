@@ -1,7 +1,7 @@
 ---
-import type { Project } from '@/lib/content';
+import type { PersonalProject } from '@/lib/content';
 interface Props {
-  endpoints: Project['endpoints'];
+  endpoints: PersonalProject['endpoints'];
   limit?: number;
 }
 const { endpoints, limit } = Astro.props;

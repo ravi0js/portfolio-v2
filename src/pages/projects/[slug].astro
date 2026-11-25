@@ -2,16 +2,16 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/ui/Icon.astro';
-import Architecture from '@/components/ui/Architecture.astro';
+import ArchitectureStack from '@/components/projects/ArchitectureStack.astro';
 import EndpointTable from '@/components/ui/EndpointTable.astro';
 import CodeBlock from '@/components/ui/CodeBlock.astro';
 import Pipeline from '@/components/viz/Pipeline';
-import { projects, type Project } from '@/lib/content';
+import { personalProjects, type PersonalProject } from '@/lib/content';
 
 export const getStaticPaths = (() =>
-  projects.map((p) => ({ params: { slug: p.slug }, props: { p } }))) satisfies GetStaticPaths;
+  personalProjects.map((p) => ({ params: { slug: p.slug }, props: { p } }))) satisfies GetStaticPaths;
 
-const { p } = Astro.props as { p: Project };
+const { p } = Astro.props as { p: PersonalProject };
 ---
 
 <BaseLayout title={p.title} description={p.tagline} path={`/projects/${p.slug}`}>
@@ -24,7 +24,7 @@ const { p } = Astro.props as { p: Project };
       <header class="mt-8 max-w-3xl" data-reveal>
         <p class="eyebrow mb-3">case study</p>
         <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">{p.title}</h1>
-        <p class="mt-5 text-pretty text-lg text-muted">{p.tagline}</p>
+        <p class="mt-5 text-pretty text-lg text-muted">{p.overview}</p>
         <div class="mt-7 flex flex-wrap gap-3">
           {p.links.repo && (
             <a href={p.links.repo} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
@@ -66,7 +66,7 @@ const { p } = Astro.props as { p: Project };
           <section data-reveal>
             <h2 class="text-xl font-semibold tracking-tight">Architecture</h2>
             <div class="card mt-4 p-4 sm:p-5">
-              <Architecture architecture={p.architecture} />
+              <ArchitectureStack layers={p.architecture.layers} caption={p.architecture.caption} />
             </div>
           </section>
 

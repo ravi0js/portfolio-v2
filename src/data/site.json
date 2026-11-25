@@ -95,17 +95,11 @@
       "title": "Professional Experience",
       "subtitle": "Building backend applications, integrating business systems, and solving real-world engineering challenges."
     },
-    "systems": {
+    "projects": {
       "enabled": true,
-      "eyebrow": "systems",
-      "title": "Systems I've built",
-      "subtitle": "Backend modules from the production CRM/ERP. Diagrams show the general pattern, not internal implementation details."
-    },
-    "project": {
-      "enabled": true,
-      "eyebrow": "featured project",
-      "title": "JobBoard API",
-      "subtitle": "A containerised Laravel REST API with CI/CD, deployed on AWS."
+      "eyebrow": "projects",
+      "title": "Projects & Engineering Case Studies",
+      "subtitle": "Exploring backend architecture, API development, database performance, integrations, and production application workflows."
     },
     "skills": {
       "enabled": true,

@@ -1,22 +1,24 @@
 [
   {
     "slug": "jobboard-api",
+    "kind": "personal",
     "featured": true,
+    "label": "Personal project",
     "title": "JobBoard API",
     "tagline": "A Laravel 13 REST API with Sanctum auth, three-role RBAC, Redis caching, Docker, and CI/CD that deploys to AWS EC2 on every push.",
+    "overview": "A REST API for job-board workflows: token-based authentication, role-based access control, caching, automated testing and cloud deployment.",
     "stack": [
-      "Laravel 13",
       "PHP 8.3",
-      "Sanctum",
+      "Laravel 13",
+      "Laravel Sanctum",
       "MySQL 8.0",
       "Redis",
       "Docker",
-      "Apache",
       "AWS EC2",
-      "EventBridge",
+      "AWS EventBridge",
       "GitHub Actions",
       "PHPUnit",
-      "Swagger/OpenAPI 3.0"
+      "Swagger / OpenAPI 3.0"
     ],
     "links": {
       "repo": "https://github.com/ravi0js/jobboard-api",
@@ -24,10 +26,22 @@
       "docsNote": "The live Swagger docs run on EC2, which is started and stopped on a schedule to save cost, so they may be offline at times."
     },
     "stats": [
-      { "value": "27", "label": "PHPUnit tests" },
-      { "value": "57", "label": "assertions" },
-      { "value": "3", "label": "roles" },
-      { "value": "18", "label": "endpoints" }
+      {
+        "value": "34",
+        "label": "PHPUnit tests"
+      },
+      {
+        "value": "3",
+        "label": "roles"
+      },
+      {
+        "value": "18",
+        "label": "endpoints"
+      },
+      {
+        "value": "2",
+        "label": "rate-limit tiers"
+      }
     ],
     "highlights": [
       "Sanctum token authentication with custom RBAC middleware for Admin, Employer and Candidate",
@@ -35,37 +49,122 @@
       "Tiered rate limiting: 5/min on auth routes, 60/min on the API",
       "Dockerised MySQL, Redis and Apache; deployed to AWS EC2 with an Elastic IP",
       "EventBridge starts and stops the instance on a schedule to cut hosting cost",
-      "GitHub Actions runs 27 PHPUnit tests against MySQL and Redis services, then deploys over SSH"
+      "GitHub Actions runs 34 PHPUnit tests against MySQL and Redis services, then deploys over SSH"
+    ],
+    "featureGroups": [
+      {
+        "title": "Authentication & authorisation",
+        "icon": "shield",
+        "items": [
+          "Token-based authentication with Laravel Sanctum",
+          "Role-based access control across three roles: Admin, Employer, Candidate",
+          "Protected endpoints grouped by role middleware"
+        ]
+      },
+      {
+        "title": "Database & caching",
+        "icon": "database",
+        "items": [
+          "MySQL 8.0 for jobs, applications, categories and users",
+          "Redis caching on high-traffic read endpoints",
+          "Job filters by location, type, category and search"
+        ]
+      },
+      {
+        "title": "Infrastructure & deployment",
+        "icon": "cloud",
+        "items": [
+          "Dockerised MySQL, Redis and Apache with Docker Compose",
+          "Deployed to AWS EC2 with an Elastic IP",
+          "EventBridge starts and stops the instance on a schedule to cut cost"
+        ]
+      },
+      {
+        "title": "CI/CD, testing & docs",
+        "icon": "gitBranch",
+        "items": [
+          "GitHub Actions pipeline: tests, then automatic deploy on push to main",
+          "34 PHPUnit tests against real MySQL and Redis services",
+          "Swagger / OpenAPI 3.0 interactive docs",
+          "Tiered rate limits: 5/min on auth, 60/min on the API"
+        ]
+      }
     ],
     "architecture": {
-      "caption": "Request path and infrastructure",
+      "caption": "Conceptual request path and infrastructure",
       "layers": [
-        { "label": "Client", "items": ["REST client / Swagger UI"] },
-        { "label": "Edge", "items": ["Apache", "Rate limiter (5/min auth · 60/min API)"] },
-        { "label": "Application", "items": ["Laravel 13 · PHP 8.3", "Sanctum auth", "Role middleware"] },
-        { "label": "Data", "items": ["MySQL 8.0", "Redis cache"] },
-        { "label": "Infrastructure", "items": ["Docker Compose", "AWS EC2 + Elastic IP", "EventBridge schedule"] }
+        {
+          "label": "Client",
+          "items": ["REST client", "Swagger UI"]
+        },
+        {
+          "label": "REST API",
+          "items": ["/api routes", "JSON", "Rate limiter (5/min auth · 60/min API)"]
+        },
+        {
+          "label": "Laravel application",
+          "items": ["Laravel 13", "PHP 8.3", "Apache"]
+        },
+        {
+          "label": "Auth / RBAC",
+          "items": ["Sanctum tokens", "Role middleware"]
+        },
+        {
+          "label": "Business logic",
+          "items": ["Controllers & Eloquent models", "Jobs · applications · categories"]
+        },
+        {
+          "label": "Data",
+          "items": ["MySQL 8.0", "Redis cache"]
+        },
+        {
+          "label": "Infrastructure",
+          "items": ["Docker Compose", "AWS EC2 + Elastic IP", "EventBridge schedule"]
+        }
       ]
     },
     "pipeline": {
-      "caption": "GitHub Actions on push to main",
+      "caption": "GitHub Actions workflow on push to main",
       "stages": [
-        { "label": "Checkout", "detail": "actions/checkout" },
-        { "label": "Setup PHP 8.3", "detail": "with MySQL 8.0 + Redis services" },
-        { "label": "Install", "detail": "composer install" },
-        { "label": "Migrate", "detail": "php artisan migrate" },
-        { "label": "Test", "detail": "27 PHPUnit tests" },
-        { "label": "Deploy", "detail": "SSH to EC2, migrate, clear caches" }
+        {
+          "label": "Push to main",
+          "detail": "GitHub"
+        },
+        {
+          "label": "GitHub Actions",
+          "detail": "PHP 8.3 with MySQL 8.0 + Redis services"
+        },
+        {
+          "label": "Automated tests",
+          "detail": "migrate, then 34 PHPUnit tests"
+        },
+        {
+          "label": "Deploy",
+          "detail": "SSH: pull, composer install, migrate, clear caches"
+        },
+        {
+          "label": "AWS EC2",
+          "detail": "Docker Compose app"
+        }
       ]
     },
     "roles": [
-      { "name": "Public", "can": ["Register and log in", "Browse jobs and categories"] },
-      { "name": "Candidate", "can": ["Apply for jobs", "View own applications", "Withdraw applications"] },
+      {
+        "name": "Public",
+        "can": ["Register and log in", "Browse jobs and categories"]
+      },
+      {
+        "name": "Candidate",
+        "can": ["Apply for jobs", "View own applications", "Withdraw applications"]
+      },
       {
         "name": "Employer",
         "can": ["Create, update and delete own jobs", "Review applicants", "Update application status"]
       },
-      { "name": "Admin", "can": ["Manage categories", "View all applications"] }
+      {
+        "name": "Admin",
+        "can": ["Manage categories", "View all applications"]
+      }
     ],
     "endpoints": [
       {
@@ -74,17 +173,72 @@
         "access": "Public",
         "description": "Register as Employer or Candidate"
       },
-      { "method": "POST", "path": "/api/auth/login", "access": "Public", "description": "Log in and get a token" },
-      { "method": "GET", "path": "/api/profile", "access": "Auth", "description": "Current user profile" },
-      { "method": "POST", "path": "/api/auth/logout", "access": "Auth", "description": "Revoke token" },
-      { "method": "GET", "path": "/api/jobs", "access": "Public", "description": "List jobs with filters" },
-      { "method": "GET", "path": "/api/jobs/{id}", "access": "Public", "description": "Single job" },
-      { "method": "POST", "path": "/api/jobs", "access": "Employer", "description": "Create job" },
-      { "method": "PUT", "path": "/api/jobs/{id}", "access": "Employer", "description": "Update own job" },
-      { "method": "DELETE", "path": "/api/jobs/{id}", "access": "Employer", "description": "Delete own job" },
-      { "method": "GET", "path": "/api/my-jobs", "access": "Employer", "description": "List own jobs" },
-      { "method": "POST", "path": "/api/jobs/{id}/apply", "access": "Candidate", "description": "Apply for a job" },
-      { "method": "GET", "path": "/api/my-applications", "access": "Candidate", "description": "Own applications" },
+      {
+        "method": "POST",
+        "path": "/api/auth/login",
+        "access": "Public",
+        "description": "Log in and get a token"
+      },
+      {
+        "method": "GET",
+        "path": "/api/profile",
+        "access": "Auth",
+        "description": "Current user profile"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/logout",
+        "access": "Auth",
+        "description": "Revoke token"
+      },
+      {
+        "method": "GET",
+        "path": "/api/jobs",
+        "access": "Public",
+        "description": "List jobs with filters"
+      },
+      {
+        "method": "GET",
+        "path": "/api/jobs/{id}",
+        "access": "Public",
+        "description": "Single job"
+      },
+      {
+        "method": "POST",
+        "path": "/api/jobs",
+        "access": "Employer",
+        "description": "Create job"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/jobs/{id}",
+        "access": "Employer",
+        "description": "Update own job"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/jobs/{id}",
+        "access": "Employer",
+        "description": "Delete own job"
+      },
+      {
+        "method": "GET",
+        "path": "/api/my-jobs",
+        "access": "Employer",
+        "description": "List own jobs"
+      },
+      {
+        "method": "POST",
+        "path": "/api/jobs/{id}/apply",
+        "access": "Candidate",
+        "description": "Apply for a job"
+      },
+      {
+        "method": "GET",
+        "path": "/api/my-applications",
+        "access": "Candidate",
+        "description": "Own applications"
+      },
       {
         "method": "DELETE",
         "path": "/api/applications/{id}",
@@ -103,9 +257,24 @@
         "access": "Employer",
         "description": "Update application status"
       },
-      { "method": "GET", "path": "/api/categories", "access": "Public", "description": "List categories" },
-      { "method": "POST", "path": "/api/categories", "access": "Admin", "description": "Create category" },
-      { "method": "DELETE", "path": "/api/categories/{id}", "access": "Admin", "description": "Delete category" }
+      {
+        "method": "GET",
+        "path": "/api/categories",
+        "access": "Public",
+        "description": "List categories"
+      },
+      {
+        "method": "POST",
+        "path": "/api/categories",
+        "access": "Admin",
+        "description": "Create category"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/categories/{id}",
+        "access": "Admin",
+        "description": "Delete category"
+      }
     ],
     "examples": [
       {
@@ -143,13 +312,268 @@
       {
         "heading": "Testing",
         "body": [
-          "27 PHPUnit feature tests (57 assertions) cover authentication, RBAC, jobs and applications. CI runs them against real MySQL 8.0 and Redis service containers, not mocks."
+          "34 PHPUnit tests cover authentication, RBAC, jobs, applications and rate limiting. CI runs them against real MySQL 8.0 and Redis service containers, not mocks."
         ]
       },
       {
         "heading": "Delivery and cost",
         "body": [
           "MySQL, Redis and Apache run in Docker Compose on an AWS EC2 instance with an Elastic IP. On every push to main, GitHub Actions runs the tests and, if they pass, deploys over SSH: pull, composer install, migrate and clear caches. An EventBridge schedule starts and stops the instance to keep hosting cost down."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "crm-erp",
+    "kind": "professional",
+    "featured": true,
+    "label": "Professional work",
+    "title": "Enterprise CRM/ERP Backend Engineering",
+    "experienceId": "digital-think",
+    "overview": "Backend work on a production PHP (Slim) CRM/ERP used by 200+ people daily. The system supports lead management, payment processing, integrations, document generation and operational automation.",
+    "confidentiality": "Anonymised case study. Diagrams are conceptual and show general patterns, not the employer's internal architecture. No internal URLs, schemas, code or customer data.",
+    "outcomes": ["users", "leads", "endpoints"],
+    "stack": ["PHP (Slim)", "MySQL", "Redis", "Meta Lead Ads", "Google APIs", "Microsoft Graph", "Exotel", "cron"],
+    "architecture": {
+      "caption": "Conceptual architecture",
+      "layers": [
+        {
+          "label": "External platforms",
+          "items": ["Meta Lead Ads", "Google APIs", "Exotel", "Microsoft 365"]
+        },
+        {
+          "label": "Integrations",
+          "items": ["Webhook handlers", "API clients"]
+        },
+        {
+          "label": "REST APIs",
+          "items": ["PHP (Slim)", "RBAC"]
+        },
+        {
+          "label": "Business logic",
+          "items": ["Services & repositories", "cron jobs"]
+        },
+        {
+          "label": "Data",
+          "items": ["MySQL", "Redis cache"]
+        },
+        {
+          "label": "CRM/ERP workflows",
+          "items": ["Leads", "Bookings", "Payments", "Legal documents"]
+        }
+      ]
+    },
+    "areas": [
+      {
+        "id": "leads",
+        "letter": "A",
+        "title": "Lead management & integrations",
+        "icon": "plug",
+        "items": [
+          "Meta Lead Ads webhook integration",
+          "Google API integration",
+          "Real-time, automated lead processing",
+          "Exotel VoIP: call-event webhooks and owner-aware routing with round-robin fallback"
+        ],
+        "diagrams": [
+          {
+            "type": "flow",
+            "caption": "Lead events flow from ad platforms into the CRM",
+            "steps": [
+              {
+                "label": "Ad platforms",
+                "detail": "Meta Lead Ads, Google",
+                "kind": "external"
+              },
+              {
+                "label": "Webhook handler",
+                "detail": "Receives lead events",
+                "kind": "service"
+              },
+              {
+                "label": "Lead pipeline",
+                "detail": "Processes into CRM",
+                "kind": "service"
+              },
+              {
+                "label": "MySQL",
+                "detail": "System of record",
+                "kind": "store"
+              },
+              {
+                "label": "Sales team",
+                "detail": "Works the lead",
+                "kind": "user"
+              }
+            ]
+          },
+          {
+            "type": "flow",
+            "caption": "Owner-aware routing with round-robin fallback",
+            "steps": [
+              {
+                "label": "Call event",
+                "detail": "Exotel webhook",
+                "kind": "external"
+              },
+              {
+                "label": "Calling service",
+                "detail": "Webhook handlers",
+                "kind": "service"
+              },
+              {
+                "label": "Owner lookup",
+                "detail": "Who owns this lead?",
+                "kind": "decision"
+              },
+              {
+                "label": "Owner / round-robin",
+                "detail": "Fallback if unavailable",
+                "kind": "service"
+              },
+              {
+                "label": "Sales agent",
+                "detail": "Takes the call",
+                "kind": "user"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "payments",
+        "letter": "B",
+        "title": "Payment & transaction workflows",
+        "icon": "layers",
+        "items": [
+          "FIFO allocation of payment receipts across milestones",
+          "Row-level locking with SELECT … FOR UPDATE",
+          "Transaction-safe allocation: a receipt can never be allocated twice",
+          "Cron-based payment reminders",
+          "Bank-specific demand notes"
+        ],
+        "diagrams": [
+          {
+            "type": "fifo",
+            "caption": "Simulation with illustrative amounts: one receipt allocated across milestones, oldest first",
+            "receipt": 450000,
+            "currency": "₹",
+            "milestones": [
+              {
+                "label": "Booking",
+                "due": 200000
+              },
+              {
+                "label": "Foundation",
+                "due": 150000
+              },
+              {
+                "label": "Structure",
+                "due": 250000
+              },
+              {
+                "label": "Handover",
+                "due": 100000
+              }
+            ]
+          }
+        ],
+        "snippet": {
+          "language": "sql",
+          "title": "Generic SQL pattern (illustrative, not production code)",
+          "code": "START TRANSACTION;\n\n-- lock outstanding milestones for this booking\nSELECT id, due, paid\nFROM milestones\nWHERE booking_id = ? AND paid < due\nORDER BY due_date\nFOR UPDATE;\n\n-- allocate the receipt oldest-first, then\nCOMMIT;"
+        }
+      },
+      {
+        "id": "performance",
+        "letter": "C",
+        "title": "Database performance",
+        "icon": "activity",
+        "items": [
+          "MySQL query optimisation on high-traffic CRM endpoints",
+          "Redis caching for frequently read data",
+          "N+1 queries replaced with ROW_NUMBER() window functions",
+          "Result: 30% faster CRM endpoints"
+        ],
+        "diagrams": [
+          {
+            "type": "flow",
+            "caption": "Cache first, then one optimised query",
+            "steps": [
+              {
+                "label": "CRM request",
+                "detail": "High-traffic endpoint",
+                "kind": "user"
+              },
+              {
+                "label": "Redis",
+                "detail": "Cache hit returns fast",
+                "kind": "store"
+              },
+              {
+                "label": "MySQL",
+                "detail": "Miss: one window-function query",
+                "kind": "store"
+              }
+            ]
+          }
+        ],
+        "snippet": {
+          "language": "sql",
+          "title": "Generic SQL pattern (illustrative, not production code)",
+          "code": "SELECT *\nFROM (\n  SELECT a.*, ROW_NUMBER() OVER (\n    PARTITION BY a.lead_id ORDER BY a.created_at DESC\n  ) AS rn\n  FROM activities a\n) t\nWHERE t.rn = 1;"
+        }
+      },
+      {
+        "id": "documents",
+        "letter": "D",
+        "title": "Document automation",
+        "icon": "briefcase",
+        "items": [
+          "Microsoft Graph API integration",
+          "Word document generation",
+          "Versioned PDFs stored in OneDrive",
+          "Automates booking and legal document workflows"
+        ],
+        "diagrams": [
+          {
+            "type": "flow",
+            "caption": "From workflow event to versioned PDF",
+            "steps": [
+              {
+                "label": "Workflow event",
+                "detail": "Booking or legal request",
+                "kind": "user"
+              },
+              {
+                "label": "Document service",
+                "detail": "Prepares data",
+                "kind": "service"
+              },
+              {
+                "label": "Microsoft Graph",
+                "detail": "Generates Word doc",
+                "kind": "external"
+              },
+              {
+                "label": "OneDrive",
+                "detail": "Versioned PDF",
+                "kind": "store"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "workflows",
+        "letter": "E",
+        "title": "Enterprise business workflows",
+        "icon": "users",
+        "items": [
+          "Bulk lead transfer",
+          "Construction-linked payment plans with versioned amendments",
+          "E-stamp and legal file request workflows",
+          "RBAC, status tracking and audit logs via Repository/Service patterns"
         ]
       }
     ]

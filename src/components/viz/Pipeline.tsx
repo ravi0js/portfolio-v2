@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useAnimateWhenVisible, useStepper } from './useAnimateWhenVisible';
 
 interface Props {
@@ -19,7 +20,7 @@ export default function Pipeline({ caption, stages }: Props) {
         <p className="font-mono text-[0.7rem] text-subtle">{caption}</p>
         <span
           className={[
-            'rounded-full px-2 py-0.5 font-mono text-[0.65rem] transition-colors',
+            'shrink-0 rounded-full px-2 py-0.5 font-mono text-[0.65rem] whitespace-nowrap transition-colors',
             allPassed ? 'bg-accent/15 text-accent' : 'bg-amber-400/15 text-amber-400',
           ].join(' ')}
           aria-live="polite"
@@ -27,7 +28,10 @@ export default function Pipeline({ caption, stages }: Props) {
           {allPassed ? '✓ passed' : '● running'}
         </span>
       </div>
-      <ol className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+      <ol
+        className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))]"
+        style={{ '--n': stages.length } as React.CSSProperties}
+      >
         {stages.map((s, i) => {
           const state = i < done ? 'done' : i === done ? 'running' : 'queued';
           return (
