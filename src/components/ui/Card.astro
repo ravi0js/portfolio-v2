@@ -1,0 +1,35 @@
+---
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  /** Accent border on hover, for cards that are links or invite interaction. */
+  interactive?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  /** "surface" is the default card; "inset" is a recessed panel inside a card. */
+  tone?: 'surface' | 'inset';
+  href?: string;
+  class?: string;
+  id?: string;
+  [key: `data-${string}`]: string | undefined;
+  [key: `aria-${string}`]: string | undefined;
+}
+
+const { as, interactive = false, padding = 'md', tone = 'surface', href, class: cls, ...rest } = Astro.props;
+const Tag = href ? 'a' : (as ?? 'div');
+const paddings = { none: '', sm: 'p-4', md: 'p-5 sm:p-6', lg: 'p-5 sm:p-8' };
+---
+
+<Tag
+  href={href}
+  class:list={[
+    tone === 'surface' ? 'card' : 'rounded-[12px] border border-line bg-bg/60',
+    interactive && 'card-hover',
+    paddings[padding],
+    href && 'block',
+    cls,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

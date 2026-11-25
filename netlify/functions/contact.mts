@@ -28,7 +28,10 @@ function rateLimited(ip: string): boolean {
 }
 
 const json = (status: number, body: unknown) =>
-  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
 
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -70,7 +73,8 @@ export default async (req: Request, context: Context) => {
   if (!type) return json(400, { ok: false, error: 'Invalid request.' });
   if (name.length < 2) return json(422, { ok: false, error: 'Please enter your name.' });
   if (!EMAIL_RE.test(email)) return json(422, { ok: false, error: 'Please enter a valid email.' });
-  if (type === 'message' && message.length < 10) return json(422, { ok: false, error: 'Please write a slightly longer message.' });
+  if (type === 'message' && message.length < 10)
+    return json(422, { ok: false, error: 'Please write a slightly longer message.' });
   if (type === 'phone_request' && !CONTACT_PHONE) {
     return json(503, { ok: false, error: 'Phone sharing is not configured. Please email me.' });
   }

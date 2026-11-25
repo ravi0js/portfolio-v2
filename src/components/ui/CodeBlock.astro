@@ -1,5 +1,8 @@
 ---
 import { Code } from 'astro:components';
+import type { ComponentProps } from 'astro/types';
+
+type Lang = ComponentProps<typeof Code>['lang'];
 
 interface Props {
   code: string;
@@ -10,16 +13,20 @@ const { code, lang, title } = Astro.props;
 ---
 
 <div class="overflow-hidden rounded-[10px] border border-line bg-bg">
-  {
-    title && (
-      <div class="flex items-center justify-between border-b border-line px-3 py-2">
-        <span class="font-mono text-[0.7rem] text-subtle">{title}</span>
-        <span class="font-mono text-[0.65rem] uppercase text-subtle">{lang}</span>
-      </div>
-    )
-  }
+  {title && (
+    <div class="flex items-center justify-between border-b border-line px-3 py-2">
+      <span class="font-mono text-[0.7rem] text-subtle">{title}</span>
+      <span class="font-mono text-[0.65rem] uppercase text-subtle">{lang}</span>
+    </div>
+  )}
   <div class="code-wrap">
-    <Code code={code} lang={lang as any} themes={{ light: 'github-light', dark: 'github-dark-default' }} defaultColor={false} wrap={false} />
+    <Code
+      code={code}
+      lang={lang as Lang}
+      themes={{ light: 'github-light', dark: 'github-dark-default' }}
+      defaultColor={false}
+      wrap={false}
+    />
   </div>
 </div>
 

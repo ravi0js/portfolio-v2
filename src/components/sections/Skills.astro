@@ -6,17 +6,15 @@ const meta = site.sections.skills;
 
 <Section id="skills" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {
-      skills.map((g, i) => (
-        <section class="card card-hover p-5" data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`} aria-label={g.group}>
-          <h3 class="font-mono text-xs uppercase tracking-wider text-accent">{g.group}</h3>
-          <ul class="mt-4 flex flex-wrap gap-2">
-            {g.items.map((item) => (
-              <li class="rounded-md border border-line bg-raised px-2.5 py-1 text-sm">{item}</li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+    {skills.map((g, i) => (
+      <section class="card card-hover p-5" data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`} aria-label={g.group}>
+        <h3 class="font-mono text-xs uppercase tracking-wider text-accent">{g.group}</h3>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {g.items.map((item) => (
+            <li class="rounded-md border border-line bg-raised px-2.5 py-1 text-sm">{item}</li>
+          ))}
+        </ul>
+      </section>
+    ))}
   </div>
 </Section>

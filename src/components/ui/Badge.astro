@@ -1,0 +1,22 @@
+---
+interface Props {
+  /** neutral: tech tags · accent: outcomes/status · warning: in-progress · outline: quiet labels */
+  variant?: 'neutral' | 'accent' | 'warning' | 'outline';
+  /** Pulsing status dot (e.g. availability). */
+  dot?: boolean;
+  as?: 'span' | 'li';
+  class?: string;
+}
+const { variant = 'neutral', dot = false, as: Tag = 'span', class: cls } = Astro.props;
+const variants = {
+  neutral: 'chip',
+  accent: 'chip !border-accent/30 !bg-accent/10 !text-accent',
+  warning: 'chip !border-amber-400/30 !bg-amber-400/10 !text-amber-400',
+  outline: 'chip !bg-transparent',
+};
+---
+
+<Tag class:list={[variants[variant], cls]}>
+  {dot && <span class="status-dot" aria-hidden="true" />}
+  <slot />
+</Tag>

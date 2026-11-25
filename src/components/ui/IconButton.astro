@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  icon: IconName;
+  /** Required: icon-only controls need an accessible name. */
+  label: string;
+  href?: string;
+  external?: boolean;
+  size?: 'sm' | 'md';
+  /** "outline" has a border and surface; "plain" is borderless (e.g. footer). */
+  variant?: 'outline' | 'plain';
+  id?: string;
+  class?: string;
+  [key: `aria-${string}`]: string | undefined;
+  [key: `data-${string}`]: string | undefined;
+}
+
+const { icon, label, href, external = false, size = 'md', variant = 'outline', class: cls, ...rest } = Astro.props;
+const classes = [
+  'inline-grid shrink-0 place-items-center rounded-md text-muted transition-colors duration-fast hover:text-fg',
+  size === 'sm' ? 'size-8' : 'size-9',
+  variant === 'outline' && 'border border-line bg-surface hover:border-accent/50',
+  cls,
+];
+const iconSize = size === 'sm' ? 15 : 17;
+---
+
+{href ? (
+  <a
+    href={href}
+    class:list={classes}
+    aria-label={label}
+    title={label}
+    {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    {...rest}
+  >
+    <Icon name={icon} size={iconSize} />
+  </a>
+) : (
+  <button type="button" class:list={classes} aria-label={label} title={label} {...rest}>
+    <slot>
+      <Icon name={icon} size={iconSize} />
+    </slot>
+  </button>
+)}

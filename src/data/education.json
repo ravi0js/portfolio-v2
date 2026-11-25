@@ -1,4 +1,14 @@
 [
-  { "degree": "Master of Computer Applications (MCA)", "institution": "Central University of Karnataka", "year": "2023", "score": "74.49%" },
-  { "degree": "Bachelor of Computer Applications (BCA)", "institution": "L.N. College Bhagwanpur, BRABU Muzaffarpur", "year": "2019", "score": "73.75%" }
+  {
+    "degree": "Master of Computer Applications (MCA)",
+    "institution": "Central University of Karnataka",
+    "year": "2023",
+    "score": "74.49%"
+  },
+  {
+    "degree": "Bachelor of Computer Applications (BCA)",
+    "institution": "L.N. College Bhagwanpur, BRABU Muzaffarpur",
+    "year": "2019",
+    "score": "73.75%"
+  }
 ]

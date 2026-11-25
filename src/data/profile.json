@@ -11,16 +11,7 @@
     "I work on the parts of a product users never see but always depend on: lead pipelines, payment allocation, call routing, document generation and access control.",
     "Day to day that means PHP (Slim and Laravel), MySQL tuned with window functions and transactions, Redis caching, and third-party integrations like Meta Lead Ads, Microsoft Graph and Exotel VoIP. Before this I taught PHP and MySQL to undergraduate students."
   ],
-  "primaryStack": [
-    "PHP",
-    "Slim",
-    "Laravel",
-    "MySQL",
-    "Redis",
-    "Docker",
-    "AWS EC2",
-    "GitHub Actions"
-  ],
+  "primaryStack": ["PHP", "Slim", "Laravel", "MySQL", "Redis", "Docker", "AWS EC2", "GitHub Actions"],
   "links": [
     {
       "label": "GitHub",

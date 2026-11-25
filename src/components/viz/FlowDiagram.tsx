@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { useAnimateWhenVisible } from './useAnimateWhenVisible';
+import { duration } from '@/lib/motion';
+import { useAnimateWhenVisible, useStepper } from './useAnimateWhenVisible';
 
 type Kind = 'external' | 'service' | 'store' | 'user' | 'decision';
 interface Step {
@@ -22,7 +22,17 @@ const KIND_LABEL: Record<Kind, string> = {
 };
 
 function KindGlyph({ kind }: { kind: Kind }) {
-  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true };
+  const common = {
+    width: 14,
+    height: 14,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true,
+  };
   switch (kind) {
     case 'store':
       return (
@@ -63,18 +73,9 @@ function KindGlyph({ kind }: { kind: Kind }) {
 
 export default function FlowDiagram({ steps, caption }: Props) {
   const { ref, inView, animate } = useAnimateWhenVisible<HTMLDivElement>();
-  const [active, setActive] = useState(-1);
-
-  useEffect(() => {
-    if (!animate || !inView) return;
-    let i = 0;
-    setActive(0);
-    const id = window.setInterval(() => {
-      i = (i + 1) % (steps.length + 2); // short pause at the end of each cycle
-      setActive(i < steps.length ? i : -1);
-    }, 900);
-    return () => window.clearInterval(id);
-  }, [animate, inView, steps.length]);
+  // steps.length + 1 adds a short pause at the end of each cycle.
+  const step = useStepper(animate && inView, steps.length + 1, 900, { loop: true });
+  const active = step !== null && step < steps.length ? step : -1;
 
   return (
     <figure ref={ref} className="@container w-full">
@@ -91,7 +92,12 @@ export default function FlowDiagram({ steps, caption }: Props) {
                   s.kind === 'decision' ? 'border-dashed' : '',
                 ].join(' ')}
               >
-                <p className={['flex items-center gap-1.5 font-mono text-[0.65rem] uppercase tracking-wider', on || passed ? 'text-accent' : 'text-subtle'].join(' ')}>
+                <p
+                  className={[
+                    'flex items-center gap-1.5 font-mono text-[0.65rem] tracking-wider uppercase',
+                    on || passed ? 'text-accent' : 'text-subtle',
+                  ].join(' ')}
+                >
                   <KindGlyph kind={s.kind} />
                   {KIND_LABEL[s.kind]}
                 </p>
@@ -101,14 +107,17 @@ export default function FlowDiagram({ steps, caption }: Props) {
                 </div>
               </div>
               {i < steps.length - 1 && (
-                <div className="flow-link relative ml-[3.6rem] h-4 w-px shrink-0 bg-line @3xl:mx-0 @3xl:h-px @3xl:w-5 @3xl:self-center" aria-hidden="true">
+                <div
+                  className="flow-link relative ml-[3.6rem] h-4 w-px shrink-0 bg-line @3xl:mx-0 @3xl:h-px @3xl:w-5 @3xl:self-center"
+                  aria-hidden="true"
+                >
                   {animate && on && <span key={`dot-${i}-${active}`} className="flow-dot" />}
                   {animate && passed && (
                     <motion.span
                       className="absolute inset-0 bg-accent/60"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: duration.base }}
                     />
                   )}
                 </div>

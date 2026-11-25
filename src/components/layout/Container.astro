@@ -1,0 +1,15 @@
+---
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  /** narrow: reading width (case studies, CV) · default: page width */
+  size?: 'default' | 'narrow';
+  class?: string;
+}
+const { as: Tag = 'div', size = 'default', class: cls } = Astro.props;
+---
+
+<Tag class:list={['container-page', size === 'narrow' && 'max-w-4xl', cls]}>
+  <slot />
+</Tag>

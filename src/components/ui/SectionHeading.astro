@@ -1,0 +1,25 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  /** Heading level; sections use h2, standalone pages use h1. */
+  as?: 'h1' | 'h2';
+  id?: string;
+  align?: 'left' | 'center';
+  reveal?: boolean;
+  class?: string;
+}
+const { eyebrow, title, subtitle, as: Tag = 'h2', id, align = 'left', reveal = true, class: cls } = Astro.props;
+---
+
+<header
+  class:list={['max-w-2xl', align === 'center' && 'mx-auto text-center', cls]}
+  data-reveal={reveal ? '' : undefined}
+>
+  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
+  <Tag id={id} class:list={['text-balance', Tag === 'h1' ? 'text-h1' : 'text-h2']}>
+    {title}
+  </Tag>
+  {subtitle && <p class="mt-4 text-pretty text-muted">{subtitle}</p>}
+</header>

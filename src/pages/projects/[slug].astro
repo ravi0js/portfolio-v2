@@ -8,7 +8,8 @@ import CodeBlock from '@/components/ui/CodeBlock.astro';
 import Pipeline from '@/components/viz/Pipeline';
 import { projects, type Project } from '@/lib/content';
 
-export const getStaticPaths = (() => projects.map((p) => ({ params: { slug: p.slug }, props: { p } }))) satisfies GetStaticPaths;
+export const getStaticPaths = (() =>
+  projects.map((p) => ({ params: { slug: p.slug }, props: { p } }))) satisfies GetStaticPaths;
 
 const { p } = Astro.props as { p: Project };
 ---
@@ -25,71 +26,73 @@ const { p } = Astro.props as { p: Project };
         <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">{p.title}</h1>
         <p class="mt-5 text-pretty text-lg text-muted">{p.tagline}</p>
         <div class="mt-7 flex flex-wrap gap-3">
-          {
-            p.links.repo && (
-              <a href={p.links.repo} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
-                <Icon name="github" size={16} /> Source code
-              </a>
-            )
-          }
-          {
-            p.links.docs && (
-              <a href={p.links.docs} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
-                <Icon name="external" size={16} /> Swagger docs
-              </a>
-            )
-          }
+          {p.links.repo && (
+            <a href={p.links.repo} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+              <Icon name="github" size={16} /> Source code
+            </a>
+          )}
+          {p.links.docs && (
+            <a href={p.links.docs} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+              <Icon name="external" size={16} /> Swagger docs
+            </a>
+          )}
         </div>
         {p.links.docsNote && <p class="mt-3 text-xs text-subtle">{p.links.docsNote}</p>}
       </header>
 
       <dl class="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4" data-reveal>
-        {
-          p.stats.map((s) => (
-            <div class="card px-4 py-4">
-              <dt class="sr-only">{s.label}</dt>
-              <dd>
-                <p class="font-mono text-3xl font-semibold">{s.value}</p>
-                <p class="text-xs text-subtle">{s.label}</p>
-              </dd>
-            </div>
-          ))
-        }
+        {p.stats.map((s) => (
+          <div class="card px-4 py-4">
+            <dt class="sr-only">{s.label}</dt>
+            <dd>
+              <p class="font-mono text-3xl font-semibold">{s.value}</p>
+              <p class="text-xs text-subtle">{s.label}</p>
+            </dd>
+          </div>
+        ))}
       </dl>
 
-      <div class="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div class="mt-14 grid grid-cols-1 gap-12 *:min-w-0 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div class="space-y-12">
-          {
-            p.caseStudy.map((sec) => (
-              <section data-reveal>
-                <h2 class="text-xl font-semibold tracking-tight">{sec.heading}</h2>
-                {sec.body.map((para) => (
-                  <p class="mt-3 leading-relaxed text-muted">{para}</p>
-                ))}
-              </section>
-            ))
-          }
+          {p.caseStudy.map((sec) => (
+            <section data-reveal>
+              <h2 class="text-xl font-semibold tracking-tight">{sec.heading}</h2>
+              {sec.body.map((para) => (
+                <p class="mt-3 leading-relaxed text-muted">{para}</p>
+              ))}
+            </section>
+          ))}
 
           <section data-reveal>
             <h2 class="text-xl font-semibold tracking-tight">Architecture</h2>
-            <div class="card mt-4 p-4 sm:p-5"><Architecture architecture={p.architecture} /></div>
+            <div class="card mt-4 p-4 sm:p-5">
+              <Architecture architecture={p.architecture} />
+            </div>
           </section>
 
           <section data-reveal>
             <h2 class="text-xl font-semibold tracking-tight">CI/CD pipeline</h2>
-            <div class="card mt-4 p-4 sm:p-5"><Pipeline client:visible caption={p.pipeline.caption} stages={p.pipeline.stages} /></div>
+            <div class="card mt-4 p-4 sm:p-5">
+              <Pipeline client:visible caption={p.pipeline.caption} stages={p.pipeline.stages} />
+            </div>
           </section>
 
           <section id="endpoints" data-reveal>
             <h2 class="text-xl font-semibold tracking-tight">Endpoints</h2>
-            <p class="mt-2 text-sm text-muted">All {p.endpoints.length} routes, prefixed with <code class="font-mono text-fg">/api</code>.</p>
-            <div class="mt-4"><EndpointTable endpoints={p.endpoints} /></div>
+            <p class="mt-2 text-sm text-muted">
+              All {p.endpoints.length} routes, prefixed with <code class="font-mono text-fg">/api</code>.
+            </p>
+            <div class="mt-4">
+              <EndpointTable endpoints={p.endpoints} />
+            </div>
           </section>
 
           <section data-reveal>
             <h2 class="text-xl font-semibold tracking-tight">Example requests</h2>
             <div class="mt-4 space-y-4">
-              {p.examples.map((ex) => <CodeBlock code={ex.code} lang="bash" title={ex.title} />)}
+              {p.examples.map((ex) => (
+                <CodeBlock code={ex.code} lang="bash" title={ex.title} />
+              ))}
             </div>
           </section>
         </div>
@@ -98,24 +101,24 @@ const { p } = Astro.props as { p: Project };
           <section class="card p-5">
             <h2 class="font-mono text-xs uppercase tracking-wider text-accent">Roles & access</h2>
             <ul class="mt-4 space-y-4">
-              {
-                p.roles.map((r) => (
-                  <li>
-                    <p class="text-sm font-medium">{r.name}</p>
-                    <ul class="mt-1 space-y-1">
-                      {r.can.map((c) => (
-                        <li class="text-xs text-muted">· {c}</li>
-                      ))}
-                    </ul>
-                  </li>
-                ))
-              }
+              {p.roles.map((r) => (
+                <li>
+                  <p class="text-sm font-medium">{r.name}</p>
+                  <ul class="mt-1 space-y-1">
+                    {r.can.map((c) => (
+                      <li class="text-xs text-muted">· {c}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
             </ul>
           </section>
           <section class="card p-5">
             <h2 class="font-mono text-xs uppercase tracking-wider text-accent">Stack</h2>
             <ul class="mt-4 flex flex-wrap gap-2">
-              {p.stack.map((t) => <li class="chip">{t}</li>)}
+              {p.stack.map((t) => (
+                <li class="chip">{t}</li>
+              ))}
             </ul>
           </section>
         </aside>

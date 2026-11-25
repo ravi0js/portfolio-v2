@@ -1,0 +1,108 @@
+/*
+ * Design tokens — the single place for visual constants.
+ *
+ * Colours, fonts and the card radius come from src/data/site.json
+ * (BaseLayout writes them as --c-* / --f-* / --r-* variables per theme).
+ * Everything else (type scale, weights, shadows, motion, breakpoints) is defined here.
+ * All tokens are exposed as Tailwind utilities, e.g. bg-surface, text-muted,
+ * font-display, text-h2, shadow-card, duration-base, ease-out-soft.
+ */
+
+/* ── Theme-driven tokens (values from site.json) ───────────────────────── */
+@theme inline {
+  /* Colour roles */
+  --color-bg: var(--c-bg); /* page background */
+  --color-surface: var(--c-surface); /* cards */
+  --color-raised: var(--c-surface-raised); /* inputs, nested panels, chips */
+  --color-line: var(--c-border); /* hairline borders */
+  --color-fg: var(--c-text); /* primary text */
+  --color-muted: var(--c-muted); /* secondary text */
+  --color-subtle: var(--c-subtle); /* tertiary text, captions */
+  --color-accent: var(--c-accent); /* single accent */
+  --color-accent-fg: var(--c-accent-contrast); /* text on accent */
+
+  /* Font families */
+  --font-display: var(--f-display);
+  --font-sans: var(--f-sans);
+  --font-mono: var(--f-mono);
+
+  /* Radius */
+  --radius-card: var(--r-card);
+}
+
+/* ── Static tokens ─────────────────────────────────────────────────────── */
+@theme {
+  /* Breakpoints (mobile-first): phone < 640 · tablet ≥ 640 · small laptop ≥ 768 · laptop ≥ 1024 · desktop ≥ 1280 */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+
+  /* Type scale — fluid for headings, fixed for body */
+  --text-display: clamp(2.5rem, 1.75rem + 3vw, 3.5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 600;
+
+  --text-h1: clamp(2.25rem, 1.8rem + 1.8vw, 3rem);
+  --text-h1--line-height: 1.08;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: clamp(1.75rem, 1.45rem + 1.2vw, 2.25rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h3--font-weight: 600;
+
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.65;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.5;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Letter spacing for mono labels */
+  --tracking-label: 0.08em;
+
+  /* Spacing: Tailwind's 4px scale (p-1 = 4px … p-24 = 96px), plus layout rhythm */
+  --spacing-gutter: 1rem; /* page side padding, phone */
+  --spacing-gutter-lg: 1.5rem; /* page side padding, ≥ sm */
+  --spacing-section: 5rem; /* vertical section rhythm, phone */
+  --spacing-section-lg: 7rem; /* vertical section rhythm, ≥ sm */
+  --container-page: 72rem; /* max content width */
+
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Shadows — restrained; used sparingly on raised surfaces only */
+  --shadow-card: 0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 1px 2px rgb(0 0 0 / 0.25);
+  --shadow-raised: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -12px rgb(0 0 0 / 0.45);
+  --shadow-overlay: 0 24px 64px -16px rgb(0 0 0 / 0.55);
+
+  /* Motion */
+  --duration-fast: 150ms; /* hovers, colour changes */
+  --duration-base: 250ms; /* borders, small moves */
+  --duration-slow: 500ms; /* panels */
+  --duration-reveal: 700ms; /* scroll reveal */
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --reveal-distance: 14px;
+}

@@ -7,7 +7,7 @@ const { phoneGate, contactForm } = profile;
 ---
 
 <Section id="contact" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
-  <div class="grid gap-6 lg:grid-cols-[1fr_1.15fr]">
+  <div class="grid grid-cols-1 gap-6 *:min-w-0 lg:grid-cols-[1fr_1.15fr]">
     <!-- Direct channels -->
     <div class="space-y-4" data-reveal>
       <a href={`mailto:${profile.email}`} class="card card-hover group flex items-center gap-4 p-5">
@@ -18,103 +18,130 @@ const { phoneGate, contactForm } = profile;
           <span class="block text-xs text-subtle">Email</span>
           <span class="block truncate font-medium">{profile.email}</span>
         </span>
-        <Icon name="arrowRight" size={16} class="ml-auto shrink-0 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg" />
+        <Icon
+          name="arrowRight"
+          size={16}
+          class="ml-auto shrink-0 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg"
+        />
       </a>
 
-      {
-        profile.links.map((l) => (
-          <a href={l.url} target="_blank" rel="noopener noreferrer" class="card card-hover group flex items-center gap-4 p-5">
+      {profile.links.map((l) => (
+        <a
+          href={l.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="card card-hover group flex items-center gap-4 p-5"
+        >
+          <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
+            <Icon name={l.icon} />
+          </span>
+          <span class="min-w-0">
+            <span class="block text-xs text-subtle">{l.label}</span>
+            <span class="block truncate font-medium">
+              {l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+            </span>
+          </span>
+          <Icon name="external" size={16} class="ml-auto shrink-0 text-subtle group-hover:text-fg" />
+        </a>
+      ))}
+
+      {phoneGate.enabled && (
+        <div class="card p-5" id="phone-gate">
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
             <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
-              <Icon name={l.icon} />
+              <Icon name="phone" />
             </span>
-            <span class="min-w-0">
-              <span class="block text-xs text-subtle">{l.label}</span>
-              <span class="block truncate font-medium">{l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span>
-            </span>
-            <Icon name="external" size={16} class="ml-auto shrink-0 text-subtle group-hover:text-fg" />
-          </a>
-        ))
-      }
-
-      {
-        phoneGate.enabled && (
-          <div class="card p-5" id="phone-gate">
-            <div class="flex items-center gap-4">
-              <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
-                <Icon name="phone" />
-              </span>
-              <div class="min-w-0">
-                <p class="text-xs text-subtle">Phone</p>
-                <p class="font-medium" data-phone-display>
-                  <span class="font-mono tracking-widest text-muted" aria-label="hidden">+91 ••••• •••••</span>
-                </p>
-              </div>
-              <button type="button" class="btn btn-ghost ml-auto !px-3 !py-2 text-xs" data-phone-open aria-expanded="false" aria-controls="phone-form">
-                {phoneGate.buttonLabel}
-              </button>
+            <div class="min-w-0">
+              <p class="text-xs text-subtle">Phone</p>
+              <p class="font-medium" data-phone-display>
+                <span class="font-mono tracking-widest text-muted" aria-label="hidden">
+                  +91 ••••• •••••
+                </span>
+              </p>
             </div>
-
-            <form id="phone-form" class="mt-5 hidden space-y-3 border-t border-line pt-5" data-endpoint={phoneGate.endpoint} novalidate>
-              <p class="text-xs text-muted">{phoneGate.description}</p>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <label class="block">
-                  <span class="mb-1 block text-xs text-muted">Your name</span>
-                  <input class="input" name="name" required maxlength="100" autocomplete="name" />
-                </label>
-                <label class="block">
-                  <span class="mb-1 block text-xs text-muted">Your email</span>
-                  <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
-                </label>
-              </div>
-              <label class="block">
-                <span class="mb-1 block text-xs text-muted">Company (optional)</span>
-                <input class="input" name="company" maxlength="120" autocomplete="organization" />
-              </label>
-              <label class="block">
-                <span class="mb-1 block text-xs text-muted">Reason (optional)</span>
-                <input class="input" name="reason" maxlength="300" placeholder="e.g. Backend role at …" />
-              </label>
-              <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-              <div class="flex items-center gap-3">
-                <button type="submit" class="btn btn-primary">Show number</button>
-                <p class="text-xs" data-status role="status" aria-live="polite" />
-              </div>
-            </form>
+            <button
+              type="button"
+              class="btn btn-ghost !px-3 !py-2 text-xs max-sm:w-full sm:ml-auto"
+              data-phone-open
+              aria-expanded="false"
+              aria-controls="phone-form"
+            >
+              {phoneGate.buttonLabel}
+            </button>
           </div>
-        )
-      }
+
+          <form
+            id="phone-form"
+            class="mt-5 hidden space-y-3 border-t border-line pt-5"
+            data-endpoint={phoneGate.endpoint}
+            novalidate
+          >
+            <p class="text-xs text-muted">{phoneGate.description}</p>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-muted">Your name</span>
+                <input class="input" name="name" required maxlength="100" autocomplete="name" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-muted">Your email</span>
+                <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
+              </label>
+            </div>
+            <label class="block">
+              <span class="mb-1 block text-xs text-muted">Company (optional)</span>
+              <input class="input" name="company" maxlength="120" autocomplete="organization" />
+            </label>
+            <label class="block">
+              <span class="mb-1 block text-xs text-muted">Reason (optional)</span>
+              <input class="input" name="reason" maxlength="300" placeholder="e.g. Backend role at …" />
+            </label>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+            <div class="flex items-center gap-3">
+              <button type="submit" class="btn btn-primary">
+                Show number
+              </button>
+              <p class="text-xs" data-status role="status" aria-live="polite" />
+            </div>
+          </form>
+        </div>
+      )}
     </div>
 
     <!-- Message form -->
-    {
-      contactForm.enabled && (
-        <form id="contact-form" class="card space-y-4 p-5 sm:p-7" data-endpoint={contactForm.endpoint} novalidate data-reveal style="--reveal-delay:100ms">
-          <h3 class="font-semibold">Send a message</h3>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block">
-              <span class="mb-1 block text-xs text-muted">Name</span>
-              <input class="input" name="name" required maxlength="100" autocomplete="name" />
-            </label>
-            <label class="block">
-              <span class="mb-1 block text-xs text-muted">Email</span>
-              <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
-            </label>
-          </div>
+    {contactForm.enabled && (
+      <form
+        id="contact-form"
+        class="card space-y-4 p-5 sm:p-7"
+        data-endpoint={contactForm.endpoint}
+        novalidate
+        data-reveal
+        style="--reveal-delay:100ms"
+      >
+        <h3 class="font-semibold">Send a message</h3>
+        <div class="grid gap-4 sm:grid-cols-2">
           <label class="block">
-            <span class="mb-1 block text-xs text-muted">Message</span>
-            <textarea class="input min-h-36 resize-y" name="message" required maxlength="3000" />
+            <span class="mb-1 block text-xs text-muted">Name</span>
+            <input class="input" name="name" required maxlength="100" autocomplete="name" />
           </label>
-          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-          <div class="flex flex-wrap items-center gap-3">
-            <button type="submit" class="btn btn-primary">
-              Send message
-              <Icon name="arrowRight" size={16} />
-            </button>
-            <p class="text-xs" data-status role="status" aria-live="polite" />
-          </div>
-        </form>
-      )
-    }
+          <label class="block">
+            <span class="mb-1 block text-xs text-muted">Email</span>
+            <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
+          </label>
+        </div>
+        <label class="block">
+          <span class="mb-1 block text-xs text-muted">Message</span>
+          <textarea class="input min-h-36 resize-y" name="message" required maxlength="3000" />
+        </label>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="submit" class="btn btn-primary">
+            Send message
+            <Icon name="arrowRight" size={16} />
+          </button>
+          <p class="text-xs" data-status role="status" aria-live="polite" />
+        </div>
+      </form>
+    )}
   </div>
 </Section>
 

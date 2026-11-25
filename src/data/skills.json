@@ -1,8 +1,32 @@
 [
-  { "group": "Backend", "items": ["PHP", "Slim", "Laravel", "REST API Design", "OOP", "MVC", "Repository/Service Patterns", "RBAC", "PDO", "PHPMailer", "mPDF"] },
-  { "group": "Databases & Caching", "items": ["MySQL", "Query optimisation", "Window functions", "Transactions", "Redis"] },
-  { "group": "API Integrations", "items": ["Meta Lead Ads", "Google APIs", "Microsoft Graph (OneDrive, Word)", "Exotel VoIP"] },
-  { "group": "DevOps & Tools", "items": ["Git", "GitHub Actions", "Docker", "AWS EC2", "AWS EventBridge", "Apache", "Ubuntu/Linux", "cron"] },
+  {
+    "group": "Backend",
+    "items": [
+      "PHP",
+      "Slim",
+      "Laravel",
+      "REST API Design",
+      "OOP",
+      "MVC",
+      "Repository/Service Patterns",
+      "RBAC",
+      "PDO",
+      "PHPMailer",
+      "mPDF"
+    ]
+  },
+  {
+    "group": "Databases & Caching",
+    "items": ["MySQL", "Query optimisation", "Window functions", "Transactions", "Redis"]
+  },
+  {
+    "group": "API Integrations",
+    "items": ["Meta Lead Ads", "Google APIs", "Microsoft Graph (OneDrive, Word)", "Exotel VoIP"]
+  },
+  {
+    "group": "DevOps & Tools",
+    "items": ["Git", "GitHub Actions", "Docker", "AWS EC2", "AWS EventBridge", "Apache", "Ubuntu/Linux", "cron"]
+  },
   { "group": "Testing & Docs", "items": ["PHPUnit", "Swagger/OpenAPI 3.0", "Postman"] },
   { "group": "AI Tooling", "items": ["LLM coding assistants", "Prompting", "AI-assisted code review", "Refactoring"] },
   { "group": "Frontend", "items": ["HTML5", "CSS3", "JavaScript (ES6+)", "Bootstrap 5"] }

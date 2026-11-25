@@ -1,0 +1,20 @@
+---
+import { profile } from '@/lib/content';
+
+interface Props {
+  /** Show the full name next to the monogram (hidden on phones). */
+  showName?: boolean;
+  href?: string;
+}
+const { showName = true, href = '/' } = Astro.props;
+---
+
+<a href={href} class="group flex items-center gap-2.5" aria-label={`${profile.name}, home`}>
+  <span
+    class="grid size-8 place-items-center rounded-md border border-line bg-surface font-mono text-caption font-semibold text-accent transition-colors duration-fast group-hover:border-accent"
+    aria-hidden="true"
+  >
+    {profile.initials}
+  </span>
+  {showName && <span class="hidden font-display text-small font-medium tracking-tight sm:inline">{profile.name}</span>}
+</a>

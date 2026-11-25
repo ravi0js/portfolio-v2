@@ -23,7 +23,17 @@ function tokenize(value: unknown, indent = 0): Tok[][] {
   const lines: Tok[][] = [];
   if (Array.isArray(value)) {
     const inline = value.every((v) => typeof v === 'string') && JSON.stringify(value).length < 44;
-    if (inline) return [[{ t: '[' }, ...value.flatMap((v, i) => [{ t: JSON.stringify(v), c: 'str' }, ...(i < value.length - 1 ? [{ t: ', ' }] : [])]), { t: ']' }]];
+    if (inline)
+      return [
+        [
+          { t: '[' },
+          ...value.flatMap((v, i) => [
+            { t: JSON.stringify(v), c: 'str' },
+            ...(i < value.length - 1 ? [{ t: ', ' }] : []),
+          ]),
+          { t: ']' },
+        ],
+      ];
     lines.push([{ t: '[' }]);
     value.forEach((v, i) => {
       const inner = tokenize(v, indent + 1);
@@ -56,24 +66,25 @@ const tokenClass: Record<string, string> = { key: 'text-fg', str: 'text-accent',
   <div class="grid-bg pointer-events-none absolute inset-0 -z-10"></div>
   <div class="glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px]"></div>
 
-  <div class="container-page grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+  <div class="container-page grid grid-cols-1 items-center gap-12 *:min-w-0 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
     <div>
-      {
-        profile.availability && (
-          <p class="chip mb-6 !text-xs" data-hero>
-            <span class="status-dot" aria-hidden="true" />
-            {profile.availability}
-          </p>
-        )
-      }
-      <p class="eyebrow mb-4" data-hero style="--reveal-delay:60ms">{profile.role}</p>
+      {profile.availability && (
+        <p class="chip mb-6 !text-xs" data-hero>
+          <span class="status-dot" aria-hidden="true" />
+          {profile.availability}
+        </p>
+      )}
+      <p class="eyebrow mb-4" data-hero style="--reveal-delay:60ms">
+        {profile.role}
+      </p>
       <h1
         id="hero-title"
         class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]"
         data-hero
         style="--reveal-delay:120ms"
       >
-        {profile.name}<span class="text-subtle">.</span>
+        {profile.name}
+        <span class="text-subtle">.</span>
         <span class="mt-2 block text-muted">{profile.headline}</span>
       </h1>
       <p class="mt-6 max-w-xl text-pretty text-muted sm:text-lg" data-hero style="--reveal-delay:180ms">
@@ -90,13 +101,11 @@ const tokenClass: Record<string, string> = { key: 'text-fg', str: 'text-accent',
           Contact
         </a>
         <div class="flex gap-3">
-          {
-            profile.links.map((l) => (
-              <a href={l.url} class="btn btn-ghost !px-3" target="_blank" rel="noopener noreferrer" aria-label={l.label}>
-                <Icon name={l.icon} size={17} />
-              </a>
-            ))
-          }
+          {profile.links.map((l) => (
+            <a href={l.url} class="btn btn-ghost !px-3" target="_blank" rel="noopener noreferrer" aria-label={l.label}>
+              <Icon name={l.icon} size={17} />
+            </a>
+          ))}
         </div>
       </div>
 
@@ -119,12 +128,14 @@ const tokenClass: Record<string, string> = { key: 'text-fg', str: 'text-accent',
           {apiConsole.path}
         </p>
         <p class="code ml-auto hidden shrink-0 text-xs text-subtle sm:block">
-          <span class="text-accent">{apiConsole.status}</span>{apiConsole.latency && ` · ${apiConsole.latency}`}
+          <span class="text-accent">{apiConsole.status}</span>
+          {apiConsole.latency && ` · ${apiConsole.latency}`}
         </p>
       </div>
       <pre
         class="code overflow-x-auto p-4 text-[0.78rem] sm:p-5 sm:text-[0.8125rem]"
-        aria-label="Example API response describing Ravi Kumar"><code>{lines.map((line, i) => (
+        aria-label="Example API response describing Ravi Kumar"
+      ><code>{lines.map((line, i) => (
         <span class="console-line block" style={`--i:${i}`}>{line.map((tok) => (tok.c ? <span class={tokenClass[tok.c]}>{tok.t}</span> : <span class="text-subtle">{tok.t}</span>))}</span>
       ))}<span class="caret" aria-hidden="true"></span></code></pre>
     </div>

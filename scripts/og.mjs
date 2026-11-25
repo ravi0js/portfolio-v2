@@ -9,16 +9,25 @@ const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>':
 const stack = profile.primaryStack.slice(0, 6);
 
 let x = 80;
-const chips = stack.map((t) => {
-  const w = t.length * 13 + 32;
-  const g = `<rect x="${x}" y="470" width="${w}" height="44" rx="22" fill="${dark.surfaceRaised}" stroke="${dark.border}"/>
+const chips = stack
+  .map((t) => {
+    const w = t.length * 13 + 32;
+    const g = `<rect x="${x}" y="470" width="${w}" height="44" rx="22" fill="${dark.surfaceRaised}" stroke="${dark.border}"/>
   <text x="${x + w / 2}" y="499" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="20" fill="${dark.muted}">${esc(t)}</text>`;
-  x += w + 12;
-  return g;
-}).join('');
+    x += w + 12;
+    return g;
+  })
+  .join('');
 
-const grid = Array.from({ length: 26 }, (_, i) => `<line x1="${i * 48}" y1="0" x2="${i * 48}" y2="630" stroke="${dark.border}" stroke-opacity="0.35"/>`).join('') +
-  Array.from({ length: 14 }, (_, i) => `<line x1="0" y1="${i * 48}" x2="1200" y2="${i * 48}" stroke="${dark.border}" stroke-opacity="0.35"/>`).join('');
+const grid =
+  Array.from(
+    { length: 26 },
+    (_, i) => `<line x1="${i * 48}" y1="0" x2="${i * 48}" y2="630" stroke="${dark.border}" stroke-opacity="0.35"/>`,
+  ).join('') +
+  Array.from(
+    { length: 14 },
+    (_, i) => `<line x1="0" y1="${i * 48}" x2="1200" y2="${i * 48}" stroke="${dark.border}" stroke-opacity="0.35"/>`,
+  ).join('');
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <defs>
@@ -37,5 +46,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <text x="1120" y="580" text-anchor="end" font-family="DejaVu Sans Mono, monospace" font-size="22" fill="${dark.subtle}">${esc(new URL(site.seo.url).host)}</text>
 </svg>`;
 
-await sharp(Buffer.from(svg)).png().toFile(new URL('../public/og/default.png', import.meta.url).pathname);
+await sharp(Buffer.from(svg))
+  .png()
+  .toFile(new URL('../public/og/default.png', import.meta.url).pathname);
 console.log('wrote public/og/default.png');

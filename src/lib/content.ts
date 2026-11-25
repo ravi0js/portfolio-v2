@@ -55,7 +55,7 @@ export const siteSchema = z.object({
     accentContrast: hex,
     dark: palette,
     light: palette,
-    fonts: z.object({ sans: z.string(), mono: z.string() }),
+    fonts: z.object({ display: z.string(), sans: z.string(), mono: z.string() }),
     radius: z.string(),
     motion: z.boolean(),
   }),
@@ -210,3 +210,7 @@ export type Experience = (typeof experience)[number];
 export type System = (typeof systems)[number];
 export type Project = (typeof projects)[number];
 export type Diagram = System['diagram'];
+
+/** Everything in one object, for pages that need several content types. */
+export const portfolio = { site, profile, metrics, experience, systems, projects, skills, education } as const;
+export type Portfolio = typeof portfolio;

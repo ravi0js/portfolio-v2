@@ -11,9 +11,17 @@ interface Props {
   description?: string;
   path?: string;
   bare?: boolean;
+  /** Keep the page out of search results (e.g. internal preview pages). */
+  noindex?: boolean;
 }
 
-const { title, description = site.seo.description, path = Astro.url.pathname, bare = false } = Astro.props;
+const {
+  title,
+  description = site.seo.description,
+  path = Astro.url.pathname,
+  bare = false,
+  noindex = false,
+} = Astro.props;
 const { theme, seo } = site;
 const fullTitle = pageTitle(seo.titleTemplate, title, seo.title);
 const canonical = absoluteUrl(path);
@@ -27,7 +35,7 @@ const palette = (p: typeof theme.dark) => `
 
 const themeCss = `
 :root{--c-accent:${theme.accent};--c-accent-contrast:${theme.accentContrast};
---f-sans:${theme.fonts.sans};--f-mono:${theme.fonts.mono};--r-card:${theme.radius};}
+--f-display:${theme.fonts.display};--f-sans:${theme.fonts.sans};--f-mono:${theme.fonts.mono};--r-card:${theme.radius};}
 :root,[data-theme='dark']{${palette(theme.dark)}}
 [data-theme='light']{${palette(theme.light)}}`;
 
@@ -43,6 +51,7 @@ const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme
     <meta name="description" content={description} />
     <meta name="keywords" content={seo.keywords.join(', ')} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content={theme.dark.bg} />
@@ -61,10 +70,14 @@ const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme
     <style is:inline set:html={themeCss} />
     <script is:inline define:vars={{ boot }}>
       (function () {
-        var d = document.documentElement;
-        var stored = null;
-        try { stored = boot.toggle ? localStorage.getItem('theme') : null; } catch (e) {}
-        var mode = stored || boot.mode;
+        const d = document.documentElement;
+        let stored = null;
+        try {
+          stored = boot.toggle ? localStorage.getItem('theme') : null;
+        } catch {
+          /* storage blocked: fall back to the default mode */
+        }
+        let mode = stored || boot.mode;
         if (mode === 'system') mode = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         d.setAttribute('data-theme', mode);
         if (boot.motion && !matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('js-motion');
@@ -73,7 +86,12 @@ const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd())} />
   </head>
   <body class="min-h-dvh antialiased">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] btn btn-primary">Skip to content</a>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] btn btn-primary"
+    >
+      Skip to content
+    </a>
     {!bare && <Header />}
     <main id="main">
       <slot />

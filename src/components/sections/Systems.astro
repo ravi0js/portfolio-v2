@@ -9,51 +9,49 @@ const meta = site.sections.systems;
 
 <Section id="systems" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
   <div class="space-y-6">
-    {
-      systems.map((s, i) => (
-        <article
-          id={`system-${s.id}`}
-          class="card card-hover grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10"
-          data-reveal
-        >
-          <div class="flex flex-col">
-            <p class="font-mono text-xs text-subtle">{String(i + 1).padStart(2, '0')}</p>
-            <h3 class="mt-2 text-xl font-semibold tracking-tight">{s.title}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-muted">{s.summary}</p>
-            <ul class="mt-5 space-y-2">
-              {s.points.map((p) => (
-                <li class="flex gap-3 text-sm">
-                  <span class="mt-[0.55rem] h-px w-3 shrink-0 bg-accent" aria-hidden="true" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-            <p class="mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-sm font-medium text-accent">
-              {s.outcome}
-            </p>
-            <ul class="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
-              {s.stack.map((t) => (
-                <li class="chip">{t}</li>
-              ))}
-            </ul>
-          </div>
+    {systems.map((s, i) => (
+      <article
+        id={`system-${s.id}`}
+        class="card card-hover grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10"
+        data-reveal
+      >
+        <div class="flex flex-col">
+          <p class="font-mono text-xs text-subtle">{String(i + 1).padStart(2, '0')}</p>
+          <h3 class="mt-2 text-xl font-semibold tracking-tight">{s.title}</h3>
+          <p class="mt-3 text-sm leading-relaxed text-muted">{s.summary}</p>
+          <ul class="mt-5 space-y-2">
+            {s.points.map((p) => (
+              <li class="flex gap-3 text-sm">
+                <span class="mt-[0.55rem] h-px w-3 shrink-0 bg-accent" aria-hidden="true" />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-sm font-medium text-accent">
+            {s.outcome}
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
+            {s.stack.map((t) => (
+              <li class="chip">{t}</li>
+            ))}
+          </ul>
+        </div>
 
-          <div class="flex min-w-0 flex-col justify-center gap-4 rounded-[12px] border border-line bg-bg/60 p-4 sm:p-5">
-            {s.diagram.type === 'flow' ? (
-              <FlowDiagram client:visible steps={s.diagram.steps} caption={s.diagram.caption} />
-            ) : (
-              <FifoAllocation
-                client:visible
-                caption={s.diagram.caption}
-                receipt={s.diagram.receipt}
-                currency={s.diagram.currency}
-                milestones={s.diagram.milestones}
-              />
-            )}
-            {s.snippet && <CodeBlock code={s.snippet.code} lang={s.snippet.language} title={s.snippet.title} />}
-          </div>
-        </article>
-      ))
-    }
+        <div class="flex min-w-0 flex-col justify-center gap-4 rounded-[12px] border border-line bg-bg/60 p-4 sm:p-5">
+          {s.diagram.type === 'flow' ? (
+            <FlowDiagram client:visible steps={s.diagram.steps} caption={s.diagram.caption} />
+          ) : (
+            <FifoAllocation
+              client:visible
+              caption={s.diagram.caption}
+              receipt={s.diagram.receipt}
+              currency={s.diagram.currency}
+              milestones={s.diagram.milestones}
+            />
+          )}
+          {s.snippet && <CodeBlock code={s.snippet.code} lang={s.snippet.language} title={s.snippet.title} />}
+        </div>
+      </article>
+    ))}
   </div>
 </Section>

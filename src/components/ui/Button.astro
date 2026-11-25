@@ -1,0 +1,69 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props {
+  /** Renders an <a> when set, otherwise a <button>. */
+  href?: string;
+  variant?: Variant;
+  size?: Size;
+  icon?: IconName;
+  iconRight?: IconName;
+  /** Opens in a new tab with safe rel attributes. */
+  external?: boolean;
+  download?: boolean | string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  fullWidth?: boolean;
+  class?: string;
+  'aria-label'?: string;
+  [key: `data-${string}`]: string | undefined;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconRight,
+  external = false,
+  download,
+  type = 'button',
+  disabled,
+  fullWidth = false,
+  class: cls,
+  ...rest
+} = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary: 'btn-primary',
+  secondary: 'btn-ghost',
+  ghost: 'btn-text',
+};
+const sizes: Record<Size, string> = {
+  sm: '!px-3 !py-1.5 !text-caption',
+  md: '',
+  lg: '!px-5 !py-3 !text-body',
+};
+const iconSize = size === 'sm' ? 14 : size === 'lg' ? 18 : 16;
+const classes = ['btn', variants[variant], sizes[size], fullWidth && 'w-full', cls];
+const linkAttrs: HTMLAttributes<'a'> = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{href ? (
+  <a href={href} class:list={classes} download={download} {...linkAttrs} {...rest}>
+    {icon && <Icon name={icon} size={iconSize} />}
+    <slot />
+    {iconRight && <Icon name={iconRight} size={iconSize} />}
+  </a>
+) : (
+  <button type={type} class:list={classes} disabled={disabled} {...rest}>
+    {icon && <Icon name={icon} size={iconSize} />}
+    <slot />
+    {iconRight && <Icon name={iconRight} size={iconSize} />}
+  </button>
+)}

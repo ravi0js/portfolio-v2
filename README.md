@@ -6,28 +6,39 @@ Backend-focused portfolio built with **Astro 7**, **TypeScript**, **Tailwind CSS
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321
-npm run build      # type-check + static build into dist/
-npm run preview    # serve dist/
-npm run og         # regenerate public/og/default.png from the JSON
+npm run dev           # http://localhost:4321  (design system preview: /design-system)
+npm run build         # astro check (types) + static build into dist/
+npm run preview       # serve dist/
+npm run lint          # ESLint (TypeScript, Astro, React hooks)
+npm run format        # Prettier (with Astro + Tailwind class sorting)
+npm run format:check
+npm run og            # regenerate public/og/default.png from the JSON
 ```
 
 `npm run dev` doesn't run the Netlify Function, so the forms will show "not configured". To test them locally, use `npx netlify dev` with a `.env` file (see `.env.example`).
+
+## Design system
+
+- **Tokens:** `src/styles/tokens.css` holds the type scale (`text-display`, `text-h1`…`text-micro`), weights, radii, shadows, motion durations and easing, layout spacing and breakpoints. Colours, fonts and the card radius come from `site.json` and are mapped to utilities (`bg-surface`, `text-muted`, `border-line`, `text-accent`, `font-display` …).
+- **Fonts:** Geist (display), Inter (body), JetBrains Mono (labels, code, numbers). All self-hosted via Fontsource.
+- **Components:** `layout/` has Container, Section, Logo, Header (navbar) and Footer. `ui/` has Button, IconButton, Card, Badge, SectionHeading, Icon and CodeBlock.
+- **Motion:** CSS reveals via the `data-reveal` and `data-hero` attributes. React presets live in `src/lib/motion.ts`, and the step-through hook is in `src/components/viz/useAnimateWhenVisible.ts`. Everything respects `prefers-reduced-motion` and the `theme.motion` switch.
+- **Preview:** `/design-system` shows the palette, type, components and tokens. It's marked noindex, left out of the sitemap, and not linked from the site.
 
 ## Editing content: everything is JSON
 
 All text, numbers, links and theme settings live in `src/data/`. You never need to touch a component to update the site.
 
-| File | Controls |
-|---|---|
-| `site.json` | SEO (title, description, URL, OG image), **theme** (accent colour, dark/light palettes, fonts, radius, motion on/off, default mode, toggle), nav links, section headings and on/off switches, footer |
-| `profile.json` | Name, role, headline, tagline, location, email, links, CV file, phone-request and contact-form settings, hero API console |
-| `metrics.json` | Impact strip numbers (keep these CV-backed) |
-| `experience.json` | Jobs (`start`/`end` as `YYYY-MM`, `end: null` = present) |
-| `systems.json` | "Systems I've built" cards, with `flow` or `fifo` diagrams and optional code snippet |
-| `projects.json` | Projects; `featured: true` shows on the home page. Each gets a `/projects/<slug>` page |
-| `skills.json` | Skill groups |
-| `education.json` | Degrees |
+| File              | Controls                                                                                                                                                                                             |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.json`       | SEO (title, description, URL, OG image), **theme** (accent colour, dark/light palettes, fonts, radius, motion on/off, default mode, toggle), nav links, section headings and on/off switches, footer |
+| `profile.json`    | Name, role, headline, tagline, location, email, links, CV file, phone-request and contact-form settings, hero API console                                                                            |
+| `metrics.json`    | Impact strip numbers (keep these CV-backed)                                                                                                                                                          |
+| `experience.json` | Jobs (`start`/`end` as `YYYY-MM`, `end: null` = present)                                                                                                                                             |
+| `systems.json`    | "Systems I've built" cards, with `flow` or `fifo` diagrams and optional code snippet                                                                                                                 |
+| `projects.json`   | Projects; `featured: true` shows on the home page. Each gets a `/projects/<slug>` page                                                                                                               |
+| `skills.json`     | Skill groups                                                                                                                                                                                         |
+| `education.json`  | Degrees                                                                                                                                                                                              |
 
 Every file is checked against a schema in `src/lib/content.ts` at build time. A typo or missing field fails the build with a message such as `site.theme.accent: must be a hex colour like #34d399`.
 
@@ -54,12 +65,12 @@ The phone number is **not** in the site code. A visitor clicks "Request phone nu
 
 Set these in **Netlify → Site configuration → Environment variables**:
 
-| Variable | Example |
-|---|---|
-| `RESEND_API_KEY` | `re_…` |
-| `CONTACT_TO_EMAIL` | your inbox |
+| Variable             | Example                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY`     | `re_…`                                                                                        |
+| `CONTACT_TO_EMAIL`   | your inbox                                                                                    |
 | `CONTACT_FROM_EMAIL` | `Portfolio <onboarding@resend.dev>` for testing, or an address on a domain verified in Resend |
-| `CONTACT_PHONE` | `+91 …` |
+| `CONTACT_PHONE`      | `+91 …`                                                                                       |
 
 The same function handles the "Send a message" form. Both forms include a honeypot field, input length limits and a basic rate limit.
 
@@ -74,12 +85,13 @@ src/
   data/            JSON content (edit here)
   lib/             schemas + loaders, formatting, SEO helpers
   layouts/         BaseLayout (head, theme variables, JSON-LD)
+  styles/          tokens.css (design tokens), global.css (base + component classes)
   components/
-    layout/        Header, Footer, Section
+    layout/        Container, Section, Logo, Header, Footer
     sections/      Hero, Impact, Experience, Systems, FeaturedProject, Skills, Education, Contact
-    ui/            Icon, CodeBlock, EndpointTable, Architecture
+    ui/            Button, IconButton, Card, Badge, SectionHeading, Icon, CodeBlock, EndpointTable, Architecture
     viz/           React: FlowDiagram, FifoAllocation, Pipeline
-  pages/           /, /projects/[slug], /cv, 404
+  pages/           /, /projects/[slug], /cv, /design-system, 404
 netlify/functions/ contact.mts
 public/            cv/, og/, favicon.svg
 scripts/og.mjs     social image generator

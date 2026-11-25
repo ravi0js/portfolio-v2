@@ -8,6 +8,6 @@ import site from './src/data/site.json' with { type: 'json' };
 export default defineConfig({
   site: site.seo.url,
   output: 'static',
-  integrations: [react(), sitemap()],
+  integrations: [react(), sitemap({ filter: (page) => !page.includes('/design-system') })],
   vite: { plugins: [tailwindcss()] },
 });

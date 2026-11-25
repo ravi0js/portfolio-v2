@@ -1,0 +1,378 @@
+---
+/**
+ * Internal design-system preview. Not linked from the site, excluded from the
+ * sitemap and marked noindex. Safe to delete once the system is stable.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/layout/Container.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import IconButton from '@/components/ui/IconButton.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { iconPaths, type IconName } from '@/components/ui/icons';
+import { site, profile, experience, skills } from '@/lib/content';
+
+const { theme } = site;
+const roles: { key: keyof typeof theme.dark; name: string; use: string }[] = [
+  { key: 'bg', name: 'bg', use: 'Page background' },
+  { key: 'surface', name: 'surface', use: 'Cards' },
+  { key: 'surfaceRaised', name: 'raised', use: 'Inputs, chips, nested panels' },
+  { key: 'border', name: 'line', use: 'Hairline borders' },
+  { key: 'text', name: 'fg', use: 'Primary text' },
+  { key: 'muted', name: 'muted', use: 'Secondary text' },
+  { key: 'subtle', name: 'subtle', use: 'Captions, metadata' },
+];
+const typeScale = [
+  { cls: 'text-display font-display', token: 'display', sample: profile.headline },
+  { cls: 'text-h1 font-display', token: 'h1', sample: profile.name },
+  { cls: 'text-h2 font-display', token: 'h2', sample: 'Systems I’ve built' },
+  { cls: 'text-h3 font-display', token: 'h3', sample: `${experience[0].role} · ${experience[0].company}` },
+  { cls: 'text-lead text-muted', token: 'lead', sample: profile.tagline },
+  { cls: 'text-body', token: 'body', sample: profile.summary[0] },
+  { cls: 'text-small text-muted', token: 'small', sample: experience[0].summary },
+  { cls: 'text-caption text-subtle', token: 'caption', sample: profile.location },
+  { cls: 'eyebrow', token: 'eyebrow (mono label)', sample: 'featured project' },
+  { cls: 'font-mono text-small', token: 'mono', sample: 'SELECT … FOR UPDATE' },
+];
+const radii = ['sm', 'md', 'lg', 'pill'] as const;
+const shadows = ['card', 'raised', 'overlay'] as const;
+const durations = [
+  { name: 'fast', ms: 150, use: 'Hover, colour' },
+  { name: 'base', ms: 250, use: 'Borders, small moves' },
+  { name: 'slow', ms: 500, use: 'Panels' },
+  { name: 'reveal', ms: 700, use: 'Scroll reveal' },
+];
+const spacing = [1, 2, 3, 4, 6, 8, 12, 16, 24];
+const breakpoints = [
+  { name: 'base', min: '0', device: 'Phone' },
+  { name: 'sm', min: '640px', device: 'Large phone / small tablet' },
+  { name: 'md', min: '768px', device: 'Tablet' },
+  { name: 'lg', min: '1024px', device: 'Laptop' },
+  { name: 'xl', min: '1280px', device: 'Desktop' },
+];
+const previewNav = [
+  { label: 'Colour', href: '#colour' },
+  { label: 'Type', href: '#type' },
+  { label: 'Components', href: '#components' },
+  { label: 'Tokens', href: '#tokens' },
+  { label: 'Layout', href: '#layout' },
+];
+---
+
+<BaseLayout title="Design system" description="Internal design-system preview." path="/design-system" noindex>
+  <Container class="pt-28 pb-24 sm:pt-36">
+    <SectionHeading
+      as="h1"
+      eyebrow="internal · design system"
+      title="Foundation preview"
+      subtitle="Tokens and base components for the portfolio. Colours, fonts and radius come from src/data/site.json; the rest from src/styles/tokens.css. Use the sun/moon button to check both themes."
+      reveal={false}
+    />
+
+    <nav aria-label="Preview sections" class="mt-8 flex flex-wrap gap-2">
+      {previewNav.map((n) => (
+        <Button href={n.href} variant="secondary" size="sm">
+          {n.label}
+        </Button>
+      ))}
+    </nav>
+
+    <!-- Colour -->
+    <section id="colour" class="mt-20" aria-labelledby="colour-h">
+      <h2 id="colour-h" class="text-h3 mb-6">
+        Colour
+      </h2>
+      <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Card padding="sm" class="col-span-2 lg:col-span-1">
+          <div class="h-16 rounded-md bg-accent"></div>
+          <p class="mt-3 font-mono text-small">accent</p>
+          <p class="font-mono text-caption text-subtle">
+            dark {theme.accent} · light {theme.light.accent ?? theme.accent}
+          </p>
+          <p class="mt-1 text-caption text-muted">The only accent. Links, focus, status, key numbers.</p>
+        </Card>
+        {roles.map((r) => (
+          <Card padding="sm">
+            <div
+              class="h-16 rounded-md border border-line"
+              style={`background: var(--c-${r.key === 'surfaceRaised' ? 'surface-raised' : r.key === 'text' ? 'text' : r.key})`}
+            />
+            <p class="mt-3 font-mono text-small">{r.name}</p>
+            <p class="font-mono text-caption text-subtle">
+              dark {theme.dark[r.key]} · light {theme.light[r.key]}
+            </p>
+            <p class="mt-1 text-caption text-muted">{r.use}</p>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section id="type" class="mt-20" aria-labelledby="type-h">
+      <h2 id="type-h" class="text-h3 mb-2">
+        Typography
+      </h2>
+      <p class="mb-6 text-small text-muted">
+        Display: <span class="font-display text-fg">Geist</span> · Body: <span class="text-fg">Inter</span> · Mono:{' '}
+        <span class="font-mono text-fg">JetBrains Mono</span>. Headings are fluid (clamp) between phone and desktop.
+      </p>
+      <Card padding="none" class="divide-y divide-line">
+        {typeScale.map((t) => (
+          <div class="grid gap-2 p-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
+            <p class="font-mono text-caption text-subtle">{t.token}</p>
+            <p class:list={[t.cls, 'min-w-0 text-pretty']}>{t.sample}</p>
+          </div>
+        ))}
+      </Card>
+    </section>
+
+    <!-- Components -->
+    <section id="components" class="mt-20 space-y-10" aria-labelledby="components-h">
+      <h2 id="components-h" class="text-h3">
+        Components
+      </h2>
+
+      <div>
+        <h3 class="eyebrow mb-4">Button</h3>
+        <Card class="space-y-5">
+          <div class="flex flex-wrap items-center gap-3">
+            <Button icon="download">Primary</Button>
+            <Button variant="secondary" icon="mail">
+              Secondary
+            </Button>
+            <Button variant="ghost" iconRight="arrowRight">
+              Ghost
+            </Button>
+            <Button disabled>Disabled</Button>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg" iconRight="arrowRight">
+              Large
+            </Button>
+            <Button href="#components" variant="secondary" size="sm" iconRight="external">
+              As link
+            </Button>
+          </div>
+        </Card>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Icon button · Icons</h3>
+        <Card class="space-y-5">
+          <div class="flex flex-wrap items-center gap-2">
+            <IconButton icon="github" label="GitHub" />
+            <IconButton icon="linkedin" label="LinkedIn" />
+            <IconButton icon="mail" label="Email" />
+            <IconButton icon="menu" label="Menu" size="sm" />
+            <IconButton icon="github" label="GitHub (plain)" variant="plain" />
+          </div>
+          <ul class="flex flex-wrap gap-4 text-muted" aria-label="Icon set">
+            {(Object.keys(iconPaths) as IconName[]).map((name) => (
+              <li class="flex flex-col items-center gap-1.5">
+                <Icon name={name} size={20} />
+                <span class="font-mono text-micro text-subtle">{name}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Badge</h3>
+        <Card class="flex flex-wrap items-center gap-2">
+          <Badge>PHP</Badge>
+          <Badge>Laravel</Badge>
+          <Badge variant="accent">40% faster lead processing</Badge>
+          <Badge variant="warning">running</Badge>
+          <Badge variant="outline">outline</Badge>
+          <Badge dot>{profile.availability}</Badge>
+        </Card>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Card</h3>
+        <div class="grid gap-4 md:grid-cols-3">
+          <Card>
+            <p class="font-mono text-caption text-subtle">surface</p>
+            <p class="mt-2 font-display text-h3">Default card</p>
+            <p class="mt-2 text-small text-muted">Hairline border, surface background, token radius.</p>
+          </Card>
+          <Card interactive href="#components">
+            <p class="font-mono text-caption text-subtle">interactive</p>
+            <p class="mt-2 font-display text-h3">Hover me</p>
+            <p class="mt-2 text-small text-muted">Accent border on hover. Use for links.</p>
+          </Card>
+          <Card>
+            <p class="font-mono text-caption text-subtle">surface + inset</p>
+            <Card tone="inset" padding="sm" class="mt-3">
+              <p class="font-mono text-small">Inset panel for diagrams and code.</p>
+            </Card>
+          </Card>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Section heading</h3>
+        <Card padding="lg">
+          <SectionHeading
+            eyebrow="skills"
+            title="Technical toolkit"
+            subtitle="Eyebrow (mono, accent) + title (display) + optional subtitle."
+            reveal={false}
+          />
+          <ul class="mt-6 flex flex-wrap gap-2">
+            {skills[0].items.slice(0, 6).map((s) => (
+              <Badge as="li">{s}</Badge>
+            ))}
+          </ul>
+        </Card>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Form fields</h3>
+        <Card class="grid gap-3 sm:grid-cols-2">
+          <label class="block">
+            <span class="mb-1 block text-caption text-muted">Label</span>
+            <input class="input" placeholder="Placeholder" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-caption text-muted">Focused state</span>
+            <input class="input" value="Tab here to see focus" />
+          </label>
+        </Card>
+      </div>
+
+      <div>
+        <h3 class="eyebrow mb-4">Navigation</h3>
+        <p class="text-small text-muted">
+          The fixed bar at the top of this page is the real navbar. Below 768px it collapses to a menu button. The bar
+          gets a background after scrolling, and the active section is highlighted. Escape closes the mobile menu.
+        </p>
+      </div>
+    </section>
+
+    <!-- Tokens -->
+    <section id="tokens" class="mt-20 space-y-10" aria-labelledby="tokens-h">
+      <h2 id="tokens-h" class="text-h3">
+        Tokens
+      </h2>
+
+      <div class="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <h3 class="eyebrow mb-4">Spacing (4px base)</h3>
+          <ul class="space-y-2">
+            {spacing.map((n) => (
+              <li class="flex items-center gap-3">
+                <span class="w-10 font-mono text-caption text-subtle">{n}</span>
+                <span class="h-2 rounded-sm bg-accent/70" style={`width: calc(var(--spacing) * ${n})`} />
+                <span class="font-mono text-caption text-muted">{n * 4}px</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-caption text-subtle">
+            Layout: gutter 16 → 24px, section rhythm 80 → 112px, max width 1152px.
+          </p>
+        </Card>
+
+        <Card>
+          <h3 class="eyebrow mb-4">Radius · Shadow</h3>
+          <div class="flex flex-wrap gap-4">
+            {radii.map((r) => (
+              <div class="text-center">
+                <div class="size-14 border border-line bg-raised" style={`border-radius: var(--radius-${r})`} />
+                <p class="mt-1.5 font-mono text-micro text-subtle">{r}</p>
+              </div>
+            ))}
+            <div class="text-center">
+              <div class="size-14 border border-line bg-raised" style="border-radius: var(--r-card)"></div>
+              <p class="mt-1.5 font-mono text-micro text-subtle">card</p>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-wrap gap-4">
+            {shadows.map((s) => (
+              <div class="text-center">
+                <div
+                  class="size-14 rounded-md border border-line bg-surface"
+                  style={`box-shadow: var(--shadow-${s})`}
+                />
+                <p class="mt-1.5 font-mono text-micro text-subtle">{s}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card class="lg:col-span-2">
+          <h3 class="eyebrow mb-4">Motion (hover a row)</h3>
+          <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {durations.map((d) => (
+              <li class="group rounded-md border border-line bg-raised p-3">
+                <p class="font-mono text-small">
+                  {d.name} · {d.ms}ms
+                </p>
+                <p class="text-caption text-subtle">{d.use}</p>
+                <div class="mt-3 h-1.5 overflow-hidden rounded-pill bg-line">
+                  <div
+                    class="h-full w-1/5 rounded-pill bg-accent transition-[width] group-hover:w-full"
+                    style={`transition-duration: var(--duration-${d.name}); transition-timing-function: var(--ease-out-soft)`}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-caption text-subtle">
+            Reduced-motion users get instant transitions; scroll reveals and diagrams render in their final state.
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Layout / responsive -->
+    <section id="layout" class="mt-20" aria-labelledby="layout-h">
+      <h2 id="layout-h" class="text-h3 mb-6">
+        Responsive
+      </h2>
+      <Card>
+        <p class="text-small text-muted">Current breakpoint:</p>
+        <p class="mt-1 font-mono text-h3 text-accent">
+          <span class="sm:hidden">base · phone</span>
+          <span class="hidden sm:inline md:hidden">sm · ≥ 640px</span>
+          <span class="hidden md:inline lg:hidden">md · ≥ 768px</span>
+          <span class="hidden lg:inline xl:hidden">lg · ≥ 1024px</span>
+          <span class="hidden xl:inline">xl · ≥ 1280px</span>
+        </p>
+        <div class="mt-6 overflow-x-auto">
+          <table class="w-full min-w-[28rem] text-left text-small">
+            <thead class="font-mono text-caption text-subtle">
+              <tr>
+                <th class="py-2 font-normal">Token</th>
+                <th class="py-2 font-normal">Min width</th>
+                <th class="py-2 font-normal">Target</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line">
+              {breakpoints.map((b) => (
+                <tr>
+                  <td class="py-2 font-mono">{b.name}</td>
+                  <td class="py-2 font-mono text-muted">{b.min}</td>
+                  <td class="py-2 text-muted">{b.device}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((n) => (
+            <div class="rounded-md border border-dashed border-line p-4 text-center font-mono text-caption text-subtle">
+              col {n}
+            </div>
+          ))}
+        </div>
+        <p class="mt-3 text-caption text-subtle">Grid: 1 column on phones, 2 from sm, 4 from lg.</p>
+      </Card>
+    </section>
+  </Container>
+</BaseLayout>

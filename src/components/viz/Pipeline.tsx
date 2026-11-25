@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useAnimateWhenVisible } from './useAnimateWhenVisible';
+import { useAnimateWhenVisible, useStepper } from './useAnimateWhenVisible';
 
 interface Props {
   caption: string;
@@ -9,19 +8,8 @@ interface Props {
 /** CI/CD stages ticking through to green. Final state is "all passed". */
 export default function Pipeline({ caption, stages }: Props) {
   const { ref, inView, animate } = useAnimateWhenVisible<HTMLDivElement>(0.4);
-  const [done, setDone] = useState(stages.length);
-
-  useEffect(() => {
-    if (!animate || !inView) return;
-    setDone(0);
-    let n = 0;
-    const id = window.setInterval(() => {
-      n += 1;
-      setDone(n);
-      if (n >= stages.length) window.clearInterval(id);
-    }, 650);
-    return () => window.clearInterval(id);
-  }, [animate, inView, stages.length]);
+  const ticking = useStepper(animate && inView, stages.length, 650);
+  const done = ticking ?? stages.length;
 
   const allPassed = done >= stages.length;
 
@@ -47,14 +35,22 @@ export default function Pipeline({ caption, stages }: Props) {
               key={s.label}
               className={[
                 'rounded-[10px] border p-3 transition-colors duration-300',
-                state === 'done' ? 'border-accent/40 bg-accent/5' : state === 'running' ? 'border-amber-400/50' : 'border-line',
+                state === 'done'
+                  ? 'border-accent/40 bg-accent/5'
+                  : state === 'running'
+                    ? 'border-amber-400/50'
+                    : 'border-line',
               ].join(' ')}
             >
               <p className="flex items-center gap-1.5 font-mono text-[0.65rem] text-subtle">
                 <span
                   className={[
                     'grid size-4 place-items-center rounded-full text-[0.55rem]',
-                    state === 'done' ? 'bg-accent text-accent-fg' : state === 'running' ? 'animate-pulse bg-amber-400 text-black' : 'bg-line',
+                    state === 'done'
+                      ? 'bg-accent text-accent-fg'
+                      : state === 'running'
+                        ? 'animate-pulse bg-amber-400 text-black'
+                        : 'bg-line',
                   ].join(' ')}
                   aria-hidden="true"
                 >
@@ -62,7 +58,7 @@ export default function Pipeline({ caption, stages }: Props) {
                 </span>
                 step {i + 1}
               </p>
-              <p className="mt-2 text-[0.8rem] font-medium leading-snug">{s.label}</p>
+              <p className="mt-2 text-[0.8rem] leading-snug font-medium">{s.label}</p>
               <p className="mt-0.5 text-[0.7rem] leading-snug text-muted">{s.detail}</p>
             </li>
           );

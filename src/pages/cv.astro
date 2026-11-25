@@ -11,22 +11,38 @@ const host = new URL(site.seo.url).host;
 <BaseLayout title="CV" description={`CV of ${profile.name}, ${profile.role}.`} path="/cv">
   <div class="container-page max-w-4xl pt-24 pb-20 sm:pt-28 print:max-w-none print:p-0">
     <div class="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
-      <a href="/" class="inline-flex items-center gap-2 text-sm text-muted hover:text-fg"><Icon name="arrowLeft" size={15} /> Back</a>
+      <a href="/" class="inline-flex items-center gap-2 text-sm text-muted hover:text-fg">
+        <Icon name="arrowLeft" size={15} /> Back
+      </a>
       <div class="flex gap-2">
-        <button type="button" class="btn btn-ghost" onclick="window.print()"><Icon name="printer" size={16} /> Print</button>
-        <a href={profile.cv.file} class="btn btn-primary" download><Icon name="download" size={16} /> PDF</a>
+        <button type="button" class="btn btn-ghost" onclick="window.print()">
+          <Icon name="printer" size={16} /> Print
+        </button>
+        <a href={profile.cv.file} class="btn btn-primary" download>
+          <Icon name="download" size={16} /> PDF
+        </a>
       </div>
     </div>
 
     <article class="cv card p-6 sm:p-10">
       <header class="border-b border-line pb-5">
         <h1 class="text-3xl font-semibold tracking-tight">{profile.name}</h1>
-        <p class="mt-1 text-muted">{profile.role} · {profile.primaryStack.slice(0, 6).join(' · ')}</p>
+        <p class="mt-1 text-muted">
+          {profile.role} · {profile.primaryStack.slice(0, 6).join(' · ')}
+        </p>
         <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
           <span>{profile.location}</span>
-          <a href={`mailto:${profile.email}`} class="hover:text-accent">{profile.email}</a>
-          {profile.links.map((l) => <a href={l.url} class="hover:text-accent">{l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>)}
-          <a href="/" class="hover:text-accent">{host}</a>
+          <a href={`mailto:${profile.email}`} class="hover:text-accent">
+            {profile.email}
+          </a>
+          {profile.links.map((l) => (
+            <a href={l.url} class="hover:text-accent">
+              {l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+            </a>
+          ))}
+          <a href="/" class="hover:text-accent">
+            {host}
+          </a>
         </p>
       </header>
 
@@ -38,69 +54,77 @@ const host = new URL(site.seo.url).host;
       <section class="mt-6">
         <h2 class="cv-h">Experience</h2>
         <div class="space-y-5">
-          {
-            experience.map((j) => (
-              <div class="cv-block">
-                <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-                  <h3 class="font-semibold">
-                    {j.role} <span class="font-normal text-muted">— {j.company}, {j.location}</span>
-                  </h3>
-                  <p class="font-mono text-xs text-muted">{formatRange(j.start, j.end)}</p>
-                </div>
-                <p class="mt-1 text-sm italic text-muted">{j.summary}</p>
-                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm marker:text-subtle">
-                  {j.highlights.map((h) => <li>{h}</li>)}
-                </ul>
+          {experience.map((j) => (
+            <div class="cv-block">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h3 class="font-semibold">
+                  {j.role}{' '}
+                  <span class="font-normal text-muted">
+                    — {j.company}, {j.location}
+                  </span>
+                </h3>
+                <p class="font-mono text-xs text-muted">{formatRange(j.start, j.end)}</p>
               </div>
-            ))
-          }
+              <p class="mt-1 text-sm italic text-muted">{j.summary}</p>
+              <ul class="mt-2 list-disc space-y-1 pl-5 text-sm marker:text-subtle">
+                {j.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 
-      {
-        featured.length > 0 && (
-          <section class="mt-6">
-            <h2 class="cv-h">Key project</h2>
-            {featured.map((p) => (
-              <div class="cv-block">
-                <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-                  <h3 class="font-semibold">{p.title}</h3>
-                  {p.links.repo && <a href={p.links.repo} class="font-mono text-xs text-muted hover:text-accent">{p.links.repo.replace(/^https?:\/\//, '')}</a>}
-                </div>
-                <ul class="mt-2 list-disc space-y-1 pl-5 text-sm marker:text-subtle">
-                  {p.highlights.map((h) => <li>{h}</li>)}
-                </ul>
+      {featured.length > 0 && (
+        <section class="mt-6">
+          <h2 class="cv-h">Key project</h2>
+          {featured.map((p) => (
+            <div class="cv-block">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h3 class="font-semibold">{p.title}</h3>
+                {p.links.repo && (
+                  <a href={p.links.repo} class="font-mono text-xs text-muted hover:text-accent">
+                    {p.links.repo.replace(/^https?:\/\//, '')}
+                  </a>
+                )}
               </div>
-            ))}
-          </section>
-        )
-      }
+              <ul class="mt-2 list-disc space-y-1 pl-5 text-sm marker:text-subtle">
+                {p.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      )}
 
       <section class="mt-6">
         <h2 class="cv-h">Technical skills</h2>
         <dl class="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-[11rem_1fr]">
-          {
-            skills.map((g) => (
-              <>
-                <dt class="font-medium">{g.group}</dt>
-                <dd class="text-muted">{g.items.join(', ')}</dd>
-              </>
-            ))
-          }
+          {skills.map((g) => (
+            <>
+              <dt class="font-medium">{g.group}</dt>
+              <dd class="text-muted">{g.items.join(', ')}</dd>
+            </>
+          ))}
         </dl>
       </section>
 
       <section class="mt-6">
         <h2 class="cv-h">Education</h2>
         <ul class="space-y-1.5 text-sm">
-          {
-            education.map((e) => (
-              <li class="flex flex-wrap justify-between gap-x-4">
-                <span><span class="font-medium">{e.degree}</span> <span class="text-muted">— {e.institution}</span></span>
-                <span class="font-mono text-xs text-muted">{e.year}{e.score && ` · ${e.score}`}</span>
-              </li>
-            ))
-          }
+          {education.map((e) => (
+            <li class="flex flex-wrap justify-between gap-x-4">
+              <span>
+                <span class="font-medium">{e.degree}</span> <span class="text-muted">— {e.institution}</span>
+              </span>
+              <span class="font-mono text-xs text-muted">
+                {e.year}
+                {e.score && ` · ${e.score}`}
+              </span>
+            </li>
+          ))}
         </ul>
       </section>
     </article>
