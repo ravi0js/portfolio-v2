@@ -1,11 +1,14 @@
 [
   {
+    "id": "digital-think",
+    "variant": "primary",
     "company": "Digital Think Technology",
     "role": "Backend Developer",
-    "location": "Bangalore",
+    "location": "Bangalore, India",
     "start": "2024-07",
     "end": null,
     "summary": "PHP (Slim) backend for KNS Group's real-estate CRM/ERP, covering leads, bookings, payments and legal documents.",
+    "overview": "Working on a production backend: REST APIs for a CRM/ERP platform, database optimisation, payment and booking workflows, and third-party integrations.",
     "highlights": [
       "Integrated Meta Lead Ads webhooks and Google APIs into a real-time lead pipeline, cutting lead processing time by 40%.",
       "Added Redis caching to high-traffic CRM endpoints and removed N+1 queries using ROW_NUMBER() window functions, improving response times by 30%.",
@@ -14,15 +17,64 @@
       "Integrated Microsoft Graph API to generate Word documents and store versioned PDFs in OneDrive, automating booking and legal document workflows.",
       "Delivered workflow modules (bulk lead transfer, construction-linked payment plans with versioned amendments, e-stamp and legal file requests) with RBAC via Repository/Service patterns, status tracking and audit logs."
     ],
+    "groups": [
+      {
+        "title": "API development & integrations",
+        "icon": "plug",
+        "items": [
+          "Develop and maintain PHP (Slim) REST APIs for a production CRM/ERP platform.",
+          "Integrated Meta Lead Ads webhooks and Google APIs into a real-time lead pipeline.",
+          "Integrated Microsoft Graph to generate Word documents and store versioned PDFs in OneDrive.",
+          "Built an Exotel VoIP calling microservice: webhook handlers and owner-aware call routing with round-robin fallback."
+        ],
+        "tags": ["PHP (Slim)", "REST", "Meta Lead Ads", "Google APIs", "Microsoft Graph", "Exotel"]
+      },
+      {
+        "title": "Database & performance",
+        "icon": "activity",
+        "items": [
+          "Cut lead processing time by 40% with the real-time lead pipeline.",
+          "Added Redis caching to high-traffic CRM endpoints.",
+          "Removed N+1 queries using ROW_NUMBER() window functions.",
+          "Together, these improved CRM endpoint response times by 30%."
+        ],
+        "tags": ["MySQL", "Redis", "Window functions"]
+      },
+      {
+        "title": "Business logic & workflow automation",
+        "icon": "layers",
+        "items": [
+          "Payment-receipt allocation engine: FIFO across payment milestones.",
+          "Row-level locking (SELECT … FOR UPDATE) so a receipt can never be allocated twice.",
+          "Cron-based payment reminders and bank-specific demand notes.",
+          "Construction-linked payment plans with versioned amendments.",
+          "Bulk lead transfer, e-stamp and legal file request workflows."
+        ],
+        "tags": ["Transactions", "cron", "PDF generation"]
+      },
+      {
+        "title": "Security & architecture",
+        "icon": "shield",
+        "items": [
+          "Role-based access control (RBAC) across workflow modules.",
+          "Status tracking and audit logs.",
+          "Repository and Service patterns to organise business logic."
+        ],
+        "tags": ["RBAC", "Audit logs", "Repository/Service"]
+      }
+    ],
     "tags": ["PHP", "Slim", "MySQL", "Redis", "Meta Lead Ads", "Microsoft Graph", "Exotel", "cron"]
   },
   {
+    "id": "kle-bca",
+    "variant": "compact",
     "company": "KLE BCA College",
     "role": "Technical Lecturer",
     "location": "Nagarbhavi, Bangalore",
     "start": "2023-09",
     "end": "2024-03",
     "summary": "Taught backend and web development to undergraduate students.",
+    "focus": ["Teaching", "Technical communication", "Programming fundamentals", "Mentoring"],
     "highlights": [
       "Taught PHP, MySQL, OOP and full-stack web development to 100+ undergraduate students, covering MVC, database design and REST APIs.",
       "Ran structured code reviews and mentored students through backend projects."
@@ -30,17 +82,20 @@
     "tags": ["PHP", "MySQL", "OOP", "MVC", "REST APIs"]
   },
   {
+    "id": "develearn",
+    "variant": "compact",
     "company": "DeveLearn Technologies Pvt. Ltd.",
     "role": "Backend Developer Intern",
     "location": "Bangalore",
     "start": "2023-01",
     "end": "2023-06",
-    "summary": "Backend components for user management, feedback, attendance and reporting.",
+    "summary": "Early backend work: authentication, internal modules and reporting.",
+    "focus": ["Early backend development"],
     "highlights": [
       "Built user management with OTP-based authentication and secure session handling.",
       "Developed modular backend components for feedback, attendance tracking and reporting.",
       "Optimised MySQL queries to speed up real-time analytics report generation."
     ],
-    "tags": ["MySQL", "Authentication", "Reporting"]
+    "tags": ["MySQL", "Authentication", "Sessions", "Reporting"]
   }
 ]

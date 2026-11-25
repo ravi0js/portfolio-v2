@@ -1,0 +1,43 @@
+---
+import Badge from '@/components/ui/Badge.astro';
+import Icon from '@/components/ui/Icon.astro';
+import type { Experience } from '@/lib/content';
+import { formatYearMonth, durationLabel } from '@/lib/format';
+
+interface Props {
+  job: Experience;
+  size?: 'lg' | 'md';
+}
+const { job, size = 'md' } = Astro.props;
+const current = job.end === null;
+---
+
+<header class="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+  <div class="min-w-0">
+    <h3 class:list={['font-display tracking-tight', size === 'lg' ? 'text-h3 sm:text-[1.5rem]' : 'text-h3']}>
+      {job.role}
+    </h3>
+    <p class="mt-1 flex flex-col gap-y-0.5 text-small text-muted sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2">
+      <span class="font-medium text-fg">{job.company}</span>
+      <span aria-hidden="true" class="hidden text-subtle sm:inline">
+        ·
+      </span>
+      <span class="inline-flex items-center gap-1">
+        <Icon name="mapPin" size={13} class="text-subtle" />
+        {job.location}
+      </span>
+    </p>
+  </div>
+  <div class="flex flex-col items-start gap-1.5 sm:items-end">
+    {current && (
+      <Badge variant="accent" dot>
+        Current
+      </Badge>
+    )}
+    <p class="font-mono text-caption text-muted">
+      <time datetime={job.start}>{formatYearMonth(job.start)}</time> –{' '}
+      {job.end ? <time datetime={job.end}>{formatYearMonth(job.end)}</time> : 'Present'}
+    </p>
+    <p class="font-mono text-micro text-subtle">{durationLabel(job.start, job.end)}</p>
+  </div>
+</header>

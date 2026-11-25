@@ -119,16 +119,32 @@ export const metricSchema = z.object({
   source: z.string(),
 });
 
-export const experienceSchema = z.object({
-  company: z.string(),
-  role: z.string(),
-  location: z.string(),
-  start: yearMonth,
-  end: yearMonth.nullable(),
-  summary: z.string(),
-  highlights: z.array(z.string()),
-  tags: z.array(z.string()),
-});
+export const experienceSchema = z
+  .object({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    /** primary: the detailed, prominent card · compact: short card */
+    variant: z.enum(['primary', 'compact']),
+    company: z.string(),
+    role: z.string(),
+    location: z.string(),
+    start: yearMonth,
+    end: yearMonth.nullable(),
+    summary: z.string(),
+    overview: z.string().optional(),
+    /** CV-worded bullets: used by /cv and by compact cards */
+    highlights: z.array(z.string()).min(1),
+    /** Categorised breakdown for the primary card */
+    groups: z
+      .array(
+        z.object({ title: z.string(), icon: iconName, items: z.array(z.string()).min(1), tags: z.array(z.string()) }),
+      )
+      .optional(),
+    /** Short labels describing the nature of the role (compact cards) */
+    focus: z.array(z.string()).optional(),
+    tags: z.array(z.string()),
+  })
+  .refine((e) => e.variant !== 'primary' || (e.groups?.length ?? 0) > 0, 'primary entries need "groups"')
+  .refine((e) => !e.end || e.end >= e.start, 'end must not be before start');
 
 const flowStep = z.object({
   label: z.string(),

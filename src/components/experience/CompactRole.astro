@@ -1,0 +1,46 @@
+---
+/** Short experience card: focus labels, CV bullets and tags. */
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import RoleHeader from './RoleHeader.astro';
+import MetricText from './MetricText.astro';
+import type { Experience } from '@/lib/content';
+
+interface Props {
+  job: Experience;
+}
+const { job } = Astro.props;
+---
+
+<Card as="article" interactive class="h-full" data-role={job.id}>
+  <RoleHeader job={job} />
+
+  {job.focus && job.focus.length > 0 && (
+    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Focus">
+      {job.focus.map((f) => (
+        <Badge as="li" variant="outline">
+          {f}
+        </Badge>
+      ))}
+    </ul>
+  )}
+
+  <ul class="mt-4 space-y-2">
+    {job.highlights.map((h) => (
+      <li class="flex gap-2.5 text-small leading-relaxed">
+        <span class="mt-[0.6rem] size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+        <span>
+          <MetricText text={h} />
+        </span>
+      </li>
+    ))}
+  </ul>
+
+  <ul class="mt-5 flex flex-wrap gap-1.5 border-t border-line pt-4" aria-label="Technologies">
+    {job.tags.map((t) => (
+      <Badge as="li" class="!text-micro">
+        {t}
+      </Badge>
+    ))}
+  </ul>
+</Card>

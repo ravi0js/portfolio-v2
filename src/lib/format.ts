@@ -23,3 +23,14 @@ export function durationLabel(start: string, end: string | null, now = new Date(
 export function pageTitle(template: string, title?: string, fallback?: string): string {
   return title ? template.replace('%s', title) : (fallback ?? '');
 }
+
+/**
+ * Splits text so numeric achievements ("40%", "100+", "2+") can be emphasised.
+ * Returns alternating plain/metric parts; metric parts have `metric: true`.
+ */
+export function splitMetrics(text: string): { text: string; metric: boolean }[] {
+  return text
+    .split(/(\b\d+(?:\.\d+)?(?:%|\+))/g)
+    .filter(Boolean)
+    .map((part) => ({ text: part, metric: /^\d+(?:\.\d+)?(?:%|\+)$/.test(part) }));
+}

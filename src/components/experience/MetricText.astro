@@ -1,0 +1,11 @@
+---
+/** Renders text with numeric achievements ("40%", "100+") emphasised in the accent colour. */
+import { splitMetrics } from '@/lib/format';
+
+interface Props {
+  text: string;
+}
+const parts = splitMetrics(Astro.props.text);
+---
+
+{parts.map((p) => (p.metric ? <strong class="font-semibold text-accent">{p.text}</strong> : p.text))}

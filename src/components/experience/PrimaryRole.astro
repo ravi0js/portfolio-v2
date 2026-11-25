@@ -1,0 +1,104 @@
+---
+/**
+ * The main, detailed experience card: overview + categorised contributions.
+ * Each category is a native <details> (works without JS, keyboard accessible).
+ */
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Icon from '@/components/ui/Icon.astro';
+import RoleHeader from './RoleHeader.astro';
+import MetricText from './MetricText.astro';
+import type { Experience } from '@/lib/content';
+
+interface Props {
+  job: Experience;
+}
+const { job } = Astro.props;
+const groups = job.groups ?? [];
+const count = groups.reduce((n, g) => n + g.items.length, 0);
+---
+
+<Card as="article" padding="lg" class="role-primary relative overflow-hidden" data-role={job.id}>
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+    aria-hidden="true"
+  ></div>
+
+  <RoleHeader job={job} size="lg" />
+
+  {job.overview && <p class="mt-5 max-w-3xl text-pretty text-muted">{job.overview}</p>}
+
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
+    <p class="font-mono text-caption text-subtle">
+      {groups.length} areas · {count} contributions
+    </p>
+    <button type="button" class="btn btn-text !px-0 text-caption" data-toggle-all hidden>
+      Collapse all
+    </button>
+  </div>
+
+  <div class="mt-4 grid grid-cols-1 items-start gap-3 md:grid-cols-2">
+    {groups.map((g) => (
+      <details class="role-group group rounded-md border border-line bg-bg/50 open:bg-bg/70" open>
+        <summary class="flex cursor-pointer list-none items-center gap-3 rounded-md px-4 py-3 select-none [&::-webkit-details-marker]:hidden">
+          <span class="grid size-8 shrink-0 place-items-center rounded-md border border-line bg-raised text-accent">
+            <Icon name={g.icon} size={15} />
+          </span>
+          <span class="flex-1 text-small font-semibold">{g.title}</span>
+          <span class="font-mono text-micro text-subtle">{g.items.length}</span>
+          <Icon
+            name="chevronDown"
+            size={16}
+            class="shrink-0 text-subtle transition-transform duration-base group-open:rotate-180"
+          />
+        </summary>
+        <div class="px-4 pb-4">
+          <ul class="space-y-2 border-t border-line pt-3">
+            {g.items.map((item) => (
+              <li class="flex gap-2.5 text-small leading-relaxed">
+                <span class="mt-[0.6rem] size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                <span>
+                  <MetricText text={item} />
+                </span>
+              </li>
+            ))}
+          </ul>
+          {g.tags.length > 0 && (
+            <ul class="mt-3 flex flex-wrap gap-1.5" aria-label={`${g.title} technologies`}>
+              {g.tags.map((t) => (
+                <Badge as="li" class="!text-micro">
+                  {t}
+                </Badge>
+              ))}
+            </ul>
+          )}
+        </div>
+      </details>
+    ))}
+  </div>
+</Card>
+
+<script>
+  for (const card of document.querySelectorAll<HTMLElement>('.role-primary')) {
+    const groups = [...card.querySelectorAll<HTMLDetailsElement>('details.role-group')];
+    const toggle = card.querySelector<HTMLButtonElement>('[data-toggle-all]');
+    if (!toggle || !groups.length) continue;
+
+    // On phones, start with only the first category open to keep the card short.
+    if (window.matchMedia('(max-width: 39.99rem)').matches) groups.slice(1).forEach((d) => (d.open = false));
+
+    const sync = () => {
+      const allOpen = groups.every((d) => d.open);
+      toggle.textContent = allOpen ? 'Collapse all' : 'Expand all';
+      toggle.setAttribute('aria-expanded', String(allOpen));
+    };
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => {
+      const open = !groups.every((d) => d.open);
+      groups.forEach((d) => (d.open = open));
+      sync();
+    });
+    groups.forEach((d) => d.addEventListener('toggle', sync));
+    sync();
+  }
+</script>

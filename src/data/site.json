@@ -92,8 +92,8 @@
     "experience": {
       "enabled": true,
       "eyebrow": "experience",
-      "title": "Where I've worked",
-      "subtitle": "Production backend engineering, teaching, and where it started."
+      "title": "Professional Experience",
+      "subtitle": "Building backend applications, integrating business systems, and solving real-world engineering challenges."
     },
     "systems": {
       "enabled": true,
