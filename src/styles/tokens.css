@@ -87,8 +87,8 @@
   /* Spacing: Tailwind's 4px scale (p-1 = 4px … p-24 = 96px), plus layout rhythm */
   --spacing-gutter: 1rem; /* page side padding, phone */
   --spacing-gutter-lg: 1.5rem; /* page side padding, ≥ sm */
-  --spacing-section: 5rem; /* vertical section rhythm, phone */
-  --spacing-section-lg: 7rem; /* vertical section rhythm, ≥ sm */
+  --spacing-section: 3rem; /* section padding per side, phone (gap between sections = 2×) */
+  --spacing-section-lg: 4.5rem; /* section padding per side, ≥ sm (gap between sections = 2×) */
   --container-page: 72rem; /* max content width */
 
   /* Radius scale */
