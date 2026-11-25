@@ -22,7 +22,7 @@
       "Tiered rate limiting: 5/min on auth routes, 60/min on the API",
       "Dockerised MySQL, Redis and Apache; deployed to AWS EC2 with an Elastic IP",
       "EventBridge starts and stops the instance on a schedule to cut hosting cost",
-      "GitHub Actions runs the test suite against MySQL and Redis services, then deploys over SSH"
+      "GitHub Actions runs 27 PHPUnit tests against MySQL and Redis services, then deploys over SSH"
     ],
     "architecture": {
       "caption": "Request path and infrastructure",

@@ -9,7 +9,7 @@ const host = new URL(site.seo.url).host;
 ---
 
 <BaseLayout title="CV" description={`CV of ${profile.name}, ${profile.role}.`} path="/cv">
-  <div class="container-page max-w-4xl pt-24 pb-20 sm:pt-28">
+  <div class="container-page max-w-4xl pt-24 pb-20 sm:pt-28 print:max-w-none print:p-0">
     <div class="no-print mb-6 flex flex-wrap items-center justify-between gap-3">
       <a href="/" class="inline-flex items-center gap-2 text-sm text-muted hover:text-fg"><Icon name="arrowLeft" size={15} /> Back</a>
       <div class="flex gap-2">
@@ -118,7 +118,8 @@ const host = new URL(site.seo.url).host;
   }
   @media print {
     @page {
-      margin: 12mm;
+      size: A4;
+      margin: 12mm 14mm;
     }
     :global(html) {
       --c-bg: #fff !important;
@@ -132,6 +133,7 @@ const host = new URL(site.seo.url).host;
     :global(html),
     :global(body) {
       background: #fff !important;
+      color-scheme: light !important;
     }
     :global(header#site-header),
     :global(footer) {
@@ -139,11 +141,15 @@ const host = new URL(site.seo.url).host;
     }
     .cv {
       border: 0;
+      border-radius: 0;
       padding: 0;
       font-size: 10.5pt;
     }
     .cv-block {
       break-inside: avoid;
+    }
+    .cv-h {
+      break-after: avoid;
     }
     a {
       text-decoration: none;
