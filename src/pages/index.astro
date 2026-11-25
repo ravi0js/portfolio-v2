@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/sections/Hero.astro';
 import Impact from '@/components/sections/Impact.astro';
+import About from '@/components/sections/About.astro';
 import Experience from '@/components/sections/Experience.astro';
 import Systems from '@/components/sections/Systems.astro';
 import FeaturedProject from '@/components/sections/FeaturedProject.astro';
@@ -15,10 +16,11 @@ const s = site.sections;
 <BaseLayout path="/">
   <Hero />
   {s.impact.enabled && <Impact />}
+  {s.about.enabled && <About />}
+  {s.skills.enabled && <Skills />}
   {s.experience.enabled && <Experience />}
   {s.systems.enabled && <Systems />}
   {s.project.enabled && <FeaturedProject />}
-  {s.skills.enabled && <Skills />}
   {s.education.enabled && <Education />}
   {s.contact.enabled && <Contact />}
 </BaseLayout>

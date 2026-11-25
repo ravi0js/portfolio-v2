@@ -1,20 +1,226 @@
 ---
+/**
+ * Skills explorer.
+ * - With JS: category tabs (WAI-ARIA tabs pattern, arrow keys) + a technology grid;
+ *   hovering, focusing or clicking a technology shows how it's used.
+ * - Without JS: every category is shown expanded with each technology's description.
+ * No proficiency ratings: just what each tool is used for.
+ */
 import Section from '@/components/layout/Section.astro';
+import Icon from '@/components/ui/Icon.astro';
 import { site, skills } from '@/lib/content';
+
 const meta = site.sections.skills;
+const total = skills.reduce((n, g) => n + g.items.length, 0);
 ---
 
 <Section id="skills" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {skills.map((g, i) => (
-      <section class="card card-hover p-5" data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`} aria-label={g.group}>
-        <h3 class="font-mono text-xs uppercase tracking-wider text-accent">{g.group}</h3>
-        <ul class="mt-4 flex flex-wrap gap-2">
-          {g.items.map((item) => (
-            <li class="rounded-md border border-line bg-raised px-2.5 py-1 text-sm">{item}</li>
-          ))}
-        </ul>
-      </section>
-    ))}
+  <div class="skills grid grid-cols-1 gap-6 *:min-w-0 lg:grid-cols-[17rem_1fr] lg:gap-8" data-skills>
+    <!-- Category tabs (shown once enhanced) -->
+    <div class="skills-tabs" data-reveal>
+      <div
+        role="tablist"
+        aria-label="Skill categories"
+        aria-orientation="vertical"
+        class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0"
+      >
+        {skills.map((g, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`skill-tab-${g.id}`}
+            aria-controls={`skill-panel-${g.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class="skill-tab group flex shrink-0 items-center gap-3 rounded-md border border-line bg-surface px-3 py-2 text-left text-small text-muted transition-colors duration-fast hover:text-fg lg:border-transparent lg:bg-transparent lg:py-2.5"
+          >
+            <span class="grid size-7 shrink-0 place-items-center rounded-sm border border-line bg-raised transition-colors duration-fast">
+              <Icon name={g.icon} size={14} />
+            </span>
+            <span class="whitespace-nowrap lg:flex-1 lg:whitespace-normal">{g.group}</span>
+            <span class="hidden font-mono text-micro text-subtle lg:inline">{g.items.length}</span>
+          </button>
+        ))}
+      </div>
+      <p class="mt-4 hidden font-mono text-caption text-subtle lg:block">
+        {total} technologies · {skills.length} areas
+      </p>
+    </div>
+
+    <!-- Panels -->
+    <div class="space-y-6 lg:space-y-0" data-reveal>
+      {skills.map((g, i) => (
+        <section
+          role="tabpanel"
+          id={`skill-panel-${g.id}`}
+          aria-labelledby={`skill-tab-${g.id}`}
+          class="skill-panel card p-5 sm:p-6"
+          data-active={i === 0 ? 'true' : 'false'}
+        >
+          <header class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="flex items-center gap-2 text-h3">
+                <Icon name={g.icon} size={18} class="text-accent" />
+                {g.group}
+              </h3>
+              <p class="mt-1 text-small text-muted">{g.summary}</p>
+            </div>
+            <span class="shrink-0 font-mono text-caption text-subtle">{g.items.length} tools</span>
+          </header>
+
+          <ul class="tech-grid mt-5 grid grid-cols-2 gap-2 xl:grid-cols-3">
+            {g.items.map((item, j) => (
+              <li>
+                <button
+                  type="button"
+                  class="tech flex h-full w-full flex-col items-start rounded-md border border-line bg-raised px-3 py-2.5 text-left transition-[border-color,background-color] duration-fast hover:border-accent/50"
+                  aria-pressed={j === 0 ? 'true' : 'false'}
+                  data-name={item.name}
+                  data-use={item.use}
+                >
+                  <span class="text-small font-medium">
+                    {item.name}
+                    <span class="sr-only">: </span>
+                  </span>
+                  <span class="tech-use mt-1 text-caption leading-relaxed text-muted">{item.use}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Visual-only detail readout (the same text is in each button for screen readers) -->
+          <div class="tech-detail mt-4 rounded-md border border-line bg-bg/60 px-4 py-3" aria-hidden="true">
+            <p class="font-mono text-micro tracking-label text-subtle uppercase">How I use it</p>
+            <p class="mt-1.5 text-small">
+              <span class="font-medium text-accent" data-detail-name>
+                {g.items[0].name}
+              </span>
+              <span class="text-muted"> · </span>
+              <span class="text-muted" data-detail-use>
+                {g.items[0].use}
+              </span>
+            </p>
+          </div>
+        </section>
+      ))}
+    </div>
   </div>
 </Section>
+
+<style>
+  /* ── Without JS: no tabs, all panels open, descriptions inline. ── */
+  .skills:not(.is-enhanced) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .skills:not(.is-enhanced) .skills-tabs,
+  .skills:not(.is-enhanced) .tech-detail {
+    display: none;
+  }
+  @media (max-width: 39.99rem) {
+    .skills:not(.is-enhanced) .tech-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ── Enhanced: one panel at a time, descriptions move to the readout. ── */
+  .skills.is-enhanced .skill-panel[data-active='false'] {
+    display: none;
+  }
+  .skills.is-enhanced .tech-use {
+    /* visually hidden but still read by screen readers */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .skills.is-enhanced .tech {
+    position: relative;
+  }
+  .tech[aria-pressed='true'] {
+    border-color: var(--c-accent);
+    background: color-mix(in oklab, var(--c-accent) 8%, var(--c-surface-raised));
+  }
+  .skill-tab[aria-selected='true'] {
+    color: var(--c-text);
+    border-color: color-mix(in oklab, var(--c-accent) 45%, var(--c-border));
+    background: var(--c-surface-raised);
+  }
+  .skill-tab[aria-selected='true'] > span:first-child {
+    color: var(--c-accent);
+    border-color: color-mix(in oklab, var(--c-accent) 40%, var(--c-border));
+  }
+  :global(.js-motion) .skills.is-enhanced .skill-panel[data-active='true'] {
+    animation: panel-in var(--duration-slow) var(--ease-out-soft);
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-skills]')) {
+    root.classList.add('is-enhanced');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+
+    // Desktop shows a vertical list; below lg the tabs are a horizontal strip.
+    const tablist = root.querySelector<HTMLElement>('[role="tablist"]')!;
+    const lg = window.matchMedia('(min-width: 64rem)');
+    const syncOrientation = () => tablist.setAttribute('aria-orientation', lg.matches ? 'vertical' : 'horizontal');
+    syncOrientation();
+    lg.addEventListener('change', syncOrientation);
+
+    const select = (index: number, focus = false) => {
+      tabs.forEach((t, i) => {
+        const on = i === index;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        panels[i].dataset.active = String(on);
+      });
+      if (focus) tabs[index].focus();
+      tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', (e) => {
+        const last = tabs.length - 1;
+        const next = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: last }[
+          e.key
+        ];
+        if (next === undefined) return;
+        e.preventDefault();
+        select(next < 0 ? last : next > last ? 0 : next, true);
+      });
+    });
+
+    // Technology tiles: hover (mouse), focus (keyboard) or tap (touch) shows its use.
+    for (const panel of panels) {
+      const tiles = [...panel.querySelectorAll<HTMLButtonElement>('.tech')];
+      const name = panel.querySelector<HTMLElement>('[data-detail-name]')!;
+      const use = panel.querySelector<HTMLElement>('[data-detail-use]')!;
+      const show = (tile: HTMLButtonElement) => {
+        tiles.forEach((t) => t.setAttribute('aria-pressed', String(t === tile)));
+        name.textContent = tile.dataset.name ?? '';
+        use.textContent = tile.dataset.use ?? '';
+      };
+      tiles.forEach((tile) => {
+        tile.addEventListener('click', () => show(tile));
+        tile.addEventListener('focus', () => show(tile));
+        // Hover preview only for real mice (touch taps already fire click).
+        tile.addEventListener('pointerenter', (e) => {
+          if (e.pointerType === 'mouse') show(tile);
+        });
+      });
+    }
+  }
+</script>

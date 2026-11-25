@@ -84,6 +84,11 @@
       "eyebrow": "impact",
       "title": "Measured results from production work"
     },
+    "about": {
+      "enabled": true,
+      "eyebrow": "about",
+      "title": "Backend engineering for real business workflows"
+    },
     "experience": {
       "enabled": true,
       "eyebrow": "experience",
@@ -105,7 +110,8 @@
     "skills": {
       "enabled": true,
       "eyebrow": "skills",
-      "title": "Technical toolkit"
+      "title": "Technical toolkit",
+      "subtitle": "Grouped by area. Select a technology to see how I use it in backend work."
     },
     "education": {
       "enabled": true,

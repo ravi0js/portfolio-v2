@@ -1,33 +1,120 @@
 [
   {
-    "group": "Backend",
+    "id": "backend",
+    "group": "Backend Development",
+    "icon": "code",
+    "summary": "Server-side applications and REST APIs in PHP.",
     "items": [
-      "PHP",
-      "Slim",
-      "Laravel",
-      "REST API Design",
-      "OOP",
-      "MVC",
-      "Repository/Service Patterns",
-      "RBAC",
-      "PDO",
-      "PHPMailer",
-      "mPDF"
+      { "name": "PHP", "use": "Server-side application and REST API development." },
+      { "name": "Slim Framework", "use": "Routing and middleware for the production CRM/ERP backend." },
+      { "name": "Laravel", "use": "REST APIs with authentication, middleware and a clear application structure." },
+      {
+        "name": "REST API Design",
+        "use": "Resource-based endpoints, input validation, consistent status codes and JSON responses."
+      },
+      {
+        "name": "Object-Oriented Programming",
+        "use": "Classes and interfaces that keep business rules organised and testable."
+      },
+      { "name": "MVC Architecture", "use": "Separating request handling, business logic and data access." },
+      { "name": "Repository Pattern", "use": "Keeping data-access queries in one place, behind a clear interface." },
+      { "name": "Service Pattern", "use": "Putting business workflows in services instead of controllers." },
+      { "name": "PDO", "use": "Prepared statements and transactions for safe MySQL access." },
+      { "name": "RBAC", "use": "Role-based access checks on protected modules and routes." },
+      { "name": "PHPMailer", "use": "Sending transactional email from PHP applications." },
+      { "name": "mPDF", "use": "Generating PDF documents from HTML templates." }
     ]
   },
   {
-    "group": "Databases & Caching",
-    "items": ["MySQL", "Query optimisation", "Window functions", "Transactions", "Redis"]
+    "id": "data",
+    "group": "Database & Caching",
+    "icon": "database",
+    "summary": "Relational data, query performance and caching.",
+    "items": [
+      { "name": "MySQL", "use": "Relational data modelling, query optimisation and transaction management." },
+      {
+        "name": "SQL Query Optimization",
+        "use": "Finding slow queries and removing N+1 patterns on high-traffic endpoints."
+      },
+      {
+        "name": "Database Transactions",
+        "use": "Atomic multi-step writes, with row-level locking (SELECT … FOR UPDATE) where concurrency matters."
+      },
+      {
+        "name": "Window Functions",
+        "use": "Ranking and latest-row-per-group queries with ROW_NUMBER() instead of query loops."
+      },
+      { "name": "Redis", "use": "Caching frequently read data to reduce database load and response times." },
+      { "name": "Caching Strategies", "use": "Deciding what to cache and for how long, so cached data stays correct." }
+    ]
   },
   {
-    "group": "API Integrations",
-    "items": ["Meta Lead Ads", "Google APIs", "Microsoft Graph (OneDrive, Word)", "Exotel VoIP"]
+    "id": "integrations",
+    "group": "Third-Party Integrations",
+    "icon": "plug",
+    "summary": "Connecting external platforms to backend workflows.",
+    "items": [
+      { "name": "Meta Lead Ads API", "use": "Webhooks that deliver ad leads into the CRM in real time." },
+      { "name": "Google APIs", "use": "Bringing Google-sourced data into the same real-time lead pipeline." },
+      { "name": "Microsoft Graph API", "use": "Authenticated access to Microsoft 365 services from the backend." },
+      { "name": "Word / OneDrive", "use": "Generating Word documents and storing versioned PDFs in OneDrive." },
+      { "name": "Exotel VoIP", "use": "In-app calling with call-event webhooks and owner-aware routing." }
+    ]
   },
   {
-    "group": "DevOps & Tools",
-    "items": ["Git", "GitHub Actions", "Docker", "AWS EC2", "AWS EventBridge", "Apache", "Ubuntu/Linux", "cron"]
+    "id": "devops",
+    "group": "DevOps & Infrastructure",
+    "icon": "cloud",
+    "summary": "Packaging, hosting and shipping backend applications.",
+    "items": [
+      {
+        "name": "Docker",
+        "use": "Containerising backend applications with their dependencies (MySQL, Redis, Apache)."
+      },
+      { "name": "AWS EC2", "use": "Hosting and deploying backend applications." },
+      { "name": "AWS EventBridge", "use": "Scheduling EC2 start/stop to reduce hosting cost." },
+      { "name": "Git", "use": "Version control and branch-based workflows." },
+      { "name": "GitHub Actions", "use": "Running the test suite and deploying automatically on push to main." },
+      { "name": "CI/CD", "use": "Automated test-then-deploy pipelines for repeatable releases." },
+      { "name": "Ubuntu / Linux", "use": "Running and managing services on servers." },
+      { "name": "Apache", "use": "Serving PHP applications." },
+      { "name": "Cron Jobs", "use": "Scheduled background tasks such as payment reminders." }
+    ]
   },
-  { "group": "Testing & Docs", "items": ["PHPUnit", "Swagger/OpenAPI 3.0", "Postman"] },
-  { "group": "AI Tooling", "items": ["LLM coding assistants", "Prompting", "AI-assisted code review", "Refactoring"] },
-  { "group": "Frontend", "items": ["HTML5", "CSS3", "JavaScript (ES6+)", "Bootstrap 5"] }
+  {
+    "id": "testing",
+    "group": "Testing & API Docs",
+    "icon": "check",
+    "summary": "Verifying behaviour and documenting API contracts.",
+    "items": [
+      { "name": "PHPUnit", "use": "Feature tests for authentication, access rules and API behaviour." },
+      { "name": "Swagger", "use": "Interactive API documentation where clients can try endpoints." },
+      { "name": "OpenAPI 3.0", "use": "Machine-readable API contracts that the docs are generated from." },
+      { "name": "Postman", "use": "Manual API testing with saved request collections." }
+    ]
+  },
+  {
+    "id": "frontend",
+    "group": "Frontend Fundamentals",
+    "icon": "monitor",
+    "summary": "Enough frontend to build and integrate with the UI.",
+    "items": [
+      { "name": "HTML5", "use": "Semantic page structure." },
+      { "name": "CSS3", "use": "Layout and styling." },
+      { "name": "JavaScript (ES6+)", "use": "Client-side behaviour and calling REST APIs." },
+      { "name": "Bootstrap 5", "use": "Responsive layouts with a component framework." }
+    ]
+  },
+  {
+    "id": "ai",
+    "group": "AI Development Tools",
+    "icon": "sparkles",
+    "summary": "Assistants that support, not replace, engineering judgement.",
+    "items": [
+      { "name": "LLM Coding Assistants", "use": "Drafting, exploring and explaining code during development." },
+      { "name": "Prompting", "use": "Writing clear, well-scoped prompts to get useful output." },
+      { "name": "AI-Assisted Code Review", "use": "An extra review pass on changes, checked by a person." },
+      { "name": "AI-Assisted Refactoring", "use": "Speeding up mechanical refactors, then verifying the result." }
+    ]
+  }
 ]

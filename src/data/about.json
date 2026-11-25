@@ -1,0 +1,81 @@
+{
+  "intro": [
+    "I'm Ravi Kumar, a Backend Developer with 2+ years of experience building production-ready backend applications, REST APIs and business solutions.",
+    "My work spans a PHP (Slim) CRM/ERP backend used daily in production, Laravel APIs, database optimisation, third-party integrations, and containerised deployments on AWS.",
+    "I focus on maintainable code, measurable performance improvements, reliable database workflows, and clean integrations with external services."
+  ],
+  "focus": "APIs · integrations · data",
+  "highlightsTitle": "Highlights",
+  "highlights": [
+    {
+      "metric": "users",
+      "title": "Production CRM/ERP",
+      "detail": "PHP (Slim) backend for leads, bookings, payments and legal documents.",
+      "icon": "users"
+    },
+    {
+      "metric": "leads",
+      "title": "Faster lead processing",
+      "detail": "Real-time pipeline for Meta Lead Ads webhooks and Google APIs.",
+      "icon": "zap"
+    },
+    {
+      "metric": "endpoints",
+      "title": "Faster CRM endpoints",
+      "detail": "Redis caching, and N+1 queries replaced with window functions.",
+      "icon": "activity"
+    },
+    {
+      "label": "4 platforms",
+      "title": "Third-party integrations",
+      "detail": "Meta Lead Ads, Google APIs, Microsoft Graph (Word, OneDrive) and Exotel VoIP.",
+      "icon": "plug"
+    },
+    {
+      "label": "FOR UPDATE",
+      "title": "Transactions & performance",
+      "detail": "FIFO payment allocation with row-level locking, query optimisation and caching.",
+      "icon": "database"
+    },
+    {
+      "label": "Docker · EC2",
+      "title": "Containerised deployment",
+      "detail": "Laravel API in Docker on AWS EC2, shipped by GitHub Actions CI/CD.",
+      "icon": "cloud"
+    }
+  ],
+  "approachTitle": "How I work",
+  "approachSubtitle": "Working principles I apply to backend code.",
+  "principles": [
+    {
+      "title": "Maintainable architecture",
+      "detail": "Thin controllers, with business logic in services and data access in repositories, so modules stay easy to change.",
+      "icon": "layers"
+    },
+    {
+      "title": "Reliable REST APIs",
+      "detail": "Predictable resources, input validation, consistent status codes and documented contracts.",
+      "icon": "server"
+    },
+    {
+      "title": "Performance from the data layer up",
+      "detail": "Find the slow path first, remove N+1 queries, use transactions where they matter, cache hot reads.",
+      "icon": "activity"
+    },
+    {
+      "title": "Secure by default",
+      "detail": "Token authentication and role-based access checks on every protected route.",
+      "icon": "shield"
+    },
+    {
+      "title": "Integrations that fit the workflow",
+      "detail": "Webhook handlers and API clients that bring external platforms into the core business process.",
+      "icon": "plug"
+    },
+    {
+      "title": "Automated testing & delivery",
+      "detail": "Tests run in CI and deployments are scripted, so releases are repeatable.",
+      "icon": "gitBranch"
+    }
+  ]
+}

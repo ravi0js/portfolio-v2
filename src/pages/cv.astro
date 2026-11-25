@@ -105,7 +105,7 @@ const host = new URL(site.seo.url).host;
           {skills.map((g) => (
             <>
               <dt class="font-medium">{g.group}</dt>
-              <dd class="text-muted">{g.items.join(', ')}</dd>
+              <dd class="text-muted">{g.items.map((i) => i.name).join(', ')}</dd>
             </>
           ))}
         </dl>

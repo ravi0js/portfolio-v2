@@ -13,6 +13,7 @@ import systemsJson from '@/data/systems.json';
 import projectsJson from '@/data/projects.json';
 import skillsJson from '@/data/skills.json';
 import educationJson from '@/data/education.json';
+import aboutJson from '@/data/about.json';
 
 import { iconPaths, type IconName } from '@/components/ui/icons';
 
@@ -65,6 +66,7 @@ export const siteSchema = z.object({
   nav: z.array(z.object({ label: z.string(), href: z.string() })),
   sections: z.object({
     impact: sectionMeta,
+    about: sectionMeta,
     experience: sectionMeta,
     systems: sectionMeta,
     project: sectionMeta,
@@ -109,6 +111,7 @@ export const profileSchema = z.object({
 });
 
 export const metricSchema = z.object({
+  id: z.string(),
   value: z.string(),
   suffix: z.string(),
   label: z.string(),
@@ -187,7 +190,37 @@ export const projectSchema = z.object({
   caseStudy: z.array(z.object({ heading: z.string(), body: z.array(z.string()) })),
 });
 
-export const skillGroupSchema = z.object({ group: z.string(), items: z.array(z.string()) });
+export const skillGroupSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  group: z.string(),
+  icon: iconName,
+  summary: z.string(),
+  items: z.array(z.object({ name: z.string(), use: z.string().max(140) })).min(1),
+});
+
+export const aboutSchema = z.object({
+  intro: z.array(z.string()).min(1),
+  focus: z.string(),
+  highlightsTitle: z.string(),
+  highlights: z
+    .array(
+      z
+        .object({
+          /** id from metrics.json: the number is read from there, never duplicated */
+          metric: z.string().optional(),
+          /** short mono label for cards without a number */
+          label: z.string().optional(),
+          title: z.string(),
+          detail: z.string(),
+          icon: iconName,
+        })
+        .refine((h) => Boolean(h.metric) !== Boolean(h.label), 'set exactly one of "metric" or "label"'),
+    )
+    .min(1),
+  approachTitle: z.string(),
+  approachSubtitle: z.string().optional(),
+  principles: z.array(z.object({ title: z.string(), detail: z.string(), icon: iconName })).min(1),
+});
 export const educationSchema = z.object({
   degree: z.string(),
   institution: z.string(),
@@ -214,6 +247,16 @@ export const systems = parse('systems', z.array(systemSchema), systemsJson);
 export const projects = parse('projects', z.array(projectSchema), projectsJson);
 export const skills = parse('skills', z.array(skillGroupSchema), skillsJson);
 export const education = parse('education', z.array(educationSchema), educationJson);
+export const about = parse('about', aboutSchema, aboutJson);
+
+// Cross-file check: every highlight that references a metric must point at a real one.
+for (const h of about.highlights) {
+  if (h.metric && !metrics.some((m) => m.id === h.metric)) {
+    throw new Error(
+      `\nInvalid content in src/data/about.json\n  • highlights: unknown metric id "${h.metric}" (see metrics.json)\n`,
+    );
+  }
+}
 
 export const featuredProject = projects.find((p) => p.featured) ?? projects[0];
 
@@ -223,7 +266,9 @@ export type Experience = (typeof experience)[number];
 export type System = (typeof systems)[number];
 export type Project = (typeof projects)[number];
 export type Diagram = System['diagram'];
+export type SkillGroup = (typeof skills)[number];
+export type About = typeof about;
 
 /** Everything in one object, for pages that need several content types. */
-export const portfolio = { site, profile, metrics, experience, systems, projects, skills, education } as const;
+export const portfolio = { site, profile, about, metrics, experience, systems, projects, skills, education } as const;
 export type Portfolio = typeof portfolio;

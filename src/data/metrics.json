@@ -1,5 +1,6 @@
 [
   {
+    "id": "years",
     "value": "2",
     "suffix": "+",
     "label": "years in backend development",
@@ -7,6 +8,7 @@
     "source": "CV · Professional summary"
   },
   {
+    "id": "users",
     "value": "200",
     "suffix": "+",
     "label": "people use it daily",
@@ -14,6 +16,7 @@
     "source": "CV · Professional summary"
   },
   {
+    "id": "leads",
     "value": "40",
     "suffix": "%",
     "label": "faster lead processing",
@@ -21,6 +24,7 @@
     "source": "CV · Digital Think Technology"
   },
   {
+    "id": "endpoints",
     "value": "30",
     "suffix": "%",
     "label": "faster CRM endpoints",

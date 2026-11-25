@@ -13,7 +13,7 @@ export function personJsonLd() {
     address: { '@type': 'PostalAddress', addressLocality: profile.location },
     ...(current && { worksFor: { '@type': 'Organization', name: current.company } }),
     sameAs: profile.links.map((l) => l.url),
-    knowsAbout: skills.flatMap((g) => g.items).slice(0, 25),
+    knowsAbout: skills.flatMap((g) => g.items.map((i) => i.name)).slice(0, 25),
   };
 }
 
