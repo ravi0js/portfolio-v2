@@ -85,6 +85,24 @@ The script is added only to production builds, so `npm run dev` visits aren't co
 - `showContributions` adds the contribution heatmap. It's off for now because public activity is still sparse; switch it on once there's more.
 - If GitHub is unreachable or rate-limits the build, the section shows a plain "View GitHub profile" link instead of failing. Set a `GITHUB_TOKEN` environment variable in Netlify (a token with no scopes is enough) to raise the API limit.
 
+## Articles
+
+Long-form posts live in `src/content/articles/*.md` and appear at `/blog/<file-name>/` and at the top of the Blog section.
+
+```md
+---
+title: 'Your title'
+description: 'One or two sentences (max 200 characters).'
+date: 2026-11-25
+tags: ['MySQL', 'PHP']
+draft: true
+---
+```
+
+- **`draft: true`:** the article only shows in `npm run dev`, with a "Draft" banner. Set `draft: false` to publish it in the next build.
+- **Code blocks:** use normal Markdown fences (` ```php `) and get light/dark highlighting automatically.
+- **Restart after adding:** restart `npm run dev` after creating the first article, or after editing `src/content.config.ts`.
+
 ## JobBoard API docs
 
 `/projects/jobboard-api/docs/` renders a static copy of the repo's OpenAPI spec (`public/docs/jobboard-api/openapi.json`) in Swagger UI, so the docs work even when the EC2 instance is off. Requests are disabled on that page. After changing the API, run `npm run docs:sync` and commit the updated JSON. The script also replaces any other Gmail address in the spec with the portfolio email.

@@ -10,8 +10,8 @@
     "summary": "PHP (Slim) backend for KNS Group's real-estate CRM/ERP, covering leads, bookings, payments and legal documents.",
     "overview": "Working on a production backend: REST APIs for a CRM/ERP platform, database optimisation, payment and booking workflows, and third-party integrations.",
     "highlights": [
-      "Integrated Meta Lead Ads webhooks and Google APIs into a real-time lead pipeline, cutting lead processing time by 40%.",
-      "Added Redis caching to high-traffic CRM endpoints and removed N+1 queries using ROW_NUMBER() window functions, improving response times by 30%.",
+      "Integrated Meta Lead Ads webhooks and Google APIs into a real-time lead pipeline, cutting lead processing time by about 40%.",
+      "Added Redis caching to high-traffic CRM endpoints and removed N+1 queries using ROW_NUMBER() window functions, improving response times by roughly 30%.",
       "Built a payment-receipt allocation engine (FIFO across milestones) with row-level locking (SELECT … FOR UPDATE) to prevent double allocation, plus cron-based payment reminders and bank-specific demand notes.",
       "Built an Exotel VoIP calling microservice with webhook handlers and owner-aware call routing (round-robin fallback), enabling in-app calling for the sales team.",
       "Integrated Microsoft Graph API to generate Word documents and store versioned PDFs in OneDrive, automating booking and legal document workflows.",
@@ -33,10 +33,10 @@
         "title": "Database & performance",
         "icon": "activity",
         "items": [
-          "Cut lead processing time by 40% with the real-time lead pipeline.",
+          "Cut lead processing time by about 40% with the real-time lead pipeline.",
           "Added Redis caching to high-traffic CRM endpoints.",
           "Removed N+1 queries using ROW_NUMBER() window functions.",
-          "Together, these improved CRM endpoint response times by 30%."
+          "Together, these improved CRM endpoint response times by roughly 30%."
         ],
         "tags": ["MySQL", "Redis", "Window functions"]
       },

@@ -133,6 +133,8 @@ export const profileSchema = z.object({
 
 export const metricSchema = z.object({
   id: z.string(),
+  /** Shown before the number, e.g. "~" for an approximate figure. */
+  prefix: z.string().optional(),
   value: z.string(),
   suffix: z.string(),
   label: z.string(),

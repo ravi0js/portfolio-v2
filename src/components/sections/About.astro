@@ -58,6 +58,7 @@ const highlights = about.highlights.map((h) => ({
             <div class="flex items-start justify-between gap-3">
               {h.metricValue ? (
                 <p class="font-mono text-h2 leading-none font-semibold tracking-tight">
+                  {h.metricValue.prefix}
                   {h.metricValue.value}
                   <span class="text-accent">{h.metricValue.suffix}</span>
                 </p>

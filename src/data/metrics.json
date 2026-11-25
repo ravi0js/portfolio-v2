@@ -17,6 +17,7 @@
   },
   {
     "id": "leads",
+    "prefix": "~",
     "value": "40",
     "suffix": "%",
     "label": "faster lead processing",
@@ -25,6 +26,7 @@
   },
   {
     "id": "endpoints",
+    "prefix": "~",
     "value": "30",
     "suffix": "%",
     "label": "faster CRM endpoints",

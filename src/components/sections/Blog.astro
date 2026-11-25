@@ -28,11 +28,12 @@ const fmt = (d: string) =>
         <li data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`}>
           <Card
             href={p.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(p.url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             interactive
             class="group flex h-full flex-col"
-            aria-label={`${p.title} (${p.source}, opens in a new tab)`}
+            aria-label={
+              p.url.startsWith('http') ? `${p.title} (${p.source}, opens in a new tab)` : `${p.title} (${p.source})`
+            }
           >
             <div class="flex items-center justify-between gap-3 font-mono text-micro text-subtle">
               <span class="inline-flex items-center gap-1.5">
@@ -53,7 +54,7 @@ const fmt = (d: string) =>
               </ul>
               <span class="inline-flex shrink-0 items-center gap-1 text-caption text-muted transition-colors duration-fast group-hover:text-fg">
                 Read
-                <Icon name="external" size={13} />
+                <Icon name={p.url.startsWith('http') ? 'external' : 'arrowRight'} size={13} />
               </span>
             </div>
           </Card>

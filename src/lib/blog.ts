@@ -4,6 +4,7 @@
  * merged, de-duplicated by URL, newest first. Feed failures are logged and ignored,
  * so the section always has at least the manual posts and the build never breaks.
  */
+import { getCollection } from 'astro:content';
 import { blog, type BlogPost } from './content';
 
 const TIMEOUT_MS = 8000;
@@ -73,9 +74,20 @@ let cached: Promise<BlogPost[]> | undefined;
 export function getBlogPosts(): Promise<BlogPost[]> {
   return (cached ??= (async () => {
     const feed = blog.medium.fetch ? await fetchMedium(blog.medium.username) : [];
+    // Articles written for this site (drafts only show in dev).
+    const articles: BlogPost[] = (await getCollection('articles', (a) => import.meta.env.DEV || !a.data.draft)).map(
+      (a) => ({
+        title: a.data.title,
+        url: `/blog/${a.id}/`,
+        date: a.data.date.toISOString().slice(0, 10),
+        excerpt: a.data.description,
+        tags: a.data.tags,
+        source: a.data.draft ? 'Article (draft)' : 'Article',
+      }),
+    );
     const byUrl = new Map<string, BlogPost>();
     // Manual entries win (you can override a feed post's title, excerpt or tags in blog.json).
-    for (const p of [...feed, ...blog.posts]) byUrl.set(key(p.url), { ...byUrl.get(key(p.url)), ...p });
+    for (const p of [...feed, ...blog.posts, ...articles]) byUrl.set(key(p.url), { ...byUrl.get(key(p.url)), ...p });
     return [...byUrl.values()].sort((a, b) => b.date.localeCompare(a.date)).slice(0, blog.max);
   })());
 }

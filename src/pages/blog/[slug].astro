@@ -1,0 +1,172 @@
+---
+/**
+ * Article pages from src/content/articles. Drafts are built only in dev (`astro dev`),
+ * with a visible banner, so they can be reviewed before publishing.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/layout/Container.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { profile } from '@/lib/content';
+
+export const getStaticPaths = (async () => {
+  const articles = await getCollection('articles', (a) => import.meta.env.DEV || !a.data.draft);
+  return articles.map((a) => ({ params: { slug: a.id }, props: { article: a } }));
+}) satisfies GetStaticPaths;
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const words = (article.body ?? '').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+const date = article.data.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<BaseLayout title={article.data.title} description={article.data.description} path={`/blog/${article.id}/`}>
+  <Container size="narrow" class="pt-28 pb-20 sm:pt-32">
+    <a href="/#blog" class="inline-flex items-center gap-2 text-small text-muted hover:text-fg">
+      <Icon name="arrowLeft" size={15} /> Back to the blog
+    </a>
+
+    {article.data.draft && (
+      <p class="mt-6 rounded-md border border-warn/40 bg-warn/10 px-4 py-3 text-small text-warn" role="note">
+        Draft: only visible in <code class="font-mono">npm run dev</code>. Set{' '}
+        <code class="font-mono">draft: false</code> in the article's front matter to publish it.
+      </p>
+    )}
+
+    <article class="mt-8">
+      <header class="border-b border-line pb-8">
+        <p class="eyebrow mb-3">article</p>
+        <h1 class="text-h1 text-balance">{article.data.title}</h1>
+        <p class="mt-4 text-lead text-pretty text-muted">{article.data.description}</p>
+        <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-caption text-subtle">
+          <span>{profile.name}</span>
+          <time datetime={article.data.date.toISOString().slice(0, 10)}>{date}</time>
+          <span>{minutes} min read</span>
+          <ul class="flex flex-wrap gap-1.5" aria-label="Tags">
+            {article.data.tags.map((t) => (
+              <Badge as="li" class="!text-micro">
+                {t}
+              </Badge>
+            ))}
+          </ul>
+        </div>
+      </header>
+
+      <div class="prose mt-8">
+        <Content />
+      </div>
+    </article>
+
+    <div class="mt-12 border-t border-line pt-6">
+      <a href="/#contact" class="text-small text-muted hover:text-fg">
+        Questions about this? <span class="text-accent">Get in touch →</span>
+      </a>
+    </div>
+  </Container>
+</BaseLayout>
+
+<style is:global>
+  .prose {
+    font-size: var(--text-body);
+    line-height: 1.75;
+    color: var(--c-text);
+  }
+  .prose > * + * {
+    margin-top: 1.1em;
+  }
+  .prose h2 {
+    margin-top: 2.2em;
+    font-family: var(--f-display);
+    font-size: var(--text-h3);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  .prose h3 {
+    margin-top: 1.8em;
+    font-weight: 600;
+  }
+  .prose p,
+  .prose li {
+    color: color-mix(in oklab, var(--c-text) 88%, var(--c-muted));
+  }
+  .prose strong {
+    color: var(--c-text);
+    font-weight: 600;
+  }
+  .prose a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li + li {
+    margin-top: 0.35em;
+  }
+  .prose li::marker {
+    color: var(--c-subtle);
+  }
+  .prose :not(pre) > code {
+    font-family: var(--f-mono);
+    font-size: 0.875em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: var(--c-surface-raised);
+    border: 1px solid var(--c-border);
+  }
+  .prose pre {
+    font-family: var(--f-mono);
+    font-size: var(--text-small);
+    line-height: 1.65;
+    padding: 1rem 1.125rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-border);
+    background: var(--c-bg) !important;
+    overflow-x: auto;
+  }
+  [data-theme='dark'] .prose .astro-code span {
+    color: var(--shiki-dark);
+  }
+  [data-theme='light'] .prose .astro-code span {
+    color: var(--shiki-light);
+  }
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-small);
+    display: block;
+    overflow-x: auto;
+  }
+  .prose th,
+  .prose td {
+    border-bottom: 1px solid var(--c-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .prose th {
+    font-family: var(--f-mono);
+    font-size: var(--text-caption);
+    font-weight: 400;
+    color: var(--c-subtle);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+  }
+</style>

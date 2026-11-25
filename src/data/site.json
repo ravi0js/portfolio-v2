@@ -134,7 +134,7 @@
       "subtitle": "My academic foundation in computer applications and software development."
     },
     "certifications": {
-      "enabled": true,
+      "enabled": false,
       "eyebrow": "certifications",
       "title": "Certifications",
       "subtitle": "Courses and credentials alongside my degrees."
@@ -143,7 +143,7 @@
       "enabled": true,
       "eyebrow": "writing",
       "title": "Blog",
-      "subtitle": "Articles and notes I've published."
+      "subtitle": "Write-ups on backend problems I've worked on, plus older notes."
     },
     "contact": {
       "enabled": true,

@@ -54,6 +54,7 @@ const period = `${formatYearMonth(job.start)} – ${job.end ? formatYearMonth(jo
                 <dt class="sr-only">{m.label}</dt>
                 <dd>
                   <p class="font-mono text-h2 leading-none font-semibold">
+                    {m.prefix}
                     {m.value}
                     <span class="text-accent">{m.suffix}</span>
                   </p>

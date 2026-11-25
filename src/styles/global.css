@@ -38,6 +38,17 @@
   .font-display {
     font-family: var(--f-display);
   }
+  /* Show code exactly as typed: no "->" → arrow or "===" ligatures. */
+  code,
+  pre,
+  kbd,
+  samp,
+  .font-mono {
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'calt' 0,
+      'liga' 0;
+  }
   ::selection {
     background: color-mix(in oklab, var(--c-accent) 35%, transparent);
   }
