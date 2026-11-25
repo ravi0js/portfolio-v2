@@ -3,7 +3,7 @@
     "url": "https://ravi-kr.netlify.app",
     "title": "Ravi Kumar — Backend Developer (PHP, Laravel, Slim)",
     "titleTemplate": "%s · Ravi Kumar",
-    "description": "Backend Developer building production CRM/ERP backends, REST APIs and third-party integrations with PHP, Slim, Laravel, MySQL and Redis.",
+    "description": "Ravi Kumar, Backend Developer. I build reliable backend systems, scalable REST APIs and business applications with PHP, Laravel, Slim, MySQL and Redis.",
     "ogImage": "/og/default.png",
     "locale": "en_IN",
     "keywords": [
@@ -54,20 +54,24 @@
   },
   "nav": [
     {
-      "label": "Experience",
-      "href": "/#experience"
+      "label": "Home",
+      "href": "/#home"
     },
     {
-      "label": "Systems",
-      "href": "/#systems"
-    },
-    {
-      "label": "Project",
-      "href": "/#project"
+      "label": "About",
+      "href": "/#about"
     },
     {
       "label": "Skills",
       "href": "/#skills"
+    },
+    {
+      "label": "Experience",
+      "href": "/#experience"
+    },
+    {
+      "label": "Projects",
+      "href": "/#projects"
     },
     {
       "label": "Contact",

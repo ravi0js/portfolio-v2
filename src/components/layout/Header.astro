@@ -20,13 +20,13 @@ const { nav = site.nav } = Astro.props;
   <Container class="flex h-16 items-center justify-between gap-4">
     <Logo />
 
-    <nav aria-label="Primary" class="hidden md:block">
+    <nav aria-label="Primary" class="hidden lg:block">
       <ul class="flex items-center gap-1">
         {nav.map((item) => (
           <li>
             <a
               href={item.href}
-              class="rounded-md px-3 py-2 text-small text-muted transition-colors duration-fast hover:text-fg"
+              class="nav-link relative rounded-md px-3 py-2 text-small text-muted transition-colors duration-fast hover:text-fg aria-[current=true]:text-fg"
               data-nav-link
             >
               {item.label}
@@ -44,24 +44,29 @@ const { nav = site.nav } = Astro.props;
         </IconButton>
       )}
       <Button href={profile.cv.file} download icon="download" size="sm" class="hidden sm:inline-flex">
-        CV
+        Resume
       </Button>
       <IconButton
         id="menu-toggle"
         icon="menu"
         label="Open menu"
-        class="md:hidden"
+        class="lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
       />
     </div>
   </Container>
 
-  <div id="mobile-menu" class="hidden border-t border-line bg-bg/95 backdrop-blur md:hidden">
+  <div id="mobile-menu" class="hidden border-t border-line bg-bg/95 backdrop-blur lg:hidden">
     <Container as="ul" class="flex flex-col py-3">
       {nav.map((item) => (
         <li>
-          <a href={item.href} class="block rounded-md px-2 py-3 text-small text-muted hover:text-fg" data-close-menu>
+          <a
+            href={item.href}
+            class="block rounded-md px-3 py-3 text-small text-muted hover:text-fg aria-[current=true]:bg-raised aria-[current=true]:text-fg"
+            data-close-menu
+            data-nav-link
+          >
             {item.label}
           </a>
         </li>
@@ -124,9 +129,7 @@ const { nav = site.nav } = Astro.props;
         for (const e of entries) {
           if (!e.isIntersecting) continue;
           links.forEach((a) => {
-            const on = a.hash === `#${e.target.id}`;
-            a.classList.toggle('text-fg', on);
-            if (on) a.setAttribute('aria-current', 'true');
+            if (a.hash === `#${e.target.id}`) a.setAttribute('aria-current', 'true');
             else a.removeAttribute('aria-current');
           });
         }
@@ -136,3 +139,22 @@ const { nav = site.nav } = Astro.props;
     targets.forEach((t) => io.observe(t));
   }
 </script>
+
+<style>
+  /* Active-section indicator: a short accent underline that grows in. */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.25rem;
+    height: 1.5px;
+    border-radius: 999px;
+    background: var(--c-accent);
+    transform: scaleX(0);
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+  .nav-link[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+</style>

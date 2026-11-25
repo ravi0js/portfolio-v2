@@ -1,0 +1,168 @@
+---
+/**
+ * Hero visual: one request travelling through a typical backend stack and the
+ * JSON response it returns. Pure HTML/CSS (no JS). All labels come from
+ * profile.json → heroVisual. Static under reduced motion.
+ */
+import Icon from '@/components/ui/Icon.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { profile } from '@/lib/content';
+
+const v = profile.heroVisual;
+const steps = v.layers.length + 1; // layers + the data row
+// Pretty-print, but keep short arrays on one line so the response stays compact.
+const body = JSON.stringify(v.response.body, null, 2).replace(/\[\s*([^[\]{}]*?)\s*\]/g, (m, inner: string) => {
+  const one = `[${inner.split(/,\s*/).join(', ')}]`;
+  return one.length <= 48 ? one : m;
+});
+// Single-pass syntax colouring: a string followed by ':' is a key, otherwise a value.
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const highlighted = body
+  .split(/("(?:[^"\\]|\\.)*"(?:\s*:)?)/g)
+  .map((part) => {
+    if (!part.startsWith('"')) return `<span class="text-subtle">${esc(part)}</span>`;
+    const isKey = /:\s*$/.test(part);
+    const str = esc(part.replace(/\s*:\s*$/, ''));
+    return isKey
+      ? `<span class="text-fg">${str}</span><span class="text-subtle">:</span>`
+      : `<span class="text-accent">${str}</span>`;
+  })
+  .join('');
+---
+
+<figure class="rf w-full" style={`--steps:${steps}`} aria-labelledby="rf-caption">
+  <div class="card overflow-hidden shadow-raised">
+    <!-- Request line -->
+    <div class="flex items-center gap-3 border-b border-line bg-raised px-4 py-3">
+      <span class="rounded-sm bg-accent/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-accent">
+        {v.request.method}
+      </span>
+      <span class="truncate font-mono text-caption text-fg">{v.request.path}</span>
+      <span class="ml-auto hidden font-mono text-micro tracking-label text-subtle uppercase sm:block">{v.title}</span>
+    </div>
+
+    <!-- Layers -->
+    <ol class="rf-list relative space-y-2 p-4 sm:p-5">
+      <span class="rf-rail" aria-hidden="true">
+        <span class="rf-packet"></span>
+      </span>
+      {v.layers.map((layer, i) => (
+        <li class="rf-node relative flex items-center gap-3" style={`--i:${i}`}>
+          <span class="rf-icon relative z-10 grid size-9 shrink-0 place-items-center rounded-md border border-line bg-surface text-muted">
+            <Icon name={layer.icon} size={16} />
+          </span>
+          <div class="rf-box flex min-w-0 flex-1 items-center justify-between gap-3 rounded-md border border-line bg-bg/50 px-3 py-2">
+            <div class="min-w-0">
+              <p class="truncate text-small font-medium">{layer.label}</p>
+              <p class="truncate text-caption text-muted">{layer.detail}</p>
+            </div>
+            <span class="hidden shrink-0 font-mono text-micro text-subtle sm:block">{layer.tag}</span>
+          </div>
+        </li>
+      ))}
+      <li class="rf-node relative flex items-stretch gap-3" style={`--i:${v.layers.length}`}>
+        <span class="rf-icon relative z-10 grid size-9 shrink-0 place-items-center self-center rounded-md border border-line bg-surface text-muted">
+          <Icon name="database" size={16} />
+        </span>
+        <div class="grid min-w-0 flex-1 grid-cols-2 gap-2">
+          {v.stores.map((s) => (
+            <div class="rf-box min-w-0 rounded-md border border-line bg-bg/50 px-3 py-2">
+              <p class="flex items-center gap-1.5 text-small font-medium">
+                <Icon name={s.icon} size={13} class="shrink-0 text-accent" />
+                <span class="truncate">{s.label}</span>
+              </p>
+              <p class="text-caption leading-snug text-muted">{s.detail}</p>
+            </div>
+          ))}
+        </div>
+      </li>
+    </ol>
+
+    <!-- Response -->
+    <div class="border-t border-line bg-raised/60 px-4 py-3 sm:px-5">
+      <div class="mb-2 flex items-center gap-2">
+        <Badge variant="accent" class="!py-0 !text-micro">
+          {v.response.status}
+        </Badge>
+        <span class="font-mono text-micro text-subtle">application/json</span>
+      </div>
+      <pre class="overflow-x-auto font-mono text-caption leading-relaxed text-muted"><code set:html={highlighted} /></pre>
+    </div>
+  </div>
+  <figcaption id="rf-caption" class="mt-3 text-caption text-subtle">
+    {v.caption}
+  </figcaption>
+</figure>
+
+<style>
+  /* Rail runs through the centre of the icon column (icon is 2.25rem wide). */
+  .rf-rail {
+    position: absolute;
+    left: calc(1rem + 1.125rem);
+    top: 2.25rem;
+    bottom: 2.25rem;
+    width: 1px;
+    background: var(--c-border);
+  }
+  @media (min-width: 40rem) {
+    .rf-rail {
+      left: calc(1.25rem + 1.125rem);
+    }
+  }
+  .rf-packet {
+    display: none;
+  }
+
+  /* One cycle: the packet travels down over 70% of the cycle, then rests. */
+  :global(.js-motion) .rf {
+    --cycle: 4.2s;
+  }
+  :global(.js-motion) .rf-packet {
+    display: block;
+    position: absolute;
+    z-index: 20; /* above the icon tiles it passes */
+    left: 50%;
+    top: 0;
+    width: 7px;
+    height: 7px;
+    margin: -3.5px 0 0 -3.5px;
+    border-radius: 999px;
+    background: var(--c-accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--c-accent) 20%, transparent);
+    animation: rf-travel var(--cycle) var(--ease-in-out-soft) infinite;
+  }
+  @keyframes rf-travel {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    6% {
+      opacity: 1;
+    }
+    70% {
+      top: 100%;
+      opacity: 1;
+    }
+    80%,
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+  /* Each node lights up as the packet reaches it. */
+  :global(.js-motion) .rf-node .rf-icon,
+  :global(.js-motion) .rf-node .rf-box {
+    animation: rf-hit var(--cycle) ease-out infinite;
+    animation-delay: calc(var(--cycle) * 0.7 * var(--i) / (var(--steps) - 1));
+  }
+  @keyframes rf-hit {
+    0% {
+      border-color: var(--c-accent);
+      color: var(--c-text);
+    }
+    18%,
+    100% {
+      border-color: var(--c-border);
+    }
+  }
+</style>

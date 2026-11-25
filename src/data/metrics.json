@@ -1,5 +1,19 @@
 [
   {
+    "value": "2",
+    "suffix": "+",
+    "label": "years in backend development",
+    "context": "Production PHP (Slim) CRM/ERP backend since Jul 2024",
+    "source": "CV · Professional summary"
+  },
+  {
+    "value": "200",
+    "suffix": "+",
+    "label": "people use it daily",
+    "context": "Real-estate CRM/ERP backend I work on",
+    "source": "CV · Professional summary"
+  },
+  {
     "value": "40",
     "suffix": "%",
     "label": "faster lead processing",
@@ -12,19 +26,5 @@
     "label": "faster CRM endpoints",
     "context": "Redis caching and removing N+1 queries with window functions",
     "source": "CV · Digital Think Technology"
-  },
-  {
-    "value": "200",
-    "suffix": "+",
-    "label": "people use it daily",
-    "context": "Production real-estate CRM/ERP backend",
-    "source": "CV · Professional summary"
-  },
-  {
-    "value": "27",
-    "suffix": "",
-    "label": "PHPUnit tests in CI",
-    "context": "Run on every push to main for JobBoard API",
-    "source": "JobBoard API repository"
   }
 ]

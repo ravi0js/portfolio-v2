@@ -14,6 +14,9 @@ import projectsJson from '@/data/projects.json';
 import skillsJson from '@/data/skills.json';
 import educationJson from '@/data/education.json';
 
+import { iconPaths, type IconName } from '@/components/ui/icons';
+
+const iconName = z.enum(Object.keys(iconPaths) as [IconName, ...IconName[]]);
 const hex = z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'must be a hex colour like #34d399');
 const url = z.string().min(1);
 const yearMonth = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'must be YYYY-MM');
@@ -77,12 +80,15 @@ export const profileSchema = z.object({
   initials: z.string().max(3),
   role: z.string(),
   headline: z.string(),
+  positioning: z.string(),
   tagline: z.string(),
+  intro: z.string(),
   location: z.string(),
   email: z.email(),
   availability: z.string().optional(),
   summary: z.array(z.string()),
   primaryStack: z.array(z.string()),
+  heroStack: z.array(z.string()).min(1),
   links: z.array(z.object({ label: z.string(), url: url, icon: z.enum(['github', 'linkedin', 'mail', 'link']) })),
   cv: z.object({ file: z.string(), label: z.string() }),
   phoneGate: z.object({
@@ -92,7 +98,14 @@ export const profileSchema = z.object({
     endpoint: z.string(),
   }),
   contactForm: z.object({ enabled: z.boolean(), endpoint: z.string() }),
-  apiConsole: z.object({ method: z.string(), path: z.string(), status: z.string(), latency: z.string().optional() }),
+  heroVisual: z.object({
+    title: z.string(),
+    caption: z.string(),
+    request: z.object({ method: z.string(), path: z.string() }),
+    layers: z.array(z.object({ label: z.string(), detail: z.string(), tag: z.string(), icon: iconName })).min(1),
+    stores: z.array(z.object({ label: z.string(), detail: z.string(), icon: iconName })).min(1),
+    response: z.object({ status: z.string(), body: z.record(z.string(), z.unknown()) }),
+  }),
 });
 
 export const metricSchema = z.object({

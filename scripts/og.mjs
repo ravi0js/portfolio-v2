@@ -38,7 +38,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   ${grid}
   <rect width="1200" height="630" fill="url(#fade)"/>
   <rect width="1200" height="630" fill="url(#g)"/>
-  <text x="80" y="130" font-family="DejaVu Sans Mono, monospace" font-size="24" fill="${accent}" letter-spacing="2">${esc(profile.apiConsole.method)} ${esc(profile.apiConsole.path)}</text>
+  <text x="80" y="130" font-family="DejaVu Sans Mono, monospace" font-size="24" fill="${accent}" letter-spacing="2">${esc(profile.heroVisual.request.method)} ${esc(profile.heroVisual.request.path)}</text>
   <text x="80" y="250" font-family="DejaVu Sans, sans-serif" font-size="84" font-weight="700" fill="${dark.text}">${esc(profile.name)}</text>
   <text x="80" y="325" font-family="DejaVu Sans, sans-serif" font-size="42" fill="${dark.muted}">${esc(profile.role)}</text>
   <text x="80" y="400" font-family="DejaVu Sans, sans-serif" font-size="26" fill="${dark.subtle}">${esc(profile.headline)}</text>
