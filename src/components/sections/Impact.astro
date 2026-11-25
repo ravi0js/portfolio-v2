@@ -1,28 +1,37 @@
 ---
-import { site, metrics } from '@/lib/content';
+import { site, metrics, about } from '@/lib/content';
 const meta = site.sections.impact;
+
+// Don't repeat numbers already shown in the About highlights.
+// A strip of one looks unfinished, so render only when 2+ metrics remain.
+const shownInAbout = new Set(about.highlights.map((h) => h.metric).filter(Boolean));
+const items = metrics.filter((m) => !shownInAbout.has(m.id));
+const cols =
+  { 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4' }[Math.min(items.length, 4)] ?? 'lg:grid-cols-4';
 ---
 
-<section aria-label={meta.title} class="border-y border-line bg-surface/50">
-  <div class="container-page">
-    <h2 class="sr-only">{meta.title}</h2>
-    <dl class="grid grid-cols-2 divide-line lg:grid-cols-4 lg:divide-x">
-      {metrics.map((m, i) => (
-        <div class="px-1 py-8 sm:px-6 lg:py-10" data-reveal style={`--reveal-delay:${i * 80}ms`}>
-          <dt class="sr-only">{m.label}</dt>
-          <dd>
-            <p class="font-mono text-4xl font-semibold tracking-tight sm:text-5xl">
-              <span data-count={m.value}>{m.value}</span>
-              <span class="text-accent">{m.suffix}</span>
-            </p>
-            <p class="mt-2 text-sm font-medium">{m.label}</p>
-            <p class="mt-1 text-xs text-subtle">{m.context}</p>
-          </dd>
-        </div>
-      ))}
-    </dl>
-  </div>
-</section>
+{items.length >= 2 && (
+  <section aria-label={meta.title} class="border-y border-line bg-surface/50">
+    <div class="container-page">
+      <h2 class="sr-only">{meta.title}</h2>
+      <dl class:list={['grid grid-cols-2 divide-line lg:divide-x', cols]}>
+        {items.map((m, i) => (
+          <div class="px-1 py-8 sm:px-6 lg:py-10" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <dt class="sr-only">{m.label}</dt>
+            <dd>
+              <p class="font-mono text-4xl font-semibold tracking-tight sm:text-5xl">
+                <span data-count={m.value}>{m.value}</span>
+                <span class="text-accent">{m.suffix}</span>
+              </p>
+              <p class="mt-2 text-sm font-medium">{m.label}</p>
+              <p class="mt-1 text-xs text-subtle">{m.context}</p>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+)}
 
 <script>
   // Count up numbers once when visible (skipped when reduced motion is on).
