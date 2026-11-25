@@ -110,16 +110,17 @@
     "education": {
       "enabled": true,
       "eyebrow": "education",
-      "title": "Education"
+      "title": "Education",
+      "subtitle": "My academic foundation in computer applications and software development."
     },
     "contact": {
       "enabled": true,
       "eyebrow": "contact",
-      "title": "Let's talk backend",
-      "subtitle": "Open to backend engineering roles. The quickest way to reach me is email."
+      "title": "Let's Build Something Together",
+      "subtitle": "Have an interesting backend engineering opportunity or project? Feel free to get in touch."
     }
   },
   "footer": {
-    "note": "Built with Astro, TypeScript and Tailwind CSS. Content is generated from JSON."
+    "note": "Built with Astro, TypeScript and Tailwind CSS."
   }
 }

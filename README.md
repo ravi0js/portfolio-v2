@@ -72,7 +72,7 @@ Set these in **Netlify → Site configuration → Environment variables**:
 | `CONTACT_FROM_EMAIL` | `Portfolio <onboarding@resend.dev>` for testing, or an address on a domain verified in Resend |
 | `CONTACT_PHONE`      | `+91 …`                                                                                       |
 
-The same function handles the "Send a message" form. Both forms include a honeypot field, input length limits and a basic rate limit.
+The same function handles the "Send a message" form (name, email, subject, message). Success is shown only when the function confirms it. If the function isn't deployed or configured (for example under `npm run dev`), visitors get an honest error with your email address instead. Both forms include a honeypot field, input length limits and a basic rate limit.
 
 ## Deploy (Netlify)
 

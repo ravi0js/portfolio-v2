@@ -1,18 +1,58 @@
 ---
+/** Education: degree cards on a short timeline. Content from education.json. */
 import Section from '@/components/layout/Section.astro';
+import Card from '@/components/ui/Card.astro';
+import Icon from '@/components/ui/Icon.astro';
 import { site, education } from '@/lib/content';
+
 const meta = site.sections.education;
 ---
 
-<Section id="education" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle} class="!pt-0">
-  <ul class="grid gap-4 md:grid-cols-2">
+<Section id="education" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
+  <ol class="edu grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6" aria-label="Degrees, most recent first">
     {education.map((e, i) => (
-      <li class="card p-5 sm:p-6" data-reveal style={`--reveal-delay:${i * 70}ms`}>
-        <p class="font-mono text-xs text-subtle">{e.year}</p>
-        <h3 class="mt-2 font-semibold">{e.degree}</h3>
-        <p class="mt-1 text-sm text-muted">{e.institution}</p>
-        {e.score && <p class="mt-3 font-mono text-sm text-accent">{e.score}</p>}
+      <li data-reveal style={`--reveal-delay:${i * 80}ms`}>
+        <Card as="article" interactive class="group relative h-full overflow-hidden">
+          <span
+            class="pointer-events-none absolute -top-3 -right-2 font-display text-[5.5rem] leading-none font-bold text-line/60 select-none transition-colors duration-slow group-hover:text-accent/10"
+            aria-hidden="true"
+          >
+            {e.short}
+          </span>
+
+          <div class="relative flex items-center gap-3">
+            <span class="grid size-10 shrink-0 place-items-center rounded-md border border-line bg-raised text-accent">
+              <Icon name="graduation" size={18} />
+            </span>
+            <p class="font-mono text-caption text-muted">
+              <time datetime={e.year}>{e.year}</time>
+            </p>
+          </div>
+
+          <h3 class="relative mt-5 text-h3">
+            {e.degree} <span class="text-muted">({e.short})</span>
+          </h3>
+
+          <dl class="relative mt-4 space-y-2 text-small">
+            <div class="flex gap-3">
+              <dt class="w-24 shrink-0 font-mono text-caption tracking-label text-subtle uppercase">Institution</dt>
+              <dd>{e.institution}</dd>
+            </div>
+            {e.university && (
+              <div class="flex gap-3">
+                <dt class="w-24 shrink-0 font-mono text-caption tracking-label text-subtle uppercase">University</dt>
+                <dd>{e.university}</dd>
+              </div>
+            )}
+            {e.score && (
+              <div class="flex gap-3">
+                <dt class="w-24 shrink-0 font-mono text-caption tracking-label text-subtle uppercase">Score</dt>
+                <dd class="font-mono font-semibold text-accent">{e.score}</dd>
+              </div>
+            )}
+          </dl>
+        </Card>
       </li>
     ))}
-  </ul>
+  </ol>
 </Section>

@@ -120,9 +120,11 @@ const { nav = site.nav } = Astro.props;
 
   // Highlight the nav link for the section in view.
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
-  const targets = links
-    .map((a) => document.getElementById(a.hash.slice(1)))
-    .filter((el): el is HTMLElement => el !== null);
+  // Observe every page section, so the highlight clears in sections that have no nav link
+  // (e.g. Education) instead of sticking on the previous one.
+  const targets = links.some((a) => document.getElementById(a.hash.slice(1)))
+    ? [...document.querySelectorAll<HTMLElement>('main > section[id]')]
+    : [];
   if (targets.length && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(
       (entries) => {

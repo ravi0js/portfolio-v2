@@ -117,7 +117,13 @@ const host = new URL(site.seo.url).host;
           {education.map((e) => (
             <li class="flex flex-wrap justify-between gap-x-4">
               <span>
-                <span class="font-medium">{e.degree}</span> <span class="text-muted">— {e.institution}</span>
+                <span class="font-medium">
+                  {e.degree} ({e.short})
+                </span>{' '}
+                <span class="text-muted">
+                  — {e.institution}
+                  {e.university && `, ${e.university}`}
+                </span>
               </span>
               <span class="font-mono text-xs text-muted">
                 {e.year}

@@ -273,9 +273,14 @@ export const aboutSchema = z.object({
   principles: z.array(z.object({ title: z.string(), detail: z.string(), icon: iconName })).min(1),
 });
 export const educationSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
   degree: z.string(),
+  /** Abbreviation shown as a monogram, e.g. "MCA" */
+  short: z.string().max(6),
   institution: z.string(),
-  year: z.string(),
+  /** Affiliating university, when different from the institution */
+  university: z.string().optional(),
+  year: z.string().regex(/^\d{4}$/),
   score: z.string().optional(),
 });
 

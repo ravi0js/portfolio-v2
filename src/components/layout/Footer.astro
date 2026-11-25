@@ -1,20 +1,39 @@
 ---
 import Container from './Container.astro';
+import Logo from './Logo.astro';
 import IconButton from '@/components/ui/IconButton.astro';
 import { site, profile } from '@/lib/content';
+
+// Build-time year; a tiny script below keeps it current if the site isn't rebuilt.
 const year = new Date().getFullYear();
 ---
 
 <footer class="no-print border-t border-line">
-  <Container class="flex flex-col gap-4 py-8 text-small text-subtle sm:flex-row sm:items-center sm:justify-between">
-    <p>
-      © {year} {profile.name}. {site.footer.note}
-    </p>
-    <div class="flex items-center gap-1">
-      {profile.links.map((l) => (
-        <IconButton href={l.url} external icon={l.icon} label={l.label} variant="plain" />
-      ))}
-      <IconButton href={`mailto:${profile.email}`} icon="mail" label="Email" variant="plain" />
+  <Container class="py-10">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3">
+        <Logo showName={false} />
+        <div>
+          <p class="font-display text-small font-semibold">{profile.name}</p>
+          <p class="text-caption text-muted">{profile.role}</p>
+        </div>
+      </div>
+      <nav aria-label="Social and contact" class="-ml-2 flex items-center gap-1 sm:ml-0">
+        {profile.links.map((l) => (
+          <IconButton href={l.url} external icon={l.icon} label={`${l.label} (opens in a new tab)`} variant="plain" />
+        ))}
+        <IconButton href={`mailto:${profile.email}`} icon="mail" label={`Email ${profile.email}`} variant="plain" />
+      </nav>
+    </div>
+    <div class="mt-8 flex flex-col gap-2 border-t border-line pt-6 text-caption text-subtle sm:flex-row sm:justify-between">
+      <p>
+        © <span data-year>{year}</span> {profile.name}. All rights reserved.
+      </p>
+      <p>{site.footer.note}</p>
     </div>
   </Container>
 </footer>
+
+<script>
+  document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
+</script>

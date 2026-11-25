@@ -1,0 +1,48 @@
+---
+/** One contact channel: icon, label, value; optionally a link (mailto:, tel:, external, download). */
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/components/ui/icons';
+
+interface Props {
+  icon: IconName;
+  label: string;
+  value: string;
+  href?: string;
+  external?: boolean;
+  download?: boolean;
+  /** Accessible name when the visible text alone is ambiguous. */
+  ariaLabel?: string;
+  class?: string;
+}
+const { icon, label, value, href, external = false, download = false, ariaLabel, class: cls } = Astro.props;
+const trailing: IconName | null = !href ? null : download ? 'download' : external ? 'external' : 'arrowRight';
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'contact-card card group flex min-w-0 items-center gap-4 p-4',
+    href && 'card-hover focus-visible:border-accent',
+    cls,
+  ]}
+  aria-label={ariaLabel}
+  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  {...(download ? { download: '' } : {})}
+>
+  <span class="grid size-10 shrink-0 place-items-center rounded-md border border-line bg-raised text-accent">
+    <Icon name={icon} size={18} />
+  </span>
+  <span class="min-w-0 flex-1">
+    <span class="block font-mono text-micro tracking-label text-subtle uppercase">{label}</span>
+    <span class="mt-0.5 block truncate text-small font-medium">{value}</span>
+  </span>
+  {trailing && (
+    <Icon
+      name={trailing}
+      size={16}
+      class="shrink-0 text-subtle transition-[color,transform] duration-fast group-hover:translate-x-0.5 group-hover:text-fg"
+    />
+  )}
+  <slot />
+</Tag>

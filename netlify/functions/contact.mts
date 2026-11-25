@@ -1,7 +1,8 @@
 /**
  * POST /.netlify/functions/contact
  *
- * type = "message"        → emails the message to CONTACT_TO_EMAIL.
+ * type = "message"        → emails name/email/subject/message to CONTACT_TO_EMAIL
+ *                           (reply-to is the sender).
  * type = "phone_request"  → emails the requester's details to CONTACT_TO_EMAIL,
  *                           then returns CONTACT_PHONE to the visitor.
  *
@@ -12,7 +13,7 @@
 import type { Context } from '@netlify/functions';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const LIMITS = { name: 100, email: 200, company: 120, reason: 300, message: 3000 };
+const LIMITS = { name: 100, email: 200, company: 120, reason: 300, subject: 150, message: 3000 };
 
 // Best-effort per-instance rate limit (serverless instances are short-lived; this only blunts bursts).
 const hits = new Map<string, number[]>();
@@ -68,13 +69,16 @@ export default async (req: Request, context: Context) => {
   const email = clean(body.email, LIMITS.email);
   const company = clean(body.company, LIMITS.company);
   const reason = clean(body.reason, LIMITS.reason);
+  const subjectLine = clean(body.subject, LIMITS.subject).replace(/[\r\n]+/g, ' ');
   const message = clean(body.message, LIMITS.message);
 
   if (!type) return json(400, { ok: false, error: 'Invalid request.' });
-  if (name.length < 2) return json(422, { ok: false, error: 'Please enter your name.' });
-  if (!EMAIL_RE.test(email)) return json(422, { ok: false, error: 'Please enter a valid email.' });
+  if (name.length < 2) return json(422, { ok: false, field: 'name', error: 'Please enter your name.' });
+  if (!EMAIL_RE.test(email)) return json(422, { ok: false, field: 'email', error: 'Please enter a valid email.' });
+  if (type === 'message' && subjectLine.length < 3)
+    return json(422, { ok: false, field: 'subject', error: 'Please add a subject.' });
   if (type === 'message' && message.length < 10)
-    return json(422, { ok: false, error: 'Please write a slightly longer message.' });
+    return json(422, { ok: false, field: 'message', error: 'Please write a slightly longer message.' });
   if (type === 'phone_request' && !CONTACT_PHONE) {
     return json(503, { ok: false, error: 'Phone sharing is not configured. Please email me.' });
   }
@@ -85,12 +89,15 @@ export default async (req: Request, context: Context) => {
     ['Email', email],
     ...(company ? [['Company', company] as [string, string]] : []),
     ...(reason ? [['Reason', reason] as [string, string]] : []),
+    ...(subjectLine ? [['Subject', subjectLine] as [string, string]] : []),
     ['Time (UTC)', when],
     ['Country', context.geo?.country?.name ?? 'unknown'],
   ];
 
   const subject =
-    type === 'phone_request' ? `📞 Phone number requested by ${name}` : `✉️ Portfolio message from ${name}`;
+    type === 'phone_request'
+      ? `📞 Phone number requested by ${name}`
+      : `✉️ ${subjectLine} (from ${name}, via portfolio)`;
 
   const html = `
     <div style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">
