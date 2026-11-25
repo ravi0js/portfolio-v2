@@ -1,0 +1,52 @@
+---
+import { site, metrics } from '@/lib/content';
+const meta = site.sections.impact;
+---
+
+<section aria-label={meta.title} class="border-y border-line bg-surface/50">
+  <div class="container-page">
+    <h2 class="sr-only">{meta.title}</h2>
+    <dl class="grid grid-cols-2 divide-line lg:grid-cols-4 lg:divide-x">
+      {
+        metrics.map((m, i) => (
+          <div class="px-1 py-8 sm:px-6 lg:py-10" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <dt class="sr-only">{m.label}</dt>
+            <dd>
+              <p class="font-mono text-4xl font-semibold tracking-tight sm:text-5xl">
+                <span data-count={m.value}>{m.value}</span>
+                <span class="text-accent">{m.suffix}</span>
+              </p>
+              <p class="mt-2 text-sm font-medium">{m.label}</p>
+              <p class="mt-1 text-xs text-subtle">{m.context}</p>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<script>
+  // Count up numbers once when visible (skipped when reduced motion is on).
+  if (document.documentElement.classList.contains('js-motion') && 'IntersectionObserver' in window) {
+    const nodes = document.querySelectorAll<HTMLElement>('[data-count]');
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target as HTMLElement;
+        io.unobserve(el);
+        const target = Number(el.dataset.count);
+        if (!Number.isFinite(target)) continue;
+        const start = performance.now();
+        const dur = 1100;
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - start) / dur);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.5 });
+    nodes.forEach((n) => io.observe(n));
+  }
+</script>

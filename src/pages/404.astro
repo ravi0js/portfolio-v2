@@ -1,0 +1,15 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/ui/Icon.astro';
+---
+
+<BaseLayout title="Not found" description="This page does not exist." path="/404">
+  <section class="grid min-h-[80dvh] place-items-center pt-16">
+    <div class="container-page max-w-lg text-center">
+      <p class="font-mono text-sm text-accent">HTTP/1.1 404 Not Found</p>
+      <h1 class="mt-4 text-3xl font-semibold tracking-tight">No route matches this URL.</h1>
+      <p class="mt-3 text-muted">The page may have moved, or the link was mistyped.</p>
+      <a href="/" class="btn btn-primary mt-8"><Icon name="arrowLeft" size={16} /> Back home</a>
+    </div>
+  </section>
+</BaseLayout>

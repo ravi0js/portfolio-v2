@@ -1,0 +1,55 @@
+{
+  "name": "Ravi Kumar",
+  "initials": "RK",
+  "role": "Backend Developer",
+  "headline": "I build the backend systems businesses run on.",
+  "tagline": "Backend Developer with 2+ years building the production PHP (Slim) backend of a real-estate CRM/ERP used by 200+ people daily, plus a Laravel REST API shipped with Docker, AWS and CI/CD.",
+  "location": "Bangalore, India",
+  "email": "ravi194455@gmail.com",
+  "availability": "Open to backend roles",
+  "summary": [
+    "I work on the parts of a product users never see but always depend on: lead pipelines, payment allocation, call routing, document generation and access control.",
+    "Day to day that means PHP (Slim and Laravel), MySQL tuned with window functions and transactions, Redis caching, and third-party integrations like Meta Lead Ads, Microsoft Graph and Exotel VoIP. Before this I taught PHP and MySQL to undergraduate students."
+  ],
+  "primaryStack": [
+    "PHP",
+    "Slim",
+    "Laravel",
+    "MySQL",
+    "Redis",
+    "Docker",
+    "AWS EC2",
+    "GitHub Actions"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/ravi0js",
+      "icon": "github"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/ravi-kr194455/",
+      "icon": "linkedin"
+    }
+  ],
+  "cv": {
+    "file": "/cv/Ravi-Kumar-Backend-Developer.pdf",
+    "label": "Download CV"
+  },
+  "phoneGate": {
+    "enabled": true,
+    "buttonLabel": "Request phone number",
+    "description": "To avoid spam, my number is shared on request. Leave your details and it will appear here; I'll also get a note that you asked.",
+    "endpoint": "/.netlify/functions/contact"
+  },
+  "contactForm": {
+    "enabled": true,
+    "endpoint": "/.netlify/functions/contact"
+  },
+  "apiConsole": {
+    "method": "GET",
+    "path": "/api/v1/engineer",
+    "status": "200 OK"
+  }
+}

@@ -1,0 +1,43 @@
+---
+import type { Project } from '@/lib/content';
+interface Props {
+  endpoints: Project['endpoints'];
+  limit?: number;
+}
+const { endpoints, limit } = Astro.props;
+const rows = limit ? endpoints.slice(0, limit) : endpoints;
+const methodClass: Record<string, string> = {
+  GET: 'text-accent',
+  POST: 'text-sky-400',
+  PUT: 'text-amber-400',
+  PATCH: 'text-amber-400',
+  DELETE: 'text-rose-400',
+};
+---
+
+<div class="overflow-x-auto rounded-[10px] border border-line">
+  <table class="w-full min-w-[34rem] text-left text-sm">
+    <thead class="border-b border-line bg-raised font-mono text-[0.7rem] uppercase tracking-wider text-subtle">
+      <tr>
+        <th scope="col" class="px-3 py-2.5 font-normal">Method</th>
+        <th scope="col" class="px-3 py-2.5 font-normal">Path</th>
+        <th scope="col" class="px-3 py-2.5 font-normal">Access</th>
+        <th scope="col" class="px-3 py-2.5 font-normal">Description</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-line">
+      {
+        rows.map((e) => (
+          <tr class="transition-colors hover:bg-raised/60">
+            <td class:list={['px-3 py-2 font-mono text-xs font-semibold', methodClass[e.method]]}>{e.method}</td>
+            <td class="px-3 py-2 font-mono text-xs">{e.path}</td>
+            <td class="px-3 py-2">
+              <span class="chip !py-0">{e.access}</span>
+            </td>
+            <td class="px-3 py-2 text-muted">{e.description}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

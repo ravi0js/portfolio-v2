@@ -1,0 +1,125 @@
+[
+  {
+    "id": "lead-pipeline",
+    "title": "Real-time lead pipeline",
+    "summary": "Leads from Meta Lead Ads and Google APIs reach the CRM through webhooks as they happen, instead of in delayed batches.",
+    "outcome": "40% faster lead processing",
+    "stack": ["Meta Lead Ads", "Google APIs", "Webhooks", "PHP (Slim)", "MySQL"],
+    "points": [
+      "Webhook endpoints receive lead events from the ad platforms",
+      "Leads are processed into the CRM pipeline in real time",
+      "The sales team works from the same system of record"
+    ],
+    "diagram": {
+      "type": "flow",
+      "caption": "Lead events flow from ad platforms into the CRM",
+      "steps": [
+        { "label": "Ad platforms", "detail": "Meta Lead Ads, Google", "kind": "external" },
+        { "label": "Webhook handler", "detail": "Receives lead events", "kind": "service" },
+        { "label": "Lead pipeline", "detail": "Processes into CRM", "kind": "service" },
+        { "label": "MySQL", "detail": "System of record", "kind": "store" },
+        { "label": "Sales team", "detail": "Works the lead", "kind": "user" }
+      ]
+    }
+  },
+  {
+    "id": "payment-allocation",
+    "title": "Payment-receipt allocation engine",
+    "summary": "Incoming payment receipts are allocated FIFO across a booking's milestones. Row-level locking makes sure the same receipt can never be allocated twice.",
+    "outcome": "No double allocation under concurrent writes",
+    "stack": ["MySQL transactions", "SELECT … FOR UPDATE", "cron", "PHP (Slim)"],
+    "points": [
+      "FIFO allocation fills the oldest outstanding milestone first",
+      "SELECT … FOR UPDATE locks the rows inside the transaction",
+      "cron jobs send payment reminders and bank-specific demand notes"
+    ],
+    "diagram": {
+      "type": "fifo",
+      "caption": "Illustrative example: one receipt allocated across milestones, oldest first",
+      "receipt": 450000,
+      "currency": "₹",
+      "milestones": [
+        { "label": "Booking", "due": 200000 },
+        { "label": "Foundation", "due": 150000 },
+        { "label": "Structure", "due": 250000 },
+        { "label": "Handover", "due": 100000 }
+      ]
+    },
+    "snippet": {
+      "language": "sql",
+      "title": "Simplified pattern",
+      "code": "START TRANSACTION;\n\n-- lock outstanding milestones for this booking\nSELECT id, due, paid\nFROM milestones\nWHERE booking_id = ? AND paid < due\nORDER BY due_date\nFOR UPDATE;\n\n-- allocate the receipt oldest-first, then\nCOMMIT;"
+    }
+  },
+  {
+    "id": "voip-routing",
+    "title": "Exotel VoIP calling service",
+    "summary": "A calling microservice gives the sales team in-app calling. Calls are routed to the lead's owner, with round-robin as the fallback.",
+    "outcome": "In-app calling for the sales team",
+    "stack": ["Exotel", "Webhooks", "PHP", "Microservice"],
+    "points": [
+      "Webhook handlers process Exotel call events",
+      "Owner-aware routing sends a call to the agent who owns the lead",
+      "Round-robin fallback when no owner can take the call"
+    ],
+    "diagram": {
+      "type": "flow",
+      "caption": "Owner-aware routing with round-robin fallback",
+      "steps": [
+        { "label": "Call event", "detail": "Exotel webhook", "kind": "external" },
+        { "label": "Calling service", "detail": "Webhook handlers", "kind": "service" },
+        { "label": "Owner lookup", "detail": "Who owns this lead?", "kind": "decision" },
+        { "label": "Owner / round-robin", "detail": "Fallback if unavailable", "kind": "service" },
+        { "label": "Sales agent", "detail": "Takes the call", "kind": "user" }
+      ]
+    }
+  },
+  {
+    "id": "document-automation",
+    "title": "Document automation with Microsoft Graph",
+    "summary": "Booking and legal documents are generated as Word files through Microsoft Graph and stored as versioned PDFs in OneDrive.",
+    "outcome": "Automated booking and legal document workflows",
+    "stack": ["Microsoft Graph", "OneDrive", "Word", "PHP"],
+    "points": [
+      "Word documents generated from workflow data via Microsoft Graph",
+      "PDFs stored in OneDrive with versioning",
+      "Powers booking, e-stamp and legal file request workflows"
+    ],
+    "diagram": {
+      "type": "flow",
+      "caption": "From workflow event to versioned PDF",
+      "steps": [
+        { "label": "Workflow event", "detail": "Booking or legal request", "kind": "user" },
+        { "label": "Document service", "detail": "Prepares data", "kind": "service" },
+        { "label": "Microsoft Graph", "detail": "Generates Word doc", "kind": "external" },
+        { "label": "OneDrive", "detail": "Versioned PDF", "kind": "store" }
+      ]
+    }
+  },
+  {
+    "id": "read-path",
+    "title": "Read-path performance",
+    "summary": "Redis caching on high-traffic CRM endpoints, plus rewriting N+1 query patterns as single queries using ROW_NUMBER() window functions.",
+    "outcome": "30% faster response times",
+    "stack": ["Redis", "MySQL window functions", "PHP"],
+    "points": [
+      "Hot endpoints are served from Redis",
+      "N+1 loops replaced by single queries using ROW_NUMBER()",
+      "Lower database load on the busiest CRM screens"
+    ],
+    "diagram": {
+      "type": "flow",
+      "caption": "Cache first, then one optimised query",
+      "steps": [
+        { "label": "CRM request", "detail": "High-traffic endpoint", "kind": "user" },
+        { "label": "Redis", "detail": "Cache hit returns fast", "kind": "store" },
+        { "label": "MySQL", "detail": "Miss: one window-function query", "kind": "store" }
+      ]
+    },
+    "snippet": {
+      "language": "sql",
+      "title": "Latest row per group, in one query",
+      "code": "SELECT *\nFROM (\n  SELECT a.*, ROW_NUMBER() OVER (\n    PARTITION BY a.lead_id ORDER BY a.created_at DESC\n  ) AS rn\n  FROM activities a\n) t\nWHERE t.rn = 1;"
+    }
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "slug": "jobboard-api",
+    "featured": true,
+    "title": "JobBoard API",
+    "tagline": "A Laravel 13 REST API with Sanctum auth, three-role RBAC, Redis caching, Docker, and CI/CD that deploys to AWS EC2 on every push.",
+    "stack": ["Laravel 13", "PHP 8.3", "Sanctum", "MySQL 8.0", "Redis", "Docker", "Apache", "AWS EC2", "EventBridge", "GitHub Actions", "PHPUnit", "Swagger/OpenAPI 3.0"],
+    "links": {
+      "repo": "https://github.com/ravi0js/jobboard-api",
+      "docs": "http://52.35.164.41/api/documentation",
+      "docsNote": "The live Swagger docs run on EC2, which is started and stopped on a schedule to save cost, so they may be offline at times."
+    },
+    "stats": [
+      { "value": "27", "label": "PHPUnit tests" },
+      { "value": "57", "label": "assertions" },
+      { "value": "3", "label": "roles" },
+      { "value": "18", "label": "endpoints" }
+    ],
+    "highlights": [
+      "Sanctum token authentication with custom RBAC middleware for Admin, Employer and Candidate",
+      "Redis caching on high-traffic endpoints; job listing filters by location, type, category and search",
+      "Tiered rate limiting: 5/min on auth routes, 60/min on the API",
+      "Dockerised MySQL, Redis and Apache; deployed to AWS EC2 with an Elastic IP",
+      "EventBridge starts and stops the instance on a schedule to cut hosting cost",
+      "GitHub Actions runs the test suite against MySQL and Redis services, then deploys over SSH"
+    ],
+    "architecture": {
+      "caption": "Request path and infrastructure",
+      "layers": [
+        { "label": "Client", "items": ["REST client / Swagger UI"] },
+        { "label": "Edge", "items": ["Apache", "Rate limiter (5/min auth · 60/min API)"] },
+        { "label": "Application", "items": ["Laravel 13 · PHP 8.3", "Sanctum auth", "Role middleware"] },
+        { "label": "Data", "items": ["MySQL 8.0", "Redis cache"] },
+        { "label": "Infrastructure", "items": ["Docker Compose", "AWS EC2 + Elastic IP", "EventBridge schedule"] }
+      ]
+    },
+    "pipeline": {
+      "caption": "GitHub Actions on push to main",
+      "stages": [
+        { "label": "Checkout", "detail": "actions/checkout" },
+        { "label": "Setup PHP 8.3", "detail": "with MySQL 8.0 + Redis services" },
+        { "label": "Install", "detail": "composer install" },
+        { "label": "Migrate", "detail": "php artisan migrate" },
+        { "label": "Test", "detail": "27 PHPUnit tests" },
+        { "label": "Deploy", "detail": "SSH to EC2, migrate, clear caches" }
+      ]
+    },
+    "roles": [
+      { "name": "Public", "can": ["Register and log in", "Browse jobs and categories"] },
+      { "name": "Candidate", "can": ["Apply for jobs", "View own applications", "Withdraw applications"] },
+      { "name": "Employer", "can": ["Create, update and delete own jobs", "Review applicants", "Update application status"] },
+      { "name": "Admin", "can": ["Manage categories", "View all applications"] }
+    ],
+    "endpoints": [
+      { "method": "POST", "path": "/api/auth/register", "access": "Public", "description": "Register as Employer or Candidate" },
+      { "method": "POST", "path": "/api/auth/login", "access": "Public", "description": "Log in and get a token" },
+      { "method": "GET", "path": "/api/profile", "access": "Auth", "description": "Current user profile" },
+      { "method": "POST", "path": "/api/auth/logout", "access": "Auth", "description": "Revoke token" },
+      { "method": "GET", "path": "/api/jobs", "access": "Public", "description": "List jobs with filters" },
+      { "method": "GET", "path": "/api/jobs/{id}", "access": "Public", "description": "Single job" },
+      { "method": "POST", "path": "/api/jobs", "access": "Employer", "description": "Create job" },
+      { "method": "PUT", "path": "/api/jobs/{id}", "access": "Employer", "description": "Update own job" },
+      { "method": "DELETE", "path": "/api/jobs/{id}", "access": "Employer", "description": "Delete own job" },
+      { "method": "GET", "path": "/api/my-jobs", "access": "Employer", "description": "List own jobs" },
+      { "method": "POST", "path": "/api/jobs/{id}/apply", "access": "Candidate", "description": "Apply for a job" },
+      { "method": "GET", "path": "/api/my-applications", "access": "Candidate", "description": "Own applications" },
+      { "method": "DELETE", "path": "/api/applications/{id}", "access": "Candidate", "description": "Withdraw application" },
+      { "method": "GET", "path": "/api/jobs/{id}/applications", "access": "Employer", "description": "Applicants for a job" },
+      { "method": "PUT", "path": "/api/applications/{id}/status", "access": "Employer", "description": "Update application status" },
+      { "method": "GET", "path": "/api/categories", "access": "Public", "description": "List categories" },
+      { "method": "POST", "path": "/api/categories", "access": "Admin", "description": "Create category" },
+      { "method": "DELETE", "path": "/api/categories/{id}", "access": "Admin", "description": "Delete category" }
+    ],
+    "examples": [
+      {
+        "title": "Log in and get a token",
+        "code": "curl -X POST https://<host>/api/auth/login \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"email\":\"candidate@example.com\",\"password\":\"••••••••\"}'"
+      },
+      {
+        "title": "Filter jobs",
+        "code": "curl 'https://<host>/api/jobs?location=Bangalore&type=full-time&search=php'"
+      },
+      {
+        "title": "Apply as a candidate",
+        "code": "curl -X POST https://<host>/api/jobs/42/apply \\\n  -H 'Authorization: Bearer <token>'"
+      }
+    ],
+    "caseStudy": [
+      {
+        "heading": "Goal",
+        "body": [
+          "Build a job board backend the way a production API would be built: token auth, role-based access, caching, rate limiting, automated tests, documentation, and a real deployment pipeline."
+        ]
+      },
+      {
+        "heading": "Auth and access control",
+        "body": [
+          "Laravel Sanctum issues API tokens. A custom role middleware guards route groups for Candidate, Employer and Admin, so each role can only reach its own endpoints. Employers can only change their own jobs, and candidates can only withdraw their own applications."
+        ]
+      },
+      {
+        "heading": "Performance and abuse protection",
+        "body": [
+          "High-traffic read endpoints are cached in Redis. Named rate limiters give auth routes a strict 5 requests per minute and the general API 60 per minute."
+        ]
+      },
+      {
+        "heading": "Testing",
+        "body": [
+          "27 PHPUnit feature tests (57 assertions) cover authentication, RBAC, jobs and applications. CI runs them against real MySQL 8.0 and Redis service containers, not mocks."
+        ]
+      },
+      {
+        "heading": "Delivery and cost",
+        "body": [
+          "MySQL, Redis and Apache run in Docker Compose on an AWS EC2 instance with an Elastic IP. On every push to main, GitHub Actions runs the tests and, if they pass, deploys over SSH: pull, composer install, migrate and clear caches. An EventBridge schedule starts and stops the instance to keep hosting cost down."
+        ]
+      }
+    ]
+  }
+]

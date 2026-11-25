@@ -1,0 +1,46 @@
+[
+  {
+    "company": "Digital Think Technology",
+    "role": "Backend Developer",
+    "location": "Bangalore",
+    "start": "2024-07",
+    "end": null,
+    "summary": "PHP (Slim) backend for KNS Group's real-estate CRM/ERP, covering leads, bookings, payments and legal documents.",
+    "highlights": [
+      "Integrated Meta Lead Ads webhooks and Google APIs into a real-time lead pipeline, cutting lead processing time by 40%.",
+      "Added Redis caching to high-traffic CRM endpoints and removed N+1 queries using ROW_NUMBER() window functions, improving response times by 30%.",
+      "Built a payment-receipt allocation engine (FIFO across milestones) with row-level locking (SELECT … FOR UPDATE) to prevent double allocation, plus cron-based payment reminders and bank-specific demand notes.",
+      "Built an Exotel VoIP calling microservice with webhook handlers and owner-aware call routing (round-robin fallback), enabling in-app calling for the sales team.",
+      "Integrated Microsoft Graph API to generate Word documents and store versioned PDFs in OneDrive, automating booking and legal document workflows.",
+      "Delivered workflow modules (bulk lead transfer, construction-linked payment plans with versioned amendments, e-stamp and legal file requests) with RBAC via Repository/Service patterns, status tracking and audit logs."
+    ],
+    "tags": ["PHP", "Slim", "MySQL", "Redis", "Meta Lead Ads", "Microsoft Graph", "Exotel", "cron"]
+  },
+  {
+    "company": "KLE BCA College",
+    "role": "Technical Lecturer",
+    "location": "Nagarbhavi, Bangalore",
+    "start": "2023-09",
+    "end": "2024-03",
+    "summary": "Taught backend and web development to undergraduate students.",
+    "highlights": [
+      "Taught PHP, MySQL, OOP and full-stack web development to 100+ undergraduate students, covering MVC, database design and REST APIs.",
+      "Ran structured code reviews and mentored students through backend projects."
+    ],
+    "tags": ["PHP", "MySQL", "OOP", "MVC", "REST APIs"]
+  },
+  {
+    "company": "DeveLearn Technologies Pvt. Ltd.",
+    "role": "Backend Developer Intern",
+    "location": "Bangalore",
+    "start": "2023-01",
+    "end": "2023-06",
+    "summary": "Backend components for user management, feedback, attendance and reporting.",
+    "highlights": [
+      "Built user management with OTP-based authentication and secure session handling.",
+      "Developed modular backend components for feedback, attendance tracking and reporting.",
+      "Optimised MySQL queries to speed up real-time analytics report generation."
+    ],
+    "tags": ["MySQL", "Authentication", "Reporting"]
+  }
+]

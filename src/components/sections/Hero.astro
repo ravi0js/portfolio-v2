@@ -1,0 +1,150 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { profile, experience, featuredProject } from '@/lib/content';
+
+const current = experience.find((e) => e.end === null);
+const { apiConsole } = profile;
+
+// The console response is generated from profile/experience JSON, so it never drifts from the page.
+const response: Record<string, unknown> = {
+  name: profile.name,
+  role: profile.role,
+  location: profile.location,
+  ...(current && { current: { company: current.company, since: current.start } }),
+  stack: profile.primaryStack,
+  focus: ['REST APIs', 'integrations', 'payments', 'performance'],
+  featured_project: featuredProject?.slug,
+  ...(profile.availability && { status: profile.availability }),
+};
+
+type Tok = { t: string; c?: string };
+function tokenize(value: unknown, indent = 0): Tok[][] {
+  const pad = '  '.repeat(indent);
+  const lines: Tok[][] = [];
+  if (Array.isArray(value)) {
+    const inline = value.every((v) => typeof v === 'string') && JSON.stringify(value).length < 44;
+    if (inline) return [[{ t: '[' }, ...value.flatMap((v, i) => [{ t: JSON.stringify(v), c: 'str' }, ...(i < value.length - 1 ? [{ t: ', ' }] : [])]), { t: ']' }]];
+    lines.push([{ t: '[' }]);
+    value.forEach((v, i) => {
+      const inner = tokenize(v, indent + 1);
+      inner[0].unshift({ t: pad + '  ' });
+      if (i < value.length - 1) inner[inner.length - 1].push({ t: ',' });
+      lines.push(...inner);
+    });
+    lines.push([{ t: pad + ']' }]);
+    return lines;
+  }
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value);
+    lines.push([{ t: '{' }]);
+    entries.forEach(([k, v], i) => {
+      const inner = tokenize(v, indent + 1);
+      inner[0].unshift({ t: pad + '  ' }, { t: JSON.stringify(k), c: 'key' }, { t: ': ' });
+      if (i < entries.length - 1) inner[inner.length - 1].push({ t: ',' });
+      lines.push(...inner);
+    });
+    lines.push([{ t: pad + '}' }]);
+    return lines;
+  }
+  return [[{ t: JSON.stringify(value), c: typeof value === 'string' ? 'str' : 'num' }]];
+}
+const lines = tokenize(response);
+const tokenClass: Record<string, string> = { key: 'text-fg', str: 'text-accent', num: 'text-amber-400' };
+---
+
+<section class="relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28" aria-labelledby="hero-title">
+  <div class="grid-bg pointer-events-none absolute inset-0 -z-10"></div>
+  <div class="glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px]"></div>
+
+  <div class="container-page grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+    <div>
+      {
+        profile.availability && (
+          <p class="chip mb-6 !text-xs" data-hero>
+            <span class="status-dot" aria-hidden="true" />
+            {profile.availability}
+          </p>
+        )
+      }
+      <p class="eyebrow mb-4" data-hero style="--reveal-delay:60ms">{profile.role}</p>
+      <h1
+        id="hero-title"
+        class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05]"
+        data-hero
+        style="--reveal-delay:120ms"
+      >
+        {profile.name}<span class="text-subtle">.</span>
+        <span class="mt-2 block text-muted">{profile.headline}</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-pretty text-muted sm:text-lg" data-hero style="--reveal-delay:180ms">
+        {profile.tagline}
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3" data-hero style="--reveal-delay:240ms">
+        <a href={profile.cv.file} class="btn btn-primary" download>
+          <Icon name="download" size={16} />
+          {profile.cv.label}
+        </a>
+        <a href="#contact" class="btn btn-ghost">
+          <Icon name="mail" size={16} />
+          Contact
+        </a>
+        <div class="flex gap-3">
+          {
+            profile.links.map((l) => (
+              <a href={l.url} class="btn btn-ghost !px-3" target="_blank" rel="noopener noreferrer" aria-label={l.label}>
+                <Icon name={l.icon} size={17} />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <p class="mt-8 flex items-center gap-2 text-sm text-subtle" data-hero style="--reveal-delay:300ms">
+        <Icon name="mapPin" size={15} />
+        {profile.location}
+      </p>
+    </div>
+
+    <!-- API console: a response generated from profile.json -->
+    <div class="card overflow-hidden shadow-2xl shadow-black/30" data-hero style="--reveal-delay:200ms">
+      <div class="flex items-center gap-3 border-b border-line bg-raised px-4 py-3">
+        <div class="flex gap-1.5" aria-hidden="true">
+          <span class="size-2.5 rounded-full bg-line"></span>
+          <span class="size-2.5 rounded-full bg-line"></span>
+          <span class="size-2.5 rounded-full bg-line"></span>
+        </div>
+        <p class="code truncate text-xs text-muted">
+          <span class="font-semibold text-accent">{apiConsole.method}</span>
+          {apiConsole.path}
+        </p>
+        <p class="code ml-auto hidden shrink-0 text-xs text-subtle sm:block">
+          <span class="text-accent">{apiConsole.status}</span>{apiConsole.latency && ` · ${apiConsole.latency}`}
+        </p>
+      </div>
+      <pre
+        class="code overflow-x-auto p-4 text-[0.78rem] sm:p-5 sm:text-[0.8125rem]"
+        aria-label="Example API response describing Ravi Kumar"><code>{lines.map((line, i) => (
+        <span class="console-line block" style={`--i:${i}`}>{line.map((tok) => (tok.c ? <span class={tokenClass[tok.c]}>{tok.t}</span> : <span class="text-subtle">{tok.t}</span>))}</span>
+      ))}<span class="caret" aria-hidden="true"></span></code></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+  .js-motion .console-line {
+    opacity: 0;
+    animation: line-in 0.35s ease forwards;
+    animation-delay: calc(500ms + var(--i) * 55ms);
+  }
+  @keyframes line-in {
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

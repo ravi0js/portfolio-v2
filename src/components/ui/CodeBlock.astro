@@ -1,0 +1,41 @@
+---
+import { Code } from 'astro:components';
+
+interface Props {
+  code: string;
+  lang: string;
+  title?: string;
+}
+const { code, lang, title } = Astro.props;
+---
+
+<div class="overflow-hidden rounded-[10px] border border-line bg-bg">
+  {
+    title && (
+      <div class="flex items-center justify-between border-b border-line px-3 py-2">
+        <span class="font-mono text-[0.7rem] text-subtle">{title}</span>
+        <span class="font-mono text-[0.65rem] uppercase text-subtle">{lang}</span>
+      </div>
+    )
+  }
+  <div class="code-wrap">
+    <Code code={code} lang={lang as any} themes={{ light: 'github-light', dark: 'github-dark-default' }} defaultColor={false} wrap={false} />
+  </div>
+</div>
+
+<style is:global>
+  .code-wrap .astro-code {
+    background: transparent !important;
+    padding: 0.875rem 1rem;
+    font-family: var(--f-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+  [data-theme='dark'] .code-wrap .astro-code span {
+    color: var(--shiki-dark);
+  }
+  [data-theme='light'] .code-wrap .astro-code span {
+    color: var(--shiki-light);
+  }
+</style>

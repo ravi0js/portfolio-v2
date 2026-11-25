@@ -1,0 +1,209 @@
+---
+import Section from '@/components/layout/Section.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site, profile } from '@/lib/content';
+const meta = site.sections.contact;
+const { phoneGate, contactForm } = profile;
+---
+
+<Section id="contact" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
+  <div class="grid gap-6 lg:grid-cols-[1fr_1.15fr]">
+    <!-- Direct channels -->
+    <div class="space-y-4" data-reveal>
+      <a href={`mailto:${profile.email}`} class="card card-hover group flex items-center gap-4 p-5">
+        <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
+          <Icon name="mail" />
+        </span>
+        <span class="min-w-0">
+          <span class="block text-xs text-subtle">Email</span>
+          <span class="block truncate font-medium">{profile.email}</span>
+        </span>
+        <Icon name="arrowRight" size={16} class="ml-auto shrink-0 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-fg" />
+      </a>
+
+      {
+        profile.links.map((l) => (
+          <a href={l.url} target="_blank" rel="noopener noreferrer" class="card card-hover group flex items-center gap-4 p-5">
+            <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
+              <Icon name={l.icon} />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-xs text-subtle">{l.label}</span>
+              <span class="block truncate font-medium">{l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span>
+            </span>
+            <Icon name="external" size={16} class="ml-auto shrink-0 text-subtle group-hover:text-fg" />
+          </a>
+        ))
+      }
+
+      {
+        phoneGate.enabled && (
+          <div class="card p-5" id="phone-gate">
+            <div class="flex items-center gap-4">
+              <span class="grid size-11 shrink-0 place-items-center rounded-lg border border-line bg-raised text-accent">
+                <Icon name="phone" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs text-subtle">Phone</p>
+                <p class="font-medium" data-phone-display>
+                  <span class="font-mono tracking-widest text-muted" aria-label="hidden">+91 ••••• •••••</span>
+                </p>
+              </div>
+              <button type="button" class="btn btn-ghost ml-auto !px-3 !py-2 text-xs" data-phone-open aria-expanded="false" aria-controls="phone-form">
+                {phoneGate.buttonLabel}
+              </button>
+            </div>
+
+            <form id="phone-form" class="mt-5 hidden space-y-3 border-t border-line pt-5" data-endpoint={phoneGate.endpoint} novalidate>
+              <p class="text-xs text-muted">{phoneGate.description}</p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="block">
+                  <span class="mb-1 block text-xs text-muted">Your name</span>
+                  <input class="input" name="name" required maxlength="100" autocomplete="name" />
+                </label>
+                <label class="block">
+                  <span class="mb-1 block text-xs text-muted">Your email</span>
+                  <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="mb-1 block text-xs text-muted">Company (optional)</span>
+                <input class="input" name="company" maxlength="120" autocomplete="organization" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-muted">Reason (optional)</span>
+                <input class="input" name="reason" maxlength="300" placeholder="e.g. Backend role at …" />
+              </label>
+              <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+              <div class="flex items-center gap-3">
+                <button type="submit" class="btn btn-primary">Show number</button>
+                <p class="text-xs" data-status role="status" aria-live="polite" />
+              </div>
+            </form>
+          </div>
+        )
+      }
+    </div>
+
+    <!-- Message form -->
+    {
+      contactForm.enabled && (
+        <form id="contact-form" class="card space-y-4 p-5 sm:p-7" data-endpoint={contactForm.endpoint} novalidate data-reveal style="--reveal-delay:100ms">
+          <h3 class="font-semibold">Send a message</h3>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-1 block text-xs text-muted">Name</span>
+              <input class="input" name="name" required maxlength="100" autocomplete="name" />
+            </label>
+            <label class="block">
+              <span class="mb-1 block text-xs text-muted">Email</span>
+              <input class="input" name="email" type="email" required maxlength="200" autocomplete="email" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="mb-1 block text-xs text-muted">Message</span>
+            <textarea class="input min-h-36 resize-y" name="message" required maxlength="3000" />
+          </label>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="submit" class="btn btn-primary">
+              Send message
+              <Icon name="arrowRight" size={16} />
+            </button>
+            <p class="text-xs" data-status role="status" aria-live="polite" />
+          </div>
+        </form>
+      )
+    }
+  </div>
+</Section>
+
+<script>
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  type Result = { ok: boolean; phone?: string; error?: string };
+
+  async function submit(form: HTMLFormElement, type: 'phone_request' | 'message'): Promise<Result> {
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    const res = await fetch(form.dataset.endpoint!, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, type }),
+    });
+    const body = (await res.json().catch(() => ({}))) as Result;
+    if (!res.ok) return { ok: false, error: body.error ?? 'Something went wrong. Please email me instead.' };
+    return body;
+  }
+
+  function validate(form: HTMLFormElement): string | null {
+    const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+    const msg = form.elements.namedItem('message') as HTMLTextAreaElement | null;
+    if (name.length < 2) return 'Please enter your name.';
+    if (!EMAIL_RE.test(email)) return 'Please enter a valid email.';
+    if (msg && msg.value.trim().length < 10) return 'Please write a slightly longer message.';
+    return null;
+  }
+
+  function setStatus(form: HTMLFormElement, text: string, tone: 'ok' | 'err' | 'info') {
+    const el = form.querySelector<HTMLElement>('[data-status]')!;
+    el.textContent = text;
+    el.className = `text-xs ${tone === 'ok' ? 'text-accent' : tone === 'err' ? 'text-rose-400' : 'text-muted'}`;
+  }
+
+  // Phone gate
+  const gate = document.getElementById('phone-gate');
+  if (gate) {
+    const openBtn = gate.querySelector<HTMLButtonElement>('[data-phone-open]')!;
+    const form = gate.querySelector<HTMLFormElement>('#phone-form')!;
+    const display = gate.querySelector<HTMLElement>('[data-phone-display]')!;
+    openBtn.addEventListener('click', () => {
+      const open = form.classList.toggle('hidden') === false;
+      openBtn.setAttribute('aria-expanded', String(open));
+      if (open) form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = validate(form);
+      if (err) return setStatus(form, err, 'err');
+      const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      btn.disabled = true;
+      setStatus(form, 'Sending…', 'info');
+      try {
+        const r = await submit(form, 'phone_request');
+        if (!r.ok || !r.phone) throw new Error(r.error);
+        const a = document.createElement('a');
+        a.href = `tel:${r.phone.replace(/[^\d+]/g, '')}`;
+        a.className = 'font-mono text-accent hover:underline';
+        a.textContent = r.phone;
+        display.replaceChildren(a);
+        form.classList.add('hidden');
+        openBtn.remove();
+      } catch (error) {
+        setStatus(form, (error as Error).message || 'Could not send. Please email me instead.', 'err');
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // Message form
+  const contact = document.getElementById('contact-form') as HTMLFormElement | null;
+  contact?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = validate(contact);
+    if (err) return setStatus(contact, err, 'err');
+    const btn = contact.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    btn.disabled = true;
+    setStatus(contact, 'Sending…', 'info');
+    try {
+      const r = await submit(contact, 'message');
+      if (!r.ok) throw new Error(r.error);
+      contact.reset();
+      setStatus(contact, "Thanks, your message was sent. I'll reply by email.", 'ok');
+    } catch (error) {
+      setStatus(contact, (error as Error).message || 'Could not send. Please email me instead.', 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>

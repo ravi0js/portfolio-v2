@@ -1,0 +1,6 @@
+[
+  { "value": "40", "suffix": "%", "label": "faster lead processing", "context": "Real-time pipeline for Meta Lead Ads and Google APIs", "source": "CV · Digital Think Technology" },
+  { "value": "30", "suffix": "%", "label": "faster CRM endpoints", "context": "Redis caching and removing N+1 queries with window functions", "source": "CV · Digital Think Technology" },
+  { "value": "200", "suffix": "+", "label": "people use it daily", "context": "Production real-estate CRM/ERP backend", "source": "CV · Professional summary" },
+  { "value": "27", "suffix": "", "label": "PHPUnit tests in CI", "context": "Run on every push to main for JobBoard API", "source": "JobBoard API repository" }
+]

@@ -1,0 +1,33 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { site, profile } from '@/lib/content';
+const year = new Date().getFullYear();
+---
+
+<footer class="no-print border-t border-line">
+  <div class="container-page flex flex-col gap-4 py-8 text-sm text-subtle sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} {profile.name}. {site.footer.note}</p>
+    <div class="flex items-center gap-1">
+      {
+        profile.links.map((l) => (
+          <a
+            href={l.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="grid size-9 place-items-center rounded-lg text-muted transition-colors hover:text-fg"
+            aria-label={l.label}
+          >
+            <Icon name={l.icon} size={17} />
+          </a>
+        ))
+      }
+      <a
+        href={`mailto:${profile.email}`}
+        class="grid size-9 place-items-center rounded-lg text-muted transition-colors hover:text-fg"
+        aria-label="Email"
+      >
+        <Icon name="mail" size={17} />
+      </a>
+    </div>
+  </div>
+</footer>
