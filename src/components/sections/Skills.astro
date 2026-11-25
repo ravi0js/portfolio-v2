@@ -15,14 +15,14 @@ const total = skills.reduce((n, g) => n + g.items.length, 0);
 ---
 
 <Section id="skills" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
-  <div class="skills grid grid-cols-1 gap-6 *:min-w-0 lg:grid-cols-[17rem_1fr] lg:gap-8" data-skills>
+  <div class="skills grid grid-cols-1 gap-6 *:min-w-0 xl:grid-cols-[17rem_1fr] xl:gap-8" data-skills>
     <!-- Category tabs (shown once enhanced) -->
     <div class="skills-tabs" data-reveal>
       <div
         role="tablist"
         aria-label="Skill categories"
         aria-orientation="vertical"
-        class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6 lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0"
+        class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6 xl:mx-0 xl:flex-col xl:gap-1 xl:overflow-visible xl:px-0"
       >
         {skills.map((g, i) => (
           <button
@@ -32,23 +32,23 @@ const total = skills.reduce((n, g) => n + g.items.length, 0);
             aria-controls={`skill-panel-${g.id}`}
             aria-selected={i === 0 ? 'true' : 'false'}
             tabindex={i === 0 ? 0 : -1}
-            class="skill-tab group flex shrink-0 items-center gap-3 rounded-md border border-line bg-surface px-3 py-2 text-left text-small text-muted transition-colors duration-fast hover:text-fg lg:border-transparent lg:bg-transparent lg:py-2.5"
+            class="skill-tab group flex shrink-0 items-center gap-3 rounded-md border border-line bg-surface px-3 py-2 text-left text-small text-muted transition-colors duration-fast hover:text-fg xl:border-transparent xl:bg-transparent xl:py-2.5"
           >
             <span class="grid size-7 shrink-0 place-items-center rounded-sm border border-line bg-raised transition-colors duration-fast">
               <Icon name={g.icon} size={14} />
             </span>
-            <span class="whitespace-nowrap lg:flex-1 lg:whitespace-normal">{g.group}</span>
-            <span class="hidden font-mono text-micro text-subtle lg:inline">{g.items.length}</span>
+            <span class="whitespace-nowrap xl:flex-1 xl:whitespace-normal">{g.group}</span>
+            <span class="hidden font-mono text-micro text-subtle xl:inline">{g.items.length}</span>
           </button>
         ))}
       </div>
-      <p class="mt-4 hidden font-mono text-caption text-subtle lg:block">
+      <p class="mt-4 hidden font-mono text-caption text-subtle xl:block">
         {total} technologies · {skills.length} areas
       </p>
     </div>
 
     <!-- Panels -->
-    <div class="space-y-6 lg:space-y-0" data-reveal>
+    <div class="space-y-6 xl:space-y-0" data-reveal>
       {skills.map((g, i) => (
         <section
           role="tabpanel"
@@ -174,7 +174,7 @@ const total = skills.reduce((n, g) => n + g.items.length, 0);
 
     // Desktop shows a vertical list; below lg the tabs are a horizontal strip.
     const tablist = root.querySelector<HTMLElement>('[role="tablist"]')!;
-    const lg = window.matchMedia('(min-width: 64rem)');
+    const lg = window.matchMedia('(min-width: 80rem)');
     const syncOrientation = () => tablist.setAttribute('aria-orientation', lg.matches ? 'vertical' : 'horizontal');
     syncOrientation();
     lg.addEventListener('change', syncOrientation);

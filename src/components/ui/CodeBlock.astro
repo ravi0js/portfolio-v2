@@ -12,11 +12,11 @@ interface Props {
 const { code, lang, title } = Astro.props;
 ---
 
-<div class="overflow-hidden rounded-[10px] border border-line bg-bg">
+<div class="overflow-hidden rounded-md border border-line bg-bg">
   {title && (
     <div class="flex items-center justify-between border-b border-line px-3 py-2">
-      <span class="font-mono text-[0.7rem] text-subtle">{title}</span>
-      <span class="font-mono text-[0.65rem] uppercase text-subtle">{lang}</span>
+      <span class="font-mono text-micro text-subtle">{title}</span>
+      <span class="font-mono text-micro uppercase text-subtle">{lang}</span>
     </div>
   )}
   <div class="code-wrap">

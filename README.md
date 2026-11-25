@@ -1,6 +1,6 @@
 # Ravi Kumar — Portfolio
 
-Backend-focused portfolio built with **Astro 7**, **TypeScript**, **Tailwind CSS 4** and small **React** parts for the interactive diagrams. It ships as static HTML, plus one Netlify Function for the contact form and phone-number requests.
+Backend-focused portfolio built with **Astro 7**, **TypeScript**, **Tailwind CSS 4** and small **React** parts for the interactive diagrams. React loads only when a diagram scrolls into view. It ships as static HTML, plus one Netlify Function for the contact form and phone-number requests.
 
 ## Quick start
 
@@ -22,7 +22,7 @@ npm run og            # regenerate public/og/default.png from the JSON
 - **Tokens:** `src/styles/tokens.css` holds the type scale (`text-display`, `text-h1`…`text-micro`), weights, radii, shadows, motion durations and easing, layout spacing and breakpoints. Colours, fonts and the card radius come from `site.json` and are mapped to utilities (`bg-surface`, `text-muted`, `border-line`, `text-accent`, `font-display` …).
 - **Fonts:** Geist (display), Inter (body), JetBrains Mono (labels, code, numbers). All self-hosted via Fontsource.
 - **Components:** `layout/` has Container, Section, Logo, Header (navbar) and Footer. `ui/` has Button, IconButton, Card, Badge, SectionHeading, Icon and CodeBlock.
-- **Motion:** CSS reveals via the `data-reveal` and `data-hero` attributes. React presets live in `src/lib/motion.ts`, and the step-through hook is in `src/components/viz/useAnimateWhenVisible.ts`. Everything respects `prefers-reduced-motion` and the `theme.motion` switch.
+- **Motion:** CSS only. Scroll reveals use the `data-reveal` and `data-hero` attributes, and the looping hero and diagram animations use `transform`/`opacity`, so they run off the main thread. The React diagrams step through states with `useStepper` in `src/components/viz/useAnimateWhenVisible.ts`; there's no animation library. Everything respects `prefers-reduced-motion` and the `theme.motion` switch.
 - **Preview:** `/design-system` shows the palette, type, components and tokens. It's marked noindex, left out of the sitemap, and not linked from the site.
 
 ## Editing content: everything is JSON

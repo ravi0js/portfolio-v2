@@ -9,12 +9,17 @@ interface Props {
 const { showName = true, href = '/' } = Astro.props;
 ---
 
-<a href={href} class="group flex items-center gap-2.5" aria-label={`${profile.name}, home`}>
+<a href={href} class="group flex items-center gap-2.5">
   <span
     class="grid size-8 place-items-center rounded-md border border-line bg-surface font-mono text-caption font-semibold text-accent transition-colors duration-fast group-hover:border-accent"
     aria-hidden="true"
   >
     {profile.initials}
   </span>
-  {showName && <span class="hidden font-display text-small font-medium tracking-tight sm:inline">{profile.name}</span>}
+  <span
+    class:list={['font-display text-small font-medium tracking-tight', showName ? 'sr-only sm:not-sr-only' : 'sr-only']}
+  >
+    {profile.name}
+  </span>
+  <span class="sr-only">, home</span>
 </a>

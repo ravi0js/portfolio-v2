@@ -1,5 +1,3 @@
-import { motion } from 'motion/react';
-import { duration } from '@/lib/motion';
 import { useAnimateWhenVisible, useStepper } from './useAnimateWhenVisible';
 
 type Kind = 'external' | 'service' | 'store' | 'user' | 'decision';
@@ -87,14 +85,14 @@ export default function FlowDiagram({ steps, caption }: Props) {
             <li key={s.label} className="flex flex-col items-stretch @3xl:flex-1 @3xl:flex-row">
               <div
                 className={[
-                  'relative grid min-w-0 flex-1 grid-cols-[7rem_1fr] items-center gap-x-3 rounded-[10px] border px-3 py-2.5 transition-[border-color,background-color] duration-300 @3xl:block',
+                  'relative grid min-w-0 flex-1 grid-cols-[7rem_1fr] items-center gap-x-3 rounded-md border px-3 py-2.5 transition-[border-color,background-color] duration-300 @3xl:block',
                   on ? 'border-accent bg-accent/10' : 'border-line bg-raised',
                   s.kind === 'decision' ? 'border-dashed' : '',
                 ].join(' ')}
               >
                 <p
                   className={[
-                    'flex items-center gap-1.5 font-mono text-[0.65rem] tracking-wider uppercase',
+                    'flex items-center gap-1.5 font-mono text-micro tracking-wider uppercase',
                     on || passed ? 'text-accent' : 'text-subtle',
                   ].join(' ')}
                 >
@@ -103,7 +101,7 @@ export default function FlowDiagram({ steps, caption }: Props) {
                 </p>
                 <div className="min-w-0 @3xl:mt-1">
                   <p className="text-[0.8rem] leading-snug font-medium">{s.label}</p>
-                  <p className="mt-0.5 text-[0.7rem] leading-snug text-muted">{s.detail}</p>
+                  <p className="mt-0.5 text-micro leading-snug text-muted">{s.detail}</p>
                 </div>
               </div>
               {i < steps.length - 1 && (
@@ -113,11 +111,9 @@ export default function FlowDiagram({ steps, caption }: Props) {
                 >
                   {animate && on && <span key={`dot-${i}-${active}`} className="flow-dot" />}
                   {animate && passed && (
-                    <motion.span
+                    <span
                       className="absolute inset-0 bg-accent/60"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: duration.base }}
+                      style={{ animation: 'fade-in var(--duration-base) ease-out both' }}
                     />
                   )}
                 </div>
@@ -126,7 +122,7 @@ export default function FlowDiagram({ steps, caption }: Props) {
           );
         })}
       </ol>
-      <figcaption className="mt-3 font-mono text-[0.7rem] text-subtle">{caption}</figcaption>
+      <figcaption className="mt-3 font-mono text-micro text-subtle">{caption}</figcaption>
     </figure>
   );
 }

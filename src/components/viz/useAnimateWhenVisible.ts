@@ -1,18 +1,39 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { useInView, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState, useSyncExternalStore, type RefObject } from 'react';
 
 const noopSubscribe = () => () => {};
 const motionEnabled = () => document.documentElement.classList.contains('js-motion');
+
+const REDUCED = '(prefers-reduced-motion: reduce)';
+const subscribeReduced = (cb: () => void) => {
+  const mq = window.matchMedia(REDUCED);
+  mq.addEventListener('change', cb);
+  return () => mq.removeEventListener('change', cb);
+};
+const getReduced = () => window.matchMedia(REDUCED).matches;
+
+/** True while at least `amount` (0–1) of the element is in the viewport. */
+function useInView(ref: RefObject<Element | null>, amount: number) {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: amount });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ref, amount]);
+  return inView;
+}
 
 /**
  * Returns a ref plus whether animation should run.
  * Server render and reduced-motion users get `animate = false`, so components
  * must render their final, fully-informative state in that case.
+ * (Plain IntersectionObserver + matchMedia: no animation library needed.)
  */
 export function useAnimateWhenVisible<T extends Element>(amount = 0.35) {
   const ref = useRef<T>(null);
-  const inView = useInView(ref, { amount });
-  const reduced = useReducedMotion();
+  const inView = useInView(ref, amount);
+  const reduced = useSyncExternalStore(subscribeReduced, getReduced, () => true);
   const allowed = useSyncExternalStore(noopSubscribe, motionEnabled, () => false);
   return { ref, inView, animate: allowed && !reduced };
 }

@@ -86,7 +86,11 @@ const highlighted = body
         </Badge>
         <span class="font-mono text-micro text-subtle">application/json</span>
       </div>
-      <pre class="overflow-x-auto font-mono text-caption leading-relaxed text-muted"><code set:html={highlighted} /></pre>
+      <pre
+        tabindex="0"
+        aria-label="Example JSON response"
+        class="overflow-x-auto font-mono text-caption leading-relaxed text-muted"
+      ><code set:html={highlighted} /></pre>
     </div>
   </div>
   <figcaption id="rf-caption" class="mt-3 text-caption text-subtle">
@@ -113,14 +117,27 @@ const highlighted = body
     display: none;
   }
 
-  /* One cycle: the packet travels down over 70% of the cycle, then rests. */
+  /*
+   * Compositor-only animation (transform + opacity), so it costs no layout or paint
+   * on the main thread. The packet is a full-height "track" laid over the rail that
+   * slides down by its own height; the dot sits at the top of the track.
+   * One cycle: the dot travels for 70% of the cycle, then rests.
+   */
   :global(.js-motion) .rf {
     --cycle: 4.2s;
   }
   :global(.js-motion) .rf-packet {
     display: block;
     position: absolute;
+    inset: 0;
     z-index: 20; /* above the icon tiles it passes */
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: rf-travel var(--cycle) var(--ease-in-out-soft) infinite;
+  }
+  :global(.js-motion) .rf-packet::before {
+    content: '';
+    position: absolute;
     left: 50%;
     top: 0;
     width: 7px;
@@ -129,40 +146,49 @@ const highlighted = body
     border-radius: 999px;
     background: var(--c-accent);
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--c-accent) 20%, transparent);
-    animation: rf-travel var(--cycle) var(--ease-in-out-soft) infinite;
   }
   @keyframes rf-travel {
     0% {
-      top: 0;
+      transform: translateY(0);
       opacity: 0;
     }
     6% {
       opacity: 1;
     }
     70% {
-      top: 100%;
+      transform: translateY(100%);
       opacity: 1;
     }
     80%,
     100% {
-      top: 100%;
+      transform: translateY(100%);
       opacity: 0;
     }
   }
-  /* Each node lights up as the packet reaches it. */
-  :global(.js-motion) .rf-node .rf-icon,
-  :global(.js-motion) .rf-node .rf-box {
+
+  /* Each node lights up as the packet reaches it: an accent outline fading out (opacity only). */
+  .rf-box {
+    position: relative;
+  }
+  :global(.js-motion) .rf-node .rf-icon::after,
+  :global(.js-motion) .rf-node .rf-box::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--c-accent);
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
     animation: rf-hit var(--cycle) ease-out infinite;
     animation-delay: calc(var(--cycle) * 0.7 * var(--i) / (var(--steps) - 1));
   }
   @keyframes rf-hit {
     0% {
-      border-color: var(--c-accent);
-      color: var(--c-text);
+      opacity: 1;
     }
     18%,
     100% {
-      border-color: var(--c-border);
+      opacity: 0;
     }
   }
 </style>

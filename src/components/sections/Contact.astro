@@ -286,13 +286,10 @@ const cvName = profile.cv.file.split('/').pop();
   .field-error {
     margin-top: 0.375rem;
     font-size: var(--text-caption);
-    color: rgb(251 113 133); /* rose-400 */
-  }
-  :global([data-theme='light']) .field-error {
-    color: rgb(225 29 72); /* rose-600 for contrast on white */
+    color: var(--c-danger);
   }
   :global(.input[aria-invalid='true']) {
-    border-color: rgb(244 63 94 / 0.7);
+    border-color: color-mix(in oklab, var(--c-danger) 70%, transparent);
   }
   .form-status {
     display: flex;
@@ -311,8 +308,8 @@ const cvName = profile.cv.file.split('/').pop();
     background: color-mix(in oklab, var(--c-accent) 8%, transparent);
   }
   .form-status[data-tone='error'] {
-    border-color: rgb(244 63 94 / 0.45);
-    background: rgb(244 63 94 / 0.08);
+    border-color: color-mix(in oklab, var(--c-danger) 45%, transparent);
+    background: color-mix(in oklab, var(--c-danger) 8%, transparent);
   }
   .form-status[data-tone='ok'] :global(.status-icon-error),
   .form-status[data-tone='error'] :global(.status-icon-ok) {
@@ -323,7 +320,7 @@ const cvName = profile.cv.file.split('/').pop();
     margin-top: 0.15rem;
   }
   .form-status[data-tone='error'] :global(.status-icon-error) {
-    color: rgb(251 113 133);
+    color: var(--c-danger);
     margin-top: 0.15rem;
   }
   .form-status :global(a) {

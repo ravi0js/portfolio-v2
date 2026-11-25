@@ -5,6 +5,9 @@ import Footer from '@/components/layout/Footer.astro';
 import { site } from '@/lib/content';
 import { personJsonLd, absoluteUrl } from '@/lib/seo';
 import { pageTitle } from '@/lib/format';
+// Preload the Latin subsets used above the fold (headings + body) so text doesn't reflow on font swap.
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import geistLatin from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -52,15 +55,24 @@ const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme
     <meta name="keywords" content={seo.keywords.join(', ')} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content={theme.dark.bg} />
+    <meta name="theme-color" content={theme.dark.bg} media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={theme.light.bg} media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.seo.title}`} />
+    <meta property="og:site_name" content={site.seo.title.split('|')[0].trim()} />
     <meta property="og:locale" content={seo.locale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />

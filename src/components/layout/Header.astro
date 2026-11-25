@@ -88,8 +88,18 @@ const { nav = site.nav } = Astro.props;
     header.classList.toggle('backdrop-blur-md', scrolled);
     header.classList.toggle('border-line', scrolled);
   };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  // Read scroll position inside rAF so it never forces a synchronous layout.
+  let ticking = false;
+  const queue = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      onScroll();
+      ticking = false;
+    });
+  };
+  queue();
+  window.addEventListener('scroll', queue, { passive: true });
 
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const d = document.documentElement;

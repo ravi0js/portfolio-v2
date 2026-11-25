@@ -21,6 +21,11 @@
   --color-accent: var(--c-accent); /* single accent */
   --color-accent-fg: var(--c-accent-contrast); /* text on accent */
 
+  /* Status colours (theme-aware, contrast-checked; see global.css) */
+  --color-warn: var(--c-warn);
+  --color-info: var(--c-info);
+  --color-danger: var(--c-danger);
+
   /* Font families */
   --font-display: var(--f-display);
   --font-sans: var(--f-sans);

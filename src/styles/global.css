@@ -4,6 +4,18 @@
 @import '@fontsource-variable/geist';
 @import './tokens.css';
 
+/* Status colours: ≥ 4.5:1 on their own 15% tints in both themes. */
+:root {
+  --c-warn: #fbbf24;
+  --c-info: #38bdf8;
+  --c-danger: #fb7185;
+}
+[data-theme='light'] {
+  --c-warn: #92400e;
+  --c-info: #075985;
+  --c-danger: #be123c;
+}
+
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @layer base {
@@ -73,6 +85,11 @@
   }
   .card-hover:hover {
     border-color: color-mix(in oklab, var(--c-accent) 45%, var(--c-border));
+  }
+  @media (hover: hover) {
+    .js-motion .card-hover:hover {
+      transform: translateY(-2px);
+    }
   }
   .eyebrow {
     font-family: var(--f-mono);
@@ -214,8 +231,16 @@
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
-/* Packet travelling along a flow-diagram connector (vertical on mobile, horizontal from sm). */
+/* Packet travelling along a flow-diagram connector (vertical on mobile, horizontal in wide containers).
+   Transform-only: the element is a track the size of the connector that slides by its own length. */
 .flow-dot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: flow-v 0.85s ease-in-out forwards;
+}
+.flow-dot::before {
+  content: '';
   position: absolute;
   width: 6px;
   height: 6px;
@@ -225,23 +250,39 @@
   box-shadow: 0 0 8px var(--c-accent);
   left: 50%;
   top: 0;
-  animation: flow-v 0.85s ease-in-out forwards;
 }
 @container (min-width: 48rem) {
   .flow-dot {
-    top: 50%;
-    left: 0;
     animation-name: flow-h;
+  }
+  .flow-dot::before {
+    left: 0;
+    top: 50%;
   }
 }
 @keyframes flow-v {
+  from {
+    transform: translateY(0);
+  }
   to {
-    top: 100%;
+    transform: translateY(100%);
   }
 }
 @keyframes flow-h {
+  from {
+    transform: translateX(0);
+  }
   to {
-    left: 100%;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
