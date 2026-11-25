@@ -15,7 +15,7 @@
       "Built a payment-receipt allocation engine (FIFO across milestones) with row-level locking (SELECT … FOR UPDATE) to prevent double allocation, plus cron-based payment reminders and bank-specific demand notes.",
       "Built an Exotel VoIP calling microservice with webhook handlers and owner-aware call routing (round-robin fallback), enabling in-app calling for the sales team.",
       "Integrated Microsoft Graph API to generate Word documents and store versioned PDFs in OneDrive, automating booking and legal document workflows.",
-      "Delivered workflow modules (bulk lead transfer, construction-linked payment plans with versioned amendments, e-stamp and legal file requests) with RBAC via Repository/Service patterns, status tracking and audit logs."
+      "Delivered workflow modules (bulk lead transfer, construction-linked payment plans with versioned amendments, e-stamp and legal file requests) with RBAC, status tracking and audit logs."
     ],
     "groups": [
       {
@@ -53,14 +53,10 @@
         "tags": ["Transactions", "cron", "PDF generation"]
       },
       {
-        "title": "Security & architecture",
+        "title": "Access control & audit",
         "icon": "shield",
-        "items": [
-          "Role-based access control (RBAC) across workflow modules.",
-          "Status tracking and audit logs.",
-          "Repository and Service patterns to organise business logic."
-        ],
-        "tags": ["RBAC", "Audit logs", "Repository/Service"]
+        "items": ["Role-based access control (RBAC) across workflow modules.", "Status tracking and audit logs."],
+        "tags": ["RBAC", "Audit logs"]
       }
     ],
     "tags": ["PHP", "Slim", "MySQL", "Redis", "Meta Lead Ads", "Microsoft Graph", "Exotel", "cron"]

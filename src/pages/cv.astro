@@ -35,6 +35,11 @@ const host = new URL(site.seo.url).host;
           <a href={`mailto:${profile.email}`} class="hover:text-accent">
             {profile.email}
           </a>
+          {profile.phone && (
+            <a href={`tel:${profile.phone.replace(/[^\d+]/g, '')}`} class="hover:text-accent">
+              {profile.phone}
+            </a>
+          )}
           {profile.links.map((l) => (
             <a href={l.url} class="hover:text-accent">
               {l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}

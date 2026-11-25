@@ -7,6 +7,7 @@
   "intro": "I'm Ravi Kumar, a Backend Developer specialising in PHP, Laravel, Slim and MySQL. I build production-ready REST APIs, business applications and third-party integrations, with a focus on performance, reliability and maintainability.",
   "location": "Bangalore, India",
   "email": "ravi.jsdeveloper@gmail.com",
+  "phone": "+91 88731 94455",
   "availability": "Open to backend roles",
   "summary": [
     "I work on the parts of a product users never see but always depend on: lead pipelines, payment allocation, call routing, document generation and access control.",
@@ -31,7 +32,7 @@
     "label": "Download Resume"
   },
   "phoneGate": {
-    "enabled": true,
+    "enabled": false,
     "buttonLabel": "Request phone number",
     "description": "To avoid spam, my number is shared on request. Leave your details and it will appear here; I'll also get a note that you asked.",
     "endpoint": "/.netlify/functions/contact"
@@ -69,7 +70,7 @@
       },
       {
         "label": "Business logic",
-        "detail": "Services & repositories",
+        "detail": "Business rules & workflows",
         "tag": "domain",
         "icon": "layers"
       }

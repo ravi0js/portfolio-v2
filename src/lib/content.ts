@@ -106,6 +106,8 @@ export const profileSchema = z.object({
   intro: z.string(),
   location: z.string(),
   email: z.email(),
+  /** Shown publicly with a tel: link. Leave out to hide it (see phoneGate for request-only). */
+  phone: z.string().optional(),
   availability: z.string().optional(),
   summary: z.array(z.string()),
   primaryStack: z.array(z.string()),

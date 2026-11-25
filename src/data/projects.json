@@ -351,7 +351,7 @@
         },
         {
           "label": "Business logic",
-          "items": ["Services & repositories", "cron jobs"]
+          "items": ["Business rules & workflows", "cron jobs"]
         },
         {
           "label": "Data",
@@ -572,7 +572,7 @@
           "Bulk lead transfer",
           "Construction-linked payment plans with versioned amendments",
           "E-stamp and legal file request workflows",
-          "RBAC, status tracking and audit logs via Repository/Service patterns"
+          "RBAC, status tracking and audit logs"
         ]
       }
     ]

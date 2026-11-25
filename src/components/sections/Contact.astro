@@ -125,6 +125,16 @@ const cvName = profile.cv.file.split('/').pop();
         </div>
       )}
 
+      {profile.phone && !phoneGate.enabled && (
+        <ContactCard
+          icon="phone"
+          label="Phone"
+          value={profile.phone}
+          href={`tel:${profile.phone.replace(/[^\d+]/g, '')}`}
+          ariaLabel={`Call ${profile.phone}`}
+        />
+      )}
+
       <ContactCard icon="mapPin" label="Location" value={profile.location} />
 
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
