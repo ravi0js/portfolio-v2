@@ -9,8 +9,8 @@
   "highlights": [
     {
       "metric": "users",
-      "title": "Production CRM/ERP",
-      "detail": "PHP (Slim) backend for leads, bookings, payments and legal documents.",
+      "title": "Daily users",
+      "detail": "Production PHP (Slim) CRM/ERP for leads, bookings, payments and legal documents.",
       "icon": "users"
     },
     {
@@ -45,37 +45,43 @@
     }
   ],
   "approachTitle": "How I work",
-  "approachSubtitle": "Working principles I apply to backend code.",
+  "approachSubtitle": "What I do day to day at work, and what my JobBoard API project adds.",
   "principles": [
     {
-      "title": "Maintainable architecture",
-      "detail": "Thin controllers, with business logic in services and data access in repositories, so modules stay easy to change.",
-      "icon": "layers"
+      "title": "Transaction-safe business logic",
+      "detail": "Payment allocation runs inside MySQL transactions with row locks (SELECT … FOR UPDATE), so concurrent requests can't allocate the same receipt twice.",
+      "icon": "layers",
+      "scope": "At work"
     },
     {
-      "title": "Reliable REST APIs",
-      "detail": "Predictable resources, input validation, consistent status codes and documented contracts.",
-      "icon": "server"
+      "title": "Query performance",
+      "detail": "Find the slow endpoints, replace N+1 loops with window-function queries, and cache hot reads in Redis.",
+      "icon": "activity",
+      "scope": "At work"
     },
     {
-      "title": "Performance from the data layer up",
-      "detail": "Find the slow path first, remove N+1 queries, use transactions where they matter, cache hot reads.",
-      "icon": "activity"
+      "title": "Webhook integrations",
+      "detail": "Webhook handlers and API clients that bring Meta Lead Ads, Google APIs, Microsoft Graph and Exotel events into CRM workflows.",
+      "icon": "plug",
+      "scope": "At work"
     },
     {
-      "title": "Secure by default",
-      "detail": "Token authentication and role-based access checks on every protected route.",
-      "icon": "shield"
+      "title": "Access control and audit trails",
+      "detail": "Role-based access checks on workflow modules, with status tracking and audit logs for changes.",
+      "icon": "shield",
+      "scope": "At work"
     },
     {
-      "title": "Integrations that fit the workflow",
-      "detail": "Webhook handlers and API clients that bring external platforms into the core business process.",
-      "icon": "plug"
+      "title": "Layered API structure",
+      "detail": "Controllers, route middleware for auth and roles, Eloquent models, and rate limits on public routes.",
+      "icon": "server",
+      "scope": "JobBoard API"
     },
     {
-      "title": "Automated testing & delivery",
-      "detail": "Tests run in CI and deployments are scripted, so releases are repeatable.",
-      "icon": "gitBranch"
+      "title": "Tested, automated delivery",
+      "detail": "PHPUnit tests run in GitHub Actions against MySQL and Redis on every push; passing builds deploy to EC2.",
+      "icon": "gitBranch",
+      "scope": "JobBoard API"
     }
   ]
 }

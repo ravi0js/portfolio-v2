@@ -1,12 +1,11 @@
 ---
 /**
  * Projects & Engineering Case Studies: personal project(s) first, then
- * anonymised professional case studies, then challenges → solutions.
+ * anonymised professional case studies.
  */
 import Section from '@/components/layout/Section.astro';
 import PersonalProject from '@/components/projects/PersonalProject.astro';
 import ProfessionalCaseStudy from '@/components/projects/ProfessionalCaseStudy.astro';
-import ChallengeList from '@/components/projects/ChallengeList.astro';
 import { site, personalProjects, caseStudies } from '@/lib/content';
 
 const meta = site.sections.projects;
@@ -28,6 +27,5 @@ const meta = site.sections.projects;
           <ProfessionalCaseStudy study={s} />
         </div>
       ))}
-    <ChallengeList />
   </div>
 </Section>

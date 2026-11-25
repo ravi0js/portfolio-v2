@@ -13,6 +13,7 @@ npm run lint          # ESLint (TypeScript, Astro, React hooks)
 npm run format        # Prettier (with Astro + Tailwind class sorting)
 npm run format:check
 npm run og            # regenerate public/og/default.png from the JSON
+npm run docs:sync     # refresh the static JobBoard API docs from the repo's OpenAPI spec
 ```
 
 `npm run dev` doesn't run the Netlify Function, so the forms will show "not configured". To test them locally, use `npx netlify dev` with a `.env` file (see `.env.example`).
@@ -83,6 +84,10 @@ The script is added only to production builds, so `npm run dev` visits aren't co
 - Repo cards show the description set on GitHub (the ⚙ next to "About" on the repo page).
 - `showContributions` adds the contribution heatmap. It's off for now because public activity is still sparse; switch it on once there's more.
 - If GitHub is unreachable or rate-limits the build, the section shows a plain "View GitHub profile" link instead of failing. Set a `GITHUB_TOKEN` environment variable in Netlify (a token with no scopes is enough) to raise the API limit.
+
+## JobBoard API docs
+
+`/projects/jobboard-api/docs/` renders a static copy of the repo's OpenAPI spec (`public/docs/jobboard-api/openapi.json`) in Swagger UI, so the docs work even when the EC2 instance is off. Requests are disabled on that page. After changing the API, run `npm run docs:sync` and commit the updated JSON. The script also replaces any other Gmail address in the spec with the portfolio email.
 
 ## Phone number on request
 

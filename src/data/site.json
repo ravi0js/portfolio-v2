@@ -116,7 +116,7 @@
       "subtitle": "Exploring backend architecture, API development, database performance, integrations, and production application workflows."
     },
     "github": {
-      "enabled": true,
+      "enabled": false,
       "eyebrow": "open source",
       "title": "GitHub activity",
       "subtitle": "Pulled from my public GitHub profile and refreshed on every deploy."

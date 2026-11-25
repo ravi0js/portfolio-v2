@@ -22,8 +22,8 @@
     ],
     "links": {
       "repo": "https://github.com/ravi0js/jobboard-api",
-      "docs": "http://52.35.164.41/api/documentation",
-      "docsNote": "The live Swagger docs run on EC2, which is started and stopped on a schedule to save cost, so they may be offline at times."
+      "docs": "/projects/jobboard-api/docs/",
+      "docsNote": "The API docs are a static copy of the OpenAPI spec, so they always load. The live API runs on EC2 on a schedule."
     },
     "stats": [
       {
@@ -332,7 +332,7 @@
     "experienceId": "digital-think",
     "overview": "Backend work on a production PHP (Slim) CRM/ERP used by 200+ people daily. The system supports lead management, payment processing, integrations, document generation and operational automation.",
     "confidentiality": "Anonymised case study. Diagrams are conceptual and show general patterns, not the employer's internal architecture. No internal URLs, schemas, code or customer data.",
-    "outcomes": ["users", "leads", "endpoints"],
+    "outcomes": [],
     "stack": ["PHP (Slim)", "MySQL", "Redis", "Meta Lead Ads", "Google APIs", "Microsoft Graph", "Exotel", "cron"],
     "architecture": {
       "caption": "Conceptual architecture",
@@ -492,8 +492,7 @@
         "items": [
           "MySQL query optimisation on high-traffic CRM endpoints",
           "Redis caching for frequently read data",
-          "N+1 queries replaced with ROW_NUMBER() window functions",
-          "Result: 30% faster CRM endpoints"
+          "N+1 queries replaced with ROW_NUMBER() window functions"
         ],
         "diagrams": [
           {

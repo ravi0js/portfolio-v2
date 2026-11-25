@@ -10,7 +10,6 @@ import profileJson from '@/data/profile.json';
 import metricsJson from '@/data/metrics.json';
 import experienceJson from '@/data/experience.json';
 import projectsJson from '@/data/projects.json';
-import challengesJson from '@/data/challenges.json';
 import skillsJson from '@/data/skills.json';
 import educationJson from '@/data/education.json';
 import aboutJson from '@/data/about.json';
@@ -254,14 +253,6 @@ const professionalCaseStudy = z.object({
 
 export const projectSchema = z.discriminatedUnion('kind', [personalProject, professionalCaseStudy]);
 
-export const challengeSchema = z.object({
-  challenge: z.string(),
-  approach: z.string(),
-  detail: z.string(),
-  /** project slugs this example comes from */
-  projects: z.array(z.string()).min(1),
-});
-
 export const skillGroupSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   group: z.string(),
@@ -320,7 +311,17 @@ export const aboutSchema = z.object({
     .min(1),
   approachTitle: z.string(),
   approachSubtitle: z.string().optional(),
-  principles: z.array(z.object({ title: z.string(), detail: z.string(), icon: iconName })).min(1),
+  principles: z
+    .array(
+      z.object({
+        title: z.string(),
+        detail: z.string(),
+        icon: iconName,
+        /** Where this is practised, e.g. "At work" or a project name. Shown as a small tag. */
+        scope: z.string().optional(),
+      }),
+    )
+    .min(1),
 });
 export const educationSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -350,7 +351,6 @@ export const profile = parse('profile', profileSchema, profileJson);
 export const metrics = parse('metrics', z.array(metricSchema), metricsJson);
 export const experience = parse('experience', z.array(experienceSchema), experienceJson);
 export const projects = parse('projects', z.array(projectSchema), projectsJson);
-export const challenges = parse('challenges', z.array(challengeSchema), challengesJson);
 export const skills = parse('skills', z.array(skillGroupSchema), skillsJson);
 export const education = parse('education', z.array(educationSchema), educationJson);
 export const about = parse('about', aboutSchema, aboutJson);
@@ -366,7 +366,7 @@ for (const h of about.highlights) {
   }
 }
 
-// Cross-file checks for projects and challenges.
+// Cross-file checks for projects.
 const projectProblems: string[] = [];
 for (const p of projects) {
   if (p.kind !== 'professional') continue;
@@ -375,14 +375,8 @@ for (const p of projects) {
   for (const m of p.outcomes)
     if (!metrics.some((x) => x.id === m)) projectProblems.push(`${p.slug}: unknown outcome metric "${m}"`);
 }
-for (const c of challenges)
-  for (const slug of c.projects)
-    if (!projects.some((p) => p.slug === slug))
-      projectProblems.push(`challenges "${c.challenge}": unknown project "${slug}"`);
 if (projectProblems.length)
-  throw new Error(
-    `\nInvalid content in projects.json / challenges.json\n${projectProblems.map((x) => `  • ${x}`).join('\n')}\n`,
-  );
+  throw new Error(`\nInvalid content in projects.json\n${projectProblems.map((x) => `  • ${x}`).join('\n')}\n`);
 
 export type PersonalProject = Extract<(typeof projects)[number], { kind: 'personal' }>;
 export type ProfessionalCaseStudy = Extract<(typeof projects)[number], { kind: 'professional' }>;
@@ -407,7 +401,6 @@ export const portfolio = {
   metrics,
   experience,
   projects,
-  challenges,
   skills,
   education,
 } as const;

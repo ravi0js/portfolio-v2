@@ -53,7 +53,7 @@ const { project: p } = Astro.props;
         </Button>
       )}
       {p.links.docs && (
-        <Button href={p.links.docs} variant="secondary" icon="external" external>
+        <Button href={p.links.docs} variant="secondary" icon="external" external={p.links.docs.startsWith('http')}>
           API documentation
         </Button>
       )}

@@ -94,6 +94,11 @@ const highlights = about.highlights.map((h) => ({
               <Icon name={p.icon} size={15} />
             </span>
             <span class="font-mono text-caption text-subtle">{String(i + 1).padStart(2, '0')}</span>
+            {p.scope && (
+              <span class="ml-auto rounded-sm border border-line px-1.5 py-0.5 font-mono text-micro text-muted">
+                {p.scope}
+              </span>
+            )}
           </div>
           <h4 class="mt-4 text-small font-semibold">{p.title}</h4>
           <p class="mt-1.5 text-small leading-relaxed text-muted">{p.detail}</p>

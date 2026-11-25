@@ -11,7 +11,8 @@
     "og": "node scripts/og.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "docs:sync": "node scripts/sync-jobboard-spec.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.9",

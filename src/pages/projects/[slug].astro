@@ -32,7 +32,11 @@ const { p } = Astro.props as { p: PersonalProject };
             </a>
           )}
           {p.links.docs && (
-            <a href={p.links.docs} class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+            <a
+              href={p.links.docs}
+              class="btn btn-ghost"
+              {...(p.links.docs.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
               <Icon name="external" size={16} /> Swagger docs
             </a>
           )}
