@@ -5,6 +5,7 @@ import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Button from '@/components/ui/Button.astro';
 import Icon from '@/components/ui/Icon.astro';
+import ScrollRow from '@/components/ui/ScrollRow.astro';
 import { site, blog } from '@/lib/content';
 import { getBlogPosts } from '@/lib/blog';
 
@@ -22,7 +23,7 @@ const fmt = (d: string) =>
 
 {posts.length > 0 && (
   <Section id="blog" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle} class="!pt-0">
-    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <ScrollRow label="Blog posts" perView={{ base: 1.12, md: 2, lg: 3 }}>
       {posts.map((p, i) => (
         <li data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`}>
           <Card
@@ -58,7 +59,7 @@ const fmt = (d: string) =>
           </Card>
         </li>
       ))}
-    </ul>
+    </ScrollRow>
     {profileUrl && (
       <div class="mt-6" data-reveal>
         <Button href={profileUrl} external variant="ghost" iconRight="arrowRight">

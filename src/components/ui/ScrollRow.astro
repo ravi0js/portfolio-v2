@@ -1,0 +1,155 @@
+---
+/**
+ * Horizontal, snap-scrolling row of cards. Children must be <li> elements.
+ * - Shows `perView` cards at each breakpoint; extra cards scroll horizontally.
+ * - Prev/next buttons appear only when the row actually overflows, and disable at the ends.
+ * - Keyboard: the row is focusable (arrow keys scroll it); buttons are real <button>s.
+ * - Touch: native swipe with scroll-snap. Reduced motion: instant scrolling.
+ */
+interface Props {
+  /** Accessible name for the scroll region, e.g. "Certifications". */
+  label: string;
+  /** Cards visible per breakpoint; fractions show a peek of the next card. */
+  perView?: { base?: number; md?: number; lg?: number };
+  class?: string;
+}
+const { label, perView = {}, class: cls } = Astro.props;
+const { base = 1.12, md = 2, lg = 3 } = perView;
+const id = `sr-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class:list={['scroll-row', cls]} data-scroll-row style={`--pv:${base};--pv-md:${md};--pv-lg:${lg}`}>
+  <div class="mb-3 flex items-center justify-end gap-2" data-scroll-controls hidden>
+    <span class="mr-auto font-mono text-micro text-subtle" data-scroll-status aria-live="polite"></span>
+    <button
+      type="button"
+      class="grid size-9 place-items-center rounded-md border border-line bg-surface text-muted transition-colors duration-fast hover:border-accent/50 hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+      aria-label={`Previous ${label.toLowerCase()}`}
+      aria-controls={id}
+      data-scroll-prev
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        aria-hidden="true"
+      >
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+    </button>
+    <button
+      type="button"
+      class="grid size-9 place-items-center rounded-md border border-line bg-surface text-muted transition-colors duration-fast hover:border-accent/50 hover:text-fg disabled:pointer-events-none disabled:opacity-40"
+      aria-label={`Next ${label.toLowerCase()}`}
+      aria-controls={id}
+      data-scroll-next
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        aria-hidden="true"
+      >
+        <path d="M9 18l6-6-6-6"></path>
+      </svg>
+    </button>
+  </div>
+  <ul id={id} class="scroll-track" role="list" aria-label={label} tabindex="0" data-scroll-track>
+    <slot />
+  </ul>
+</div>
+
+<style>
+  .scroll-track {
+    --gap: 1rem;
+    --n: var(--pv);
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    padding-bottom: 0.75rem; /* room for the scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-border) transparent;
+  }
+  @media (min-width: 48rem) {
+    .scroll-track {
+      --n: var(--pv-md);
+      --gap: 1.5rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .scroll-track {
+      --n: var(--pv-lg);
+    }
+  }
+  .scroll-track > :global(li) {
+    flex: 0 0 calc((100% - (var(--n) - 1) * var(--gap)) / var(--n));
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+  .scroll-track:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-track {
+      scroll-behavior: smooth;
+    }
+  }
+</style>
+
+<script>
+  for (const row of document.querySelectorAll<HTMLElement>('[data-scroll-row]')) {
+    const track = row.querySelector<HTMLElement>('[data-scroll-track]')!;
+    const controls = row.querySelector<HTMLElement>('[data-scroll-controls]')!;
+    const prev = row.querySelector<HTMLButtonElement>('[data-scroll-prev]')!;
+    const next = row.querySelector<HTMLButtonElement>('[data-scroll-next]')!;
+    const status = row.querySelector<HTMLElement>('[data-scroll-status]')!;
+    const items = () => [...track.children] as HTMLElement[];
+
+    const update = () => {
+      const overflow = track.scrollWidth - track.clientWidth > 2;
+      controls.hidden = !overflow;
+      if (!overflow) return;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      const left = track.getBoundingClientRect().left;
+      const visible = items().filter((li) => {
+        const r = li.getBoundingClientRect();
+        return r.left >= left - 2 && r.right <= left + track.clientWidth + 2;
+      });
+      const first = items().indexOf(visible[0]) + 1;
+      const last = items().indexOf(visible[visible.length - 1]) + 1;
+      status.textContent = visible.length ? `${first}${last > first ? `–${last}` : ''} of ${items().length}` : '';
+    };
+
+    // Scroll by one page of whole cards.
+    const page = (dir: 1 | -1) => {
+      const step = items()[0]?.getBoundingClientRect().width ?? track.clientWidth;
+      const perPage = Math.max(1, Math.floor((track.clientWidth + 16) / (step + 16)));
+      track.scrollBy({ left: dir * perPage * (step + parseFloat(getComputedStyle(track).columnGap || '16')) });
+    };
+    prev.addEventListener('click', () => page(-1));
+    next.addEventListener('click', () => page(1));
+
+    let raf = 0;
+    track.addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(update);
+      },
+      { passive: true },
+    );
+    new ResizeObserver(update).observe(track);
+    update();
+  }
+</script>
