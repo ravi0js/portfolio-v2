@@ -29,16 +29,18 @@ npm run og            # regenerate public/og/default.png from the JSON
 
 All text, numbers, links and theme settings live in `src/data/`. You never need to touch a component to update the site.
 
-| File              | Controls                                                                                                                                                                                             |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `site.json`       | SEO (title, description, URL, OG image), **theme** (accent colour, dark/light palettes, fonts, radius, motion on/off, default mode, toggle), nav links, section headings and on/off switches, footer |
-| `profile.json`    | Name, role, headline, tagline, location, email, links, CV file, phone-request and contact-form settings, hero API console                                                                            |
-| `metrics.json`    | Impact strip numbers (keep these CV-backed)                                                                                                                                                          |
-| `experience.json` | Jobs (`start`/`end` as `YYYY-MM`, `end: null` = present)                                                                                                                                             |
-| `systems.json`    | "Systems I've built" cards, with `flow` or `fifo` diagrams and optional code snippet                                                                                                                 |
-| `projects.json`   | Projects; `featured: true` shows on the home page. Each gets a `/projects/<slug>` page                                                                                                               |
-| `skills.json`     | Skill groups                                                                                                                                                                                         |
-| `education.json`  | Degrees                                                                                                                                                                                              |
+| File                  | Controls                                                                                                                                                                                             |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.json`           | SEO (title, description, URL, OG image), **theme** (accent colour, dark/light palettes, fonts, radius, motion on/off, default mode, toggle), nav links, section headings and on/off switches, footer |
+| `profile.json`        | Name, role, headline, tagline, location, email, links, CV file, phone-request and contact-form settings, hero API console                                                                            |
+| `metrics.json`        | Impact strip numbers (keep these CV-backed)                                                                                                                                                          |
+| `experience.json`     | Jobs (`start`/`end` as `YYYY-MM`, `end: null` = present)                                                                                                                                             |
+| `systems.json`        | "Systems I've built" cards, with `flow` or `fifo` diagrams and optional code snippet                                                                                                                 |
+| `projects.json`       | Projects; `featured: true` shows on the home page. Each gets a `/projects/<slug>` page                                                                                                               |
+| `skills.json`         | Skill groups                                                                                                                                                                                         |
+| `certifications.json` | Certifications. Leave `url` empty and no "Verify" link is shown                                                                                                                                      |
+| `blog.json`           | Medium username (posts fetched at build time) plus manual posts                                                                                                                                      |
+| `education.json`      | Degrees                                                                                                                                                                                              |
 
 Every file is checked against a schema in `src/lib/content.ts` at build time. A typo or missing field fails the build with a message such as `site.theme.accent: must be a hex colour like #34d399`.
 

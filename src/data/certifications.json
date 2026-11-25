@@ -1,0 +1,20 @@
+[
+  {
+    "id": "chegg-sme",
+    "title": "Subject Matter Expert",
+    "issuer": "Chegg India",
+    "date": "2023-07",
+    "credentialId": "2023/68286",
+    "url": "",
+    "skills": []
+  },
+  {
+    "id": "nitw-ml",
+    "title": "Machine Learning for Data Science using Python",
+    "issuer": "National Institute of Technology Warangal",
+    "date": "2022-08",
+    "credentialId": "",
+    "url": "",
+    "skills": ["Python", "Machine Learning"]
+  }
+]

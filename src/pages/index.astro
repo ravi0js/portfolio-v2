@@ -8,6 +8,8 @@ import Projects from '@/components/sections/Projects.astro';
 import GitHub from '@/components/sections/GitHub.astro';
 import Skills from '@/components/sections/Skills.astro';
 import Education from '@/components/sections/Education.astro';
+import Certifications from '@/components/sections/Certifications.astro';
+import Blog from '@/components/sections/Blog.astro';
 import Contact from '@/components/sections/Contact.astro';
 import { site } from '@/lib/content';
 const s = site.sections;
@@ -22,5 +24,7 @@ const s = site.sections;
   {s.projects.enabled && <Projects />}
   {s.github.enabled && site.github.enabled && <GitHub />}
   {s.education.enabled && <Education />}
+  {s.certifications.enabled && <Certifications />}
+  {s.blog.enabled && <Blog />}
   {s.contact.enabled && <Contact />}
 </BaseLayout>

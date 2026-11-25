@@ -1,0 +1,70 @@
+---
+/** Blog: posts from blog.json merged with the Medium feed at build time (src/lib/blog.ts). */
+import Section from '@/components/layout/Section.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site, blog } from '@/lib/content';
+import { getBlogPosts } from '@/lib/blog';
+
+const meta = site.sections.blog;
+const posts = await getBlogPosts();
+const profileUrl = blog.medium.username ? `https://medium.com/@${blog.medium.username}` : null;
+const fmt = (d: string) =>
+  new Date(`${d}T00:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+{posts.length > 0 && (
+  <Section id="blog" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle} class="!pt-0">
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {posts.map((p, i) => (
+        <li data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`}>
+          <Card
+            href={p.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            interactive
+            class="group flex h-full flex-col"
+            aria-label={`${p.title} (${p.source}, opens in a new tab)`}
+          >
+            <div class="flex items-center justify-between gap-3 font-mono text-micro text-subtle">
+              <span class="inline-flex items-center gap-1.5">
+                <Icon name="pen" size={12} class="text-accent" />
+                {p.source}
+              </span>
+              <time datetime={p.date}>{fmt(p.date)}</time>
+            </div>
+            <h3 class="mt-3 text-small leading-snug font-semibold text-balance sm:text-body">{p.title}</h3>
+            {p.excerpt && <p class="mt-2 line-clamp-3 flex-1 text-caption leading-relaxed text-muted">{p.excerpt}</p>}
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <ul class="flex flex-wrap gap-1.5" aria-label="Tags">
+                {p.tags.map((t) => (
+                  <Badge as="li" class="!text-micro">
+                    {t}
+                  </Badge>
+                ))}
+              </ul>
+              <span class="inline-flex shrink-0 items-center gap-1 text-caption text-muted transition-colors duration-fast group-hover:text-fg">
+                Read
+                <Icon name="external" size={13} />
+              </span>
+            </div>
+          </Card>
+        </li>
+      ))}
+    </ul>
+    {profileUrl && (
+      <div class="mt-6" data-reveal>
+        <Button href={profileUrl} external variant="ghost" iconRight="arrowRight">
+          All posts on Medium
+        </Button>
+      </div>
+    )}
+  </Section>
+)}

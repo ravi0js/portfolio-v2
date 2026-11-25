@@ -1,0 +1,68 @@
+---
+/** Certifications from certifications.json. No "Verify" link unless a real URL is set. */
+import Section from '@/components/layout/Section.astro';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site, certifications } from '@/lib/content';
+import { formatYearMonth } from '@/lib/format';
+
+const meta = site.sections.certifications;
+const items = [...certifications].sort((a, b) => b.date.localeCompare(a.date));
+---
+
+{items.length > 0 && (
+  <Section id="certifications" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle} class="!pt-0">
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+      {items.map((c, i) => (
+        <li data-reveal style={`--reveal-delay:${(i % 2) * 80}ms`}>
+          <Card as="article" interactive class="flex h-full flex-col">
+            <div class="flex items-start gap-4">
+              <span class="grid size-10 shrink-0 place-items-center rounded-md border border-line bg-raised text-accent">
+                <Icon name="award" size={18} />
+              </span>
+              <div class="min-w-0">
+                <h3 class="text-h3">{c.title}</h3>
+                <p class="mt-1 text-small text-muted">{c.issuer}</p>
+              </div>
+            </div>
+
+            <dl class="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-small">
+              <div>
+                <dt class="font-mono text-micro tracking-label text-subtle uppercase">Issued</dt>
+                <dd class="mt-0.5 font-mono">
+                  <time datetime={c.date}>{formatYearMonth(c.date)}</time>
+                </dd>
+              </div>
+              {c.credentialId && (
+                <div>
+                  <dt class="font-mono text-micro tracking-label text-subtle uppercase">Credential ID</dt>
+                  <dd class="mt-0.5 font-mono">{c.credentialId}</dd>
+                </div>
+              )}
+            </dl>
+
+            {c.skills.length > 0 && (
+              <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Skills">
+                {c.skills.map((s) => (
+                  <Badge as="li" class="!text-micro">
+                    {s}
+                  </Badge>
+                ))}
+              </ul>
+            )}
+
+            {c.url && (
+              <div class="mt-auto pt-5">
+                <Button href={c.url} external variant="secondary" size="sm" iconRight="external">
+                  Verify credential
+                </Button>
+              </div>
+            )}
+          </Card>
+        </li>
+      ))}
+    </ul>
+  </Section>
+)}

@@ -14,6 +14,8 @@ import challengesJson from '@/data/challenges.json';
 import skillsJson from '@/data/skills.json';
 import educationJson from '@/data/education.json';
 import aboutJson from '@/data/about.json';
+import certificationsJson from '@/data/certifications.json';
+import blogJson from '@/data/blog.json';
 
 import { iconPaths, type IconName } from '@/components/ui/icons';
 
@@ -88,6 +90,8 @@ export const siteSchema = z.object({
     github: sectionMeta,
     skills: sectionMeta,
     education: sectionMeta,
+    certifications: sectionMeta,
+    blog: sectionMeta,
     contact: sectionMeta,
   }),
   footer: z.object({ note: z.string() }),
@@ -266,6 +270,35 @@ export const skillGroupSchema = z.object({
   items: z.array(z.object({ name: z.string(), use: z.string().max(140) })).min(1),
 });
 
+const optionalUrl = z.union([z.literal(''), z.url()]);
+
+export const certificationSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string(),
+  issuer: z.string(),
+  date: yearMonth,
+  /** Leave empty to hide. */
+  credentialId: z.string(),
+  /** Verification link; leave empty and no "Verify" button is shown (never a dead link). */
+  url: optionalUrl,
+  skills: z.array(z.string()),
+});
+
+export const blogPostSchema = z.object({
+  title: z.string(),
+  url: z.url(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'must be YYYY-MM-DD'),
+  excerpt: z.string(),
+  tags: z.array(z.string()),
+  source: z.string(),
+});
+
+export const blogSchema = z.object({
+  medium: z.object({ username: z.string(), fetch: z.boolean(), _help: z.string().optional() }),
+  max: z.number().int().min(1).max(24),
+  posts: z.array(blogPostSchema),
+});
+
 export const aboutSchema = z.object({
   intro: z.array(z.string()).min(1),
   focus: z.string(),
@@ -321,6 +354,8 @@ export const challenges = parse('challenges', z.array(challengeSchema), challeng
 export const skills = parse('skills', z.array(skillGroupSchema), skillsJson);
 export const education = parse('education', z.array(educationSchema), educationJson);
 export const about = parse('about', aboutSchema, aboutJson);
+export const certifications = parse('certifications', z.array(certificationSchema), certificationsJson);
+export const blog = parse('blog', blogSchema, blogJson);
 
 // Cross-file check: every highlight that references a metric must point at a real one.
 for (const h of about.highlights) {
@@ -361,6 +396,8 @@ export type Project = (typeof projects)[number];
 export type Diagram = z.infer<typeof diagram>;
 export type SkillGroup = (typeof skills)[number];
 export type About = typeof about;
+export type Certification = (typeof certifications)[number];
+export type BlogPost = z.infer<typeof blogPostSchema>;
 
 /** Everything in one object, for pages that need several content types. */
 export const portfolio = {

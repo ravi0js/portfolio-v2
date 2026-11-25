@@ -1,0 +1,18 @@
+{
+  "medium": {
+    "username": "ravi194455",
+    "fetch": true,
+    "_help": "When fetch is true, posts are read from https://medium.com/feed/@<username> at build time and merged with the posts below (duplicates removed by URL). New Medium posts appear on the next deploy."
+  },
+  "max": 6,
+  "posts": [
+    {
+      "title": "isIdentifier() Function work proper in python?",
+      "url": "https://medium.com/@ravi194455/isidentifier-function-work-proper-in-python-10f520f91e60",
+      "date": "2024-01-13",
+      "excerpt": "isidentifier() function doesn't work in case of keywords.",
+      "tags": ["Python"],
+      "source": "Medium"
+    }
+  ]
+}
