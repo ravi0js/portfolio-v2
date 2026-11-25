@@ -1,0 +1,238 @@
+---
+/**
+ * GitHub activity, fetched at build time (src/lib/github.ts).
+ * Shows a profile summary, recent repositories and languages; the contribution
+ * heatmap appears only when site.json → github.showContributions is true.
+ * If GitHub can't be reached during the build, a plain profile link is shown.
+ */
+import Section from '@/components/layout/Section.astro';
+import Card from '@/components/ui/Card.astro';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { site, profile } from '@/lib/content';
+import { getGitHubData } from '@/lib/github';
+import { formatYearMonth } from '@/lib/format';
+
+const meta = site.sections.github;
+const gh = await getGitHubData();
+const fallbackUrl = profile.links.find((l) => l.icon === 'github')?.url ?? `https://github.com/${site.github.username}`;
+
+// GitHub's own language colours for the languages likely to appear here.
+const LANG_COLORS: Record<string, string> = {
+  PHP: '#4F5D95',
+  Blade: '#f7523f',
+  Astro: '#ff5a03',
+  TypeScript: '#3178c6',
+  JavaScript: '#f1e05a',
+  Python: '#3572A5',
+  HTML: '#e34c26',
+  CSS: '#663399',
+  Shell: '#89e051',
+  Dockerfile: '#384d54',
+  Vue: '#41b883',
+};
+const langColor = (l: string | null) => (l && LANG_COLORS[l]) || 'var(--c-subtle)';
+
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const langTotal = gh ? gh.languages.reduce((n, l) => n + l.count, 0) : 0;
+
+// Stats: only show values that are meaningful (no "0 followers"-style filler).
+const stats = gh
+  ? [
+      { label: 'public repositories', value: String(gh.publicRepos) },
+      gh.languages[0] && { label: 'main language', value: gh.languages[0].name },
+      gh.lastPush && { label: 'last push', value: fmtDate(gh.lastPush) },
+      { label: 'on GitHub since', value: formatYearMonth(gh.memberSince) },
+    ].filter((s): s is { label: string; value: string } => Boolean(s))
+  : [];
+---
+
+<Section id="github" eyebrow={meta.eyebrow} title={meta.title} subtitle={meta.subtitle}>
+  {!gh ? (
+    <Card class="flex flex-wrap items-center justify-between gap-4" data-reveal>
+      <p class="text-small text-muted">See my repositories and recent activity on GitHub.</p>
+      <Button href={fallbackUrl} external icon="github" variant="secondary">
+        View GitHub profile
+      </Button>
+    </Card>
+  ) : (
+    <div class="grid grid-cols-1 gap-6 *:min-w-0 lg:grid-cols-[20rem_1fr]">
+      {/* Profile summary */}
+      <Card class="flex flex-col gap-5 self-start" data-reveal>
+        <div class="flex items-center gap-3">
+          <img
+            src={gh.avatarUrl}
+            alt={`${gh.name ?? gh.username}'s GitHub avatar`}
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
+            class="size-12 rounded-full border border-line"
+          />
+          <div class="min-w-0">
+            <p class="truncate font-display text-small font-semibold">{gh.name ?? gh.username}</p>
+            <p class="truncate font-mono text-caption text-muted">@{gh.username}</p>
+          </div>
+        </div>
+
+        <dl class="grid grid-cols-2 gap-3">
+          {stats.map((s) => (
+            <div class="rounded-md border border-line bg-raised px-3 py-2.5">
+              <dt class="text-micro text-subtle">{s.label}</dt>
+              <dd class="mt-0.5 truncate font-mono text-small font-semibold">{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {gh.languages.length > 0 && (
+          <div>
+            <p class="mb-2 font-mono text-micro tracking-label text-subtle uppercase">Languages by repository</p>
+            <div class="flex h-2 overflow-hidden rounded-pill bg-line" aria-hidden="true">
+              {gh.languages.map((l) => (
+                <span style={`width:${(l.count / langTotal) * 100}%;background:${langColor(l.name)}`} />
+              ))}
+            </div>
+            <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+              {gh.languages.map((l) => (
+                <li class="flex items-center gap-1.5 text-caption text-muted">
+                  <span class="size-2 rounded-full" style={`background:${langColor(l.name)}`} aria-hidden="true" />
+                  {l.name}
+                  <span class="text-subtle">
+                    ({l.count} {l.count === 1 ? 'repo' : 'repos'})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <Button href={gh.profileUrl} external icon="github" variant="secondary" fullWidth>
+          View GitHub profile
+        </Button>
+      </Card>
+
+      <div class="space-y-6">
+        {/* Contribution heatmap (opt-in) */}
+        {gh.contributions && (
+          <Card padding="sm" data-reveal>
+            <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <p class="text-small font-semibold">{gh.contributions.total} contributions in the last year</p>
+              <p class="font-mono text-micro text-subtle">{gh.contributions.activeDays} active days</p>
+            </div>
+            <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Contribution calendar (scrollable)">
+              <div
+                class="heatmap"
+                role="img"
+                aria-label={`${gh.contributions.total} public contributions on ${gh.contributions.activeDays} days in the last year`}
+              >
+                {gh.contributions.weeks.map((w) => (
+                  <div class="heatmap-week">
+                    {w.map((d) => (
+                      <span class="heatmap-day" data-level={d.level} title={`${d.count} on ${d.date}`} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class="mt-2 flex items-center justify-end gap-1 font-mono text-micro text-subtle" aria-hidden="true">
+              Less
+              {[0, 1, 2, 3, 4].map((l) => (
+                <span class="heatmap-day" data-level={l} />
+              ))}
+              More
+            </div>
+          </Card>
+        )}
+
+        {/* Repositories */}
+        <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2" aria-label="Recent public repositories">
+          {gh.repos.map((r, i) => (
+            <li data-reveal style={`--reveal-delay:${(i % 2) * 70}ms`}>
+              <Card
+                href={r.url}
+                interactive
+                padding="sm"
+                class="group flex h-full flex-col"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${r.name} repository on GitHub (opens in a new tab)`}
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <p class="flex min-w-0 items-center gap-2 font-mono text-small font-semibold">
+                    <Icon name="code" size={14} class="shrink-0 text-accent" />
+                    <span class="truncate">{r.name}</span>
+                  </p>
+                  <Icon
+                    name="external"
+                    size={14}
+                    class="shrink-0 text-subtle transition-colors duration-fast group-hover:text-fg"
+                  />
+                </div>
+                <p class="mt-2 flex-1 text-caption leading-relaxed text-muted">
+                  {r.description ?? <span class="text-subtle italic">No description</span>}
+                </p>
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-micro text-subtle">
+                  {r.language && (
+                    <span class="inline-flex items-center gap-1.5">
+                      <span
+                        class="size-2 rounded-full"
+                        style={`background:${langColor(r.language)}`}
+                        aria-hidden="true"
+                      />
+                      {r.language}
+                    </span>
+                  )}
+                  {r.stars > 0 && (
+                    <span>
+                      ★ {r.stars} <span class="sr-only">{r.stars === 1 ? 'star' : 'stars'}</span>
+                    </span>
+                  )}
+                  <span>
+                    Updated <time datetime={r.pushedAt}>{fmtDate(r.pushedAt)}</time>
+                  </span>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
+
+        <p class="font-mono text-micro text-subtle">
+          Data from GitHub's public API · updated <time datetime={gh.fetchedAt}>{fmtDate(gh.fetchedAt)}</time>
+        </p>
+      </div>
+    </div>
+  )}
+</Section>
+
+<style>
+  .heatmap {
+    display: flex;
+    gap: 3px;
+    min-width: max-content;
+  }
+  .heatmap-week {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .heatmap-day {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--c-border);
+  }
+  .heatmap-day[data-level='1'] {
+    background: color-mix(in oklab, var(--c-accent) 30%, var(--c-border));
+  }
+  .heatmap-day[data-level='2'] {
+    background: color-mix(in oklab, var(--c-accent) 55%, var(--c-border));
+  }
+  .heatmap-day[data-level='3'] {
+    background: color-mix(in oklab, var(--c-accent) 78%, var(--c-border));
+  }
+  .heatmap-day[data-level='4'] {
+    background: var(--c-accent);
+  }
+</style>

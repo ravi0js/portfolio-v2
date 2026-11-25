@@ -63,12 +63,29 @@ export const siteSchema = z.object({
     radius: z.string(),
     motion: z.boolean(),
   }),
+  analytics: z
+    .object({
+      provider: z.enum(['none', 'goatcounter', 'cloudflare', 'plausible', 'ga4']),
+      id: z.string(),
+      _help: z.string().optional(),
+    })
+    .refine((a) => a.provider === 'none' || a.id.trim().length > 0, 'set "id" when a provider is chosen'),
+  github: z.object({
+    enabled: z.boolean(),
+    username: z.string().regex(/^[a-zA-Z0-9-]+$/),
+    maxRepos: z.number().int().min(1).max(12),
+    excludeRepos: z.array(z.string()),
+    includeForks: z.boolean(),
+    showContributions: z.boolean(),
+    _help: z.string().optional(),
+  }),
   nav: z.array(z.object({ label: z.string(), href: z.string() })),
   sections: z.object({
     impact: sectionMeta,
     about: sectionMeta,
     experience: sectionMeta,
     projects: sectionMeta,
+    github: sectionMeta,
     skills: sectionMeta,
     education: sectionMeta,
     contact: sectionMeta,

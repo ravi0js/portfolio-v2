@@ -5,6 +5,7 @@ import Impact from '@/components/sections/Impact.astro';
 import About from '@/components/sections/About.astro';
 import Experience from '@/components/sections/Experience.astro';
 import Projects from '@/components/sections/Projects.astro';
+import GitHub from '@/components/sections/GitHub.astro';
 import Skills from '@/components/sections/Skills.astro';
 import Education from '@/components/sections/Education.astro';
 import Contact from '@/components/sections/Contact.astro';
@@ -19,6 +20,7 @@ const s = site.sections;
   {s.skills.enabled && <Skills />}
   {s.experience.enabled && <Experience />}
   {s.projects.enabled && <Projects />}
+  {s.github.enabled && site.github.enabled && <GitHub />}
   {s.education.enabled && <Education />}
   {s.contact.enabled && <Contact />}
 </BaseLayout>

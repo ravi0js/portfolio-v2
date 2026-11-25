@@ -42,6 +42,11 @@ const themeCss = `
 :root,[data-theme='dark']{${palette(theme.dark)}}
 [data-theme='light']{${palette(theme.light)}}`;
 
+// Visitor analytics (site.json → analytics). Production builds only, so local dev
+// visits aren't counted. Nothing loads while provider is "none".
+const analytics = import.meta.env.PROD && site.analytics.provider !== 'none' ? site.analytics : null;
+const aId = analytics?.id.trim() ?? '';
+
 const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme.motion };
 ---
 
@@ -96,6 +101,40 @@ const boot = { mode: theme.defaultMode, toggle: theme.allowToggle, motion: theme
       })();
     </script>
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd())} />
+    {analytics?.provider === 'goatcounter' && (
+      <script
+        is:inline
+        async
+        data-goatcounter={`https://${aId}.goatcounter.com/count`}
+        src="https://gc.zgo.at/count.js"
+      />
+    )}
+    {analytics?.provider === 'cloudflare' && (
+      <script
+        is:inline
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: aId })}
+      />
+    )}
+    {analytics?.provider === 'plausible' && (
+      <script is:inline defer data-domain={aId} src="https://plausible.io/js/script.js" />
+    )}
+    {analytics?.provider === 'ga4' && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(aId)}`} />
+        <script is:inline define:vars={{ aId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            // GA4 needs the Arguments object itself (not an array), as in Google's snippet.
+            // eslint-disable-next-line prefer-rest-params
+            window.dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', aId);
+        </script>
+      </>
+    )}
   </head>
   <body class="min-h-dvh antialiased">
     <a

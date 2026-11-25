@@ -59,6 +59,29 @@ Every file is checked against a schema in `src/lib/content.ts` at build time. A 
 
 After changing the name, role or colours, run `npm run og` to refresh the social preview image.
 
+## Visitor analytics
+
+Off by default. In `site.json` → `analytics`, set `provider` and `id`:
+
+| provider      | id                                                  | Notes                                            |
+| ------------- | --------------------------------------------------- | ------------------------------------------------ |
+| `goatcounter` | your site code (the `xyz` in `xyz.goatcounter.com`) | Free, cookieless, no consent banner needed       |
+| `cloudflare`  | Web Analytics beacon token                          | Free, cookieless                                 |
+| `plausible`   | your domain, e.g. `ravi-kr.netlify.app`             | Paid, cookieless                                 |
+| `ga4`         | Measurement ID, e.g. `G-XXXXXXX`                    | Uses cookies; some regions need a consent notice |
+
+The script is added only to production builds, so `npm run dev` visits aren't counted. The build fails with a clear message if you pick a provider but leave `id` empty.
+
+## GitHub activity section
+
+`site.json` → `github` controls it: `enabled`, `username`, `maxRepos`, `excludeRepos`, `includeForks`, `showContributions`.
+
+- Data is fetched from GitHub's public API **at build time**; visitors' browsers never call GitHub. It refreshes on every deploy.
+- Empty repos and your profile-README repo (`ravi0js/ravi0js`) are skipped automatically.
+- Repo cards show the description set on GitHub (the ⚙ next to "About" on the repo page).
+- `showContributions` adds the contribution heatmap. It's off for now because public activity is still sparse; switch it on once there's more.
+- If GitHub is unreachable or rate-limits the build, the section shows a plain "View GitHub profile" link instead of failing. Set a `GITHUB_TOKEN` environment variable in Netlify (a token with no scopes is enough) to raise the API limit.
+
 ## Phone number on request
 
 The phone number is **not** in the site code. A visitor clicks "Request phone number" and submits their name and email. `netlify/functions/contact.mts` then emails those details to you through [Resend](https://resend.com) and returns the number, which is shown on the page.

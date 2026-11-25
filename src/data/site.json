@@ -52,6 +52,20 @@
     "radius": "14px",
     "motion": true
   },
+  "analytics": {
+    "provider": "none",
+    "id": "",
+    "_help": "provider: none | goatcounter | cloudflare | plausible | ga4. id: GoatCounter site code, Cloudflare beacon token, Plausible domain, or GA4 Measurement ID (G-XXXX). Loaded only in production builds."
+  },
+  "github": {
+    "enabled": true,
+    "username": "ravi0js",
+    "maxRepos": 6,
+    "excludeRepos": [],
+    "includeForks": false,
+    "showContributions": false,
+    "_help": "Fetched from GitHub's public API at build time. Empty repos and the profile-README repo are skipped automatically. Set GITHUB_TOKEN in Netlify to avoid API rate limits. showContributions draws the contribution heatmap (unofficial GitHub endpoint)."
+  },
   "nav": [
     {
       "label": "Home",
@@ -100,6 +114,12 @@
       "eyebrow": "projects",
       "title": "Projects & Engineering Case Studies",
       "subtitle": "Exploring backend architecture, API development, database performance, integrations, and production application workflows."
+    },
+    "github": {
+      "enabled": true,
+      "eyebrow": "open source",
+      "title": "GitHub activity",
+      "subtitle": "Pulled from my public GitHub profile and refreshed on every deploy."
     },
     "skills": {
       "enabled": true,
